@@ -2,7 +2,7 @@
 
 /**
  * Module dependencies.
- * Web application on plant spottings
+ * Web application on plant spottings 23/24
  */
 
 var app = require('../app');
