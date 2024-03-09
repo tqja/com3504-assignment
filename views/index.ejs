@@ -1,11 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Bar with Logo</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo-container">
+    <span id="company-name"><span class="green">P</span>lant<span class="green">P</span>al</span>
+  </div>
+  <ul>
+    <li><a href="#view-observations">View My Observations</a></li>
+    <li><a href="#create-observation">Create Observation</a></li>
+    <li><a href="#explore">Explore</a></li>
+  </ul>
+</nav>
+
+<h1>Sightings Feed</h1>
+
+<div class="filters">
+  <h2>Filters:</h2>
+  <div class="dropdown">
+    <button class="dropbtn">Filters</button>
+    <div class="dropdown-content">
+      <label for="filter1">
+        <input type="checkbox" id="filter1" name="filter1">
+        <img src="/photos/sun.png" alt="Image 1"> grows in sunlight
+      </label>
+      <label for="filter2">
+        <input type="checkbox" id="filter2" name="filter2">
+        <img src="/photos/seeds.png" alt="Image 1"> Stores seeds
+      </label>
+      <label for="filter3">
+        <input type="checkbox" id="filter3" name="filter3">
+        <img src="/photos/fruits.png" alt="Image 1"> Grows fruit
+      </label>
+    </div>
+  </div>
+</div>
+<div class="photo-grid">
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant8.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Everrit</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant7.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Wa</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant6.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Orchid</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant1.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Ahvaz</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant2.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Magnolia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant3.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Dahlia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant4.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Flora</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant5.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Cosmos</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/rose.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Rose</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/geranium.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Geranium</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant8.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Everrit</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant7.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Wa</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant6.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Orchid</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant1.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Ahvaz</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant2.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Magnolia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant3.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Dahlia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant4.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Flora</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant5.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Cosmos</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/rose.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Rose</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/geranium.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Geranium</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant8.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Everrit</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant7.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Wa</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant6.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Orchid</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant1.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Ahvaz</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant2.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Magnolia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant3.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Dahlia</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant4.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Flora</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/plant5.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Cosmos</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/rose.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Rose</span>
+    </div>
+  </div>
+  <div class="photo-item">
+    <a href="#here">
+      <img src="/photos/geranium.jpg" alt="Description">
+    </a>
+    <div class="description-container">
+      <span class="photo-description">Geranium</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
 </html>
