@@ -191,3 +191,35 @@ div {
   width: 20px;
   margin-right: 10px;
 }
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-label {
+  position: relative;
+  cursor: pointer;
+  padding-left: 30px; /* Adjust as needed based on image size */
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.hidden-checkbox {
+  position: absolute;
+  opacity: 0;
+}
+
+.checkbox-image {
+  width: 20px; /* Adjust based on image size */
+  height: 20px;
+  background-image: url('/images/Bird.jpg'); /* Replace with your unchecked image path */
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.3s ease;
+}
+
+.hidden-checkbox:checked + .checkbox-image {
+  background-image: url('/photos/fruits.png'); /* Replace with your checked image path */
+}

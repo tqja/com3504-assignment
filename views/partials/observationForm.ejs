@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Form test</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<form action="/" method="POST">
+    <label for="name">Name: </label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="location">Location: </label>
+    <input type="text" id="location" name="location" required>
+
+    <label for="date/time seen">Date/time seen: </label>
+    <input type="datetime-local" id="date/time seen" name="date_time_seen" required>
+
+    <label for="description">Description: </label>
+    <textarea id="description" name = "description" rows="3" cols="24"></textarea>
+
+    <fieldset>
+        <legend>Size</legend>
+        <label for="height">Height: </label>
+        <input type="text" id="height" required>
+
+        <label for="spread">Spread: </label>
+        <input type="text" id="spread" name="spread" required>
+    </fieldset>
+
+    <fieldset>
+        <legend>Sunlight</legend>
+        <label for="sunlight_np">No preference</label>
+        <input type="radio" id="sunlight_np" name="sunlight" value="null">
+        <label for="sunlight_1">Dark</label>
+        <input type="radio" id="sunlight_1" name="sunlight" value="1">
+        <label for="sunlight_2">Low</label>
+        <input type="radio" id="sunlight_2" name="sunlight" value="2">
+        <label for="sunlight_3">Medium</label>
+        <input type="radio" id="sunlight_3" name="sunlight" value="3">
+        <label for="sunlight_4">Bright</label>
+        <input type="radio" id="sunlight_4" name="sunlight" value="4">
+    </fieldset>
+
+    <fieldset>
+        <legend>Soil type</legend>
+        <label for="soil_np">No preference</label>
+        <input type="radio" id="soil_np" name="soil_type" value="null">
+        <label for="soil_chalk">Chalk</label>
+        <input type="radio" id="soil_chalk" name="soil_type" value="chalk">
+        <label for="soil_clay">Clay</label>
+        <input type="radio" id="soil_clay" name="soil_type" value="clay">
+        <label for="soil_loam">Loam</label>
+        <input type="radio" id="soil_loam" name="soil_type" value="loam">
+        <label for="soil_sand">Sand</label>
+        <input type="radio" id="soil_sand" name="soil_type" value="sand">
+    </fieldset>
+
+    <label for="submit">Submit: </label>
+    <input type="submit" value="Create">
+</form>
+</body>
+</html>
