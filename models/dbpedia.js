@@ -19,14 +19,22 @@ const fetchFromDbpedia = async (name) => {
         { ?plant rdfs:label "${name}"@en }
         UNION
         { ?plant dbo:binomial [ rdfs:label "${name}"@en ] }
-
-        ?plant rdf:type dbo:Plant ;
-               rdfs:label ?commonName ;
-               dbo:binomial [ rdfs:label ?scientificName ] ;
+        
+        ?plant rdf:type ?type .
+        FILTER 
+          (?type IN (dbo:Eukaryote, dbo:Plant, dbo:FloweringPlant, dbo:Gnetophytes, dbo:Conifer, dbo:GreenAlga,
+          dbo:ClubMoss, dbo:Moss, dbo:Cycad, dbo:Fern, dbo:CultivatedVariety, dbo:Ginkgo)
+        )
+        
+        ?plant rdfs:label ?commonName ;
                dbo:abstract ?description .
+        
+        OPTIONAL {
+          ?plant dbo:binomial [ rdfs:label ?scientificName ] .
+          FILTER (lang(?scientificName) = 'en')
+        }
 
         FILTER (lang(?commonName) = 'en')
-        FILTER (lang(?scientificName) = 'en')
         FILTER (lang(?description) = 'en')
       }
       LIMIT 1`;
@@ -42,6 +50,11 @@ const fetchFromDbpedia = async (name) => {
     });
 
     stream.on('end', () => {
+      // if subject has no binomial name, fill it with common name
+      if (bindingsArray[0] && !bindingsArray[0].scientificName) {
+        bindingsArray[0].scientificName = bindingsArray[0].commonName;
+      }
+      console.log(bindingsArray);
       resolve(bindingsArray);
     });
   });
