@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="/stylesheets/style.css">
+        <title><%= title %></title>
+    </head>
+    <body>
+        <main>
+            <form action="/dbpedia/sparqlQuery" method="GET" style="margin: 25px">
+                <label for="plantName">Plant name: </label>
+                <input id="plantName" name="plantName"/>
+                <br>
+                <button type="submit">Submit</button>
+                <% if (data && data[0]) { %>
+                    <div>
+                        <% console.log(data); %>
+                        <h1><%= data[0].commonName.value %></h1>
+                        <hr>
+                        <h2><%= data[0].scientificName.value %></h2>
+                        <p><%= data[0].description.value %></p>
+                        <a href="<%= data[0].plant.value %>"><%= data[0].plant.value %></a>
+                    </div>
+                <% } else if (data) { %>
+                    <p>No plant matched this query.</p>
+                <% } %>
+            </form>
+        </main>
+    </body>
+</html>
