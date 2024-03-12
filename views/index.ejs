@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Navigation Bar with Logo</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script type="module" src="/js/index.js"></script>
 </head>
 <body>
 
@@ -283,6 +285,30 @@
     </div>
   </div>
 
+</div>
+<!--The div element for the chat interface -->
+<div id="chat_interface">
+  <div class="subtitle-container">
+    <h2 class="small-title">
+      <%= "Chat" %>
+    </h2>
+  </div>
+  <div id="chat-window">
+    <div>
+      <div id="chatId" style="display: none;"><%= sightingId %></div>
+      <div id="messages" style="display: none;"><%= JSON.stringify(messages) %></div>
+      <div id="history"></div>
+      <div id="input">
+        <form onsubmit="return false;" style="width: 100%">
+          <p>
+            <label for="chat_input" id="chat_label"> CHAT: </label>
+            <input type="text" id="chat_input" name="chat_input" style="width: 30%;">
+            <button id="chat_send">Send</button>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 </body>
