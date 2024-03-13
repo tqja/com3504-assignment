@@ -10,6 +10,16 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // add LayerGroup to map to contain markers
 let markers = L.layerGroup().addTo(map);
 
+const reverseGeocode = (lat, lng) => {
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+  return fetch(url).then(response => {
+    return response.json();
+  }).catch(err => {
+    console.error(err);
+    return null;
+  })
+}
+
 let position = null;
 const locationText = document.getElementById('location');
 
@@ -18,24 +28,29 @@ const locationText = document.getElementById('location');
  * @param lat - The latitude .
  * @param lng - The longitude.
  */
-const setLocationText = (lat, lng) => {
-  locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
+const setLocationText = async (lat, lng) => {
+  const data = await reverseGeocode(lat, lng);
+  if (data && data.countryCode && data.principalSubdivision && data.city) {
+    locationText.innerHTML = `${data.city}, ${data.principalSubdivision}, ${data.countryCode}; Latitude ${lat}, Longitude ${lng}`;
+  } else {
+    locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
+  }
 }
 
 /**
  * Clears the marker layer, adds a new marker at latlng position, and sets the location message to the position.
  * @param latlng - The object containing latitude and longitude.
  */
-const moveMarker = (latlng) => {
+const moveMarker = async (latlng) => {
   markers.clearLayers();
   L.marker(latlng).addTo(markers);
   position = latlng;
-  setLocationText(position.lat, position.lng);
+  await setLocationText(position.lat, position.lng);
 }
 
 /** Places a marker on the map at the mouse cursor's position on click. */
-const onMapClick = (e) => {
-  moveMarker(e.latlng);
+const onMapClick = async (e) => {
+  await moveMarker(e.latlng);
 };
 
 /**
@@ -43,12 +58,12 @@ const onMapClick = (e) => {
  * location. On failure, display an error message.
  */
 const findMe = () => {
-  const success = (pos) => {
+  const success = async (pos) => {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
     map.setView([lat, lng], 15);
-    moveMarker({lat, lng})
+    await moveMarker({lat, lng})
     position = {lat, lng};
     locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
   }
