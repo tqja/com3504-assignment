@@ -29,7 +29,10 @@ const locationText = document.getElementById('location');
  * @param lng - The longitude.
  */
 const setLocationText = async (lat, lng) => {
+  // ensure lng lies between -180 and 180 so the API call works correctly
+  lng = ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
   const data = await reverseGeocode(lat, lng);
+
   if (data && data.countryCode && data.principalSubdivision && data.city) {
     locationText.innerHTML = `${data.city}, ${data.principalSubdivision}, ${data.countryCode}; Latitude ${lat}, Longitude ${lng}`;
   } else {
