@@ -68,7 +68,6 @@ const findMe = () => {
     map.setView([lat, lng], 15);
     await moveMarker({lat, lng})
     position = {lat, lng};
-    locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
   }
 
   const error = () => {
