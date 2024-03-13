@@ -11,6 +11,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // add LayerGroup to map to contain markers
 let markers = L.layerGroup().addTo(map);
 
+/**
+ * Uses the BigDataCloud reverse geocoding API to retrieve details of a location from the latitude and longitude.
+ * @param lat - latitude of location to fetch
+ * @param lng - longitude of location to fetch
+ * @returns {Promise<any>}
+ */
 const reverseGeocode = (lat, lng) => {
   const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
   return fetch(url).then(response => {
