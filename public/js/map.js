@@ -1,5 +1,6 @@
 // initialise Leaflet map
 const map = L.map('map').setView([51.505, -0.09], 8);
+map.setMinZoom(0.5);
 
 // add tile layer from OpenStreetMap
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -32,12 +33,14 @@ const setLocationText = async (lat, lng) => {
   // ensure lng lies between -180 and 180 so the API call works correctly
   lng = ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
   const data = await reverseGeocode(lat, lng);
-
-  if (data && data.countryCode && data.principalSubdivision && data.city) {
-    locationText.innerHTML = `${data.city}, ${data.principalSubdivision}, ${data.countryCode}; Latitude ${lat}, Longitude ${lng}`;
-  } else {
-    locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
+  locationText.innerHTML = '';
+  if (data && data.countryCode && data.principalSubdivision && data.city && data.locality) {
+    if (data.locality !== data.city) {
+      locationText.innerHTML += `${data.locality}, `;
+    }
+    locationText.innerHTML += `${data.city}, ${data.principalSubdivision}, ${data.countryCode}`;
   }
+  locationText.innerHTML += `; Latitude ${lat}, Longitude ${lng}`;
 }
 
 /**
