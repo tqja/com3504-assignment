@@ -20,27 +20,65 @@
 </nav>
 
 <h1>Sightings Feed</h1>
+<div class="content-container">
+  <div class="sidebar">
+    <h2>Filters:</h2>
+    <!-- Sunlight Exposure Filter Toggle Button -->
+    <button class="dropbtn" onclick="toggleFilter('sunlightFilter')">Sunlight Exposure &#9660;</button>
+    <!-- Sunlight Exposure Filter Options -->
+    <div id="sunlightFilter" class="filter-content">
+      <div class="sunlight-filter">
+        <input type="radio" id="sunlight-no-preference" name="sunlight" value="no-preference" checked>
+        <label for="sunlight-no-preference">
+          <img src="/photos/sun-no-preference.png" alt="No preference">
+        </label>
 
-<div class="filters">
-  <h2>Filters:</h2>
-  <div class="dropdown">
-    <button class="dropbtn">Filters</button>
-    <div class="dropdown-content">
-      <label for="filter1">
-        <input type="checkbox" id="filter1" name="filter1">
-        <img src="/photos/sun.png" alt="Image 1"> grows in sunlight
-      </label>
-      <label for="filter2">
-        <input type="checkbox" id="filter2" name="filter2">
-        <img src="/photos/seeds.png" alt="Image 1"> Stores seeds
-      </label>
-      <label for="filter3">
-        <input type="checkbox" id="filter3" name="filter3">
-        <img src="/photos/fruits.png" alt="Image 1"> Grows fruit
-      </label>
+        <input type="radio" id="sunlight-full" name="sunlight" value="full">
+        <label for="sunlight-full">
+          <img src="/photos/sun-full.png" alt="Full sun">
+        </label>
+
+        <input type="radio" id="sunlight-partial" name="sunlight" value="partial">
+        <label for="sunlight-partial">
+          <img src="/photos/sun-partial.png" alt="Partial shade">
+        </label>
+
+        <input type="radio" id="sunlight-full-shade" name="sunlight" value="full-shade">
+        <label for="sunlight-full-shade">
+          <img src="/photos/sun-full-shade.png" alt="Full shade">
+        </label>
+      </div>
     </div>
+    <!-- Placeholder for Additional Filters -->
+    <!-- Add more filters here using the same structure as above -->
+    <!-- Has Flowers Filter Toggle Button -->
+    <br>
+    <br>
+    <button class="dropbtn" onclick="toggleFilter('flowersFilter')">Has Flowers &#9660;</button>
+    <!-- Has Flowers Filter Options -->
+    <div id="flowersFilter" class="filter-content">
+      <div class="sunlight-filter"> <!-- Reuse the same class for consistent styling -->
+        <input type="radio" id="flowers-no-preference" name="flowers" value="no-preference" checked>
+        <label for="flowers-no-preference">
+          <img src="/photos/sun-no-preference.png" alt="No preference">
+        </label>
+
+        <input type="radio" id="flowers-yes" name="flowers" value="yes">
+        <label for="flowers-yes">
+          <img src="/photos/flower-yes.png" alt="Has flowers">
+        </label>
+
+        <input type="radio" id="flowers-no" name="flowers" value="no">
+        <label for="flowers-no">
+          <img src="/photos/flower-no.png" alt="Does not have flowers">
+        </label>
+      </div>
+    </div>
+
+
   </div>
-</div>
+
+
 <div class="photo-grid">
   <div class="photo-item">
     <a href="#here">
@@ -55,7 +93,7 @@
       <img src="/photos/plant7.jpg" alt="Description">
     </a>
     <div class="description-container">
-      <span class="photo-description">Wa</span>
+      <span class="photo-description">Wascalion</span>
     </div>
   </div>
   <div class="photo-item">
@@ -284,6 +322,16 @@
   </div>
 
 </div>
-
+</div>
+<script>
+  function toggleFilter(filterId) {
+    var filter = document.getElementById(filterId);
+    if (filter.style.display === "block") {
+      filter.style.display = "none";
+    } else {
+      filter.style.display = "block";
+    }
+  }
+</script>
 </body>
 </html>

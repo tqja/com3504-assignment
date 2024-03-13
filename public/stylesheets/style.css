@@ -87,23 +87,25 @@ div {
 
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2px;
-  padding: 0 200px;
+  grid-template-columns: repeat(5, 1fr); /* Keeps 5 images per row */
+  gap: 10px; /* Provides spacing between images */
+  padding: 0 50px; /* Adjusted padding for more space */
 }
+
 
 .photo-item {
   display: flex;
   flex-direction: column;
-  margin-bottom: -55px;
+  position: relative;
+  margin-bottom: 20px; /* Space for descriptions */
 }
 
 .photo-item a {
   display: block;
   width: 100%;
-  height: 0;
-  padding-top: 100%;
+  padding-top: 100%; /* Sets a 1:1 aspect ratio, adjust this value for a different aspect ratio */
   position: relative;
+  overflow: hidden; /* Ensures no overflow from the container */
 }
 
 .photo-item img {
@@ -112,15 +114,16 @@ div {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Ensures the image covers the area without distortion */
 }
 
 .description-container {
+  position: relative;
   background-color: rgba(250, 245, 242, 0.7);
   padding: 5px;
   text-align: center;
+  margin-top: 5px; /* Ensures description is visible below the image */
 }
-
 
 
 .photo-description {
@@ -191,3 +194,104 @@ div {
   width: 20px;
   margin-right: 10px;
 }
+
+/* Sidebar styles */
+/* Sidebar styles */
+.content-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px; /* Adjust the gap as needed */
+  padding: 20px; /* Adds padding around the content for better spacing */
+}
+
+.sidebar {
+  flex: 3; /* Allows the sidebar to grow */
+  width: 100px; /* Keeps the sidebar width fixed */
+  outline: 2px solid #adb0ad; /* Example: a green outline */
+}
+
+.photo-grid {
+  flex: 10; /* Allows the photo grid to take more space */
+}
+
+
+
+
+/* Style each filter option */
+.filter-option {
+  margin-bottom: 10px; /* Space between options */
+}
+
+.filter-option label {
+  display: block;
+  cursor: pointer;
+}
+
+.filter-option input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* ... existing styles ... */
+
+.sunlight-filter input[type="radio"] {
+  display: none; /* Hide the radio button */
+}
+
+.abel {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.sunlight-filter label:hover {
+  border: 1px solid #aaa; /* Highlight on hover */
+}
+
+.sunlight-filter label img {
+  display: block; /* Ensures the img element fills the label */
+  width: 100%; /* Adjust as needed */
+  height: auto;
+}
+.sunlight-filter label {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.sunlight-filter input[type="radio"]:checked + label {
+  /* Optional: Apply a style to indicate selection, like a border */
+  border: 2px solid #d5d7d5; /* Example: a green border to indicate selection */
+}
+.sunlight-filter input[type="radio"]:checked + label::after {
+  content: "\2713"; /* Unicode character for a checkmark */
+  position: absolute;
+  top: 5px; /* Adjust these values to position the checkmark as needed */
+  left: 5px;
+  color: #4CAF50; /* Change the color as needed */
+  font-size: 24px; /* Adjust the size as needed */
+  z-index: 1;
+  pointer-events: none; /* Ensures the checkmark doesn't interfere with clicking the label/img */
+}
+/* ... existing styles ... */
+
+.filter-content {
+  display: none;
+  /* Additional styling for the content */
+}
+
+.filter-content.active {
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
