@@ -35,7 +35,7 @@ const commentSchema = new Schema({
 
 let ObservationSchema = new Schema(
     {
-        posterNickname: {
+        nickname: {
             type: String, required: true, immutable: true
         },
         image: {
@@ -62,8 +62,20 @@ let ObservationSchema = new Schema(
             immutable: true
         },
         comments: [commentSchema],
-        height: { type: Number, immutable: true }, // Make into enums...
-        spread: { type: Number, immutable: true }, // ...
+        height: {
+            type: String,
+            enum: ['NA', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
+            default: 'NA',
+            required: true,
+            immutable: true
+        },
+        spread: {
+            type: String,
+            enum: ['NA', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
+            default: 'NA',
+            required: true,
+            immutable: true
+        },
         sunlight: {
             type: String,
             enum: ['NA','Shaded', 'Dappled', 'Partial', 'Full'],
@@ -78,10 +90,10 @@ let ObservationSchema = new Schema(
             required: true,
             immutable: true
         },
-        flowering: { type: Boolean, default: true, immutable: true },
-        fragrant: { type: Boolean, default: true, immutable: true },
-        fruiting: { type: Boolean, default: true, immutable: true },
-        native: { type: Boolean, default: true, immutable: true }
+        flowering: { type: Boolean, default: false, immutable: true },
+        fragrant:  { type: Boolean, default: false, immutable: true },
+        fruiting:  { type: Boolean, default: false, immutable: true },
+        native:    { type: Boolean, default: false, immutable: true }
     }
 );
 
