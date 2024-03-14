@@ -1,0 +1,1 @@
+const observationModel = require('../models/observations');
