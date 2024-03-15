@@ -42,7 +42,7 @@
   </div>
 </div>
 <div class="photo-grid">
-  <% data.forEach(observation => { %>
+  <% if (data) { data.forEach(observation => { %>
     <div class="photo-item">
       <a href="#here">
         <img src="<%= observation.image %>">
@@ -51,7 +51,7 @@
         <span class="photo-description"><%= observation.name %></span>
       </div>
     </div>
-  <% }); %>
+  <% });} %>
 </div>
 
 </body>
