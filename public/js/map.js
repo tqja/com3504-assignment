@@ -1,5 +1,6 @@
 // initialise Leaflet map
 const map = L.map('map').setView([51.505, -0.09], 8);
+map.setMinZoom(0.5);
 
 // add tile layer from OpenStreetMap
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -10,6 +11,22 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // add LayerGroup to map to contain markers
 let markers = L.layerGroup().addTo(map);
 
+/**
+ * Uses the BigDataCloud reverse geocoding API to retrieve details of a location from the latitude and longitude.
+ * @param lat - latitude of location to fetch
+ * @param lng - longitude of location to fetch
+ * @returns {Promise<any>}
+ */
+const reverseGeocode = (lat, lng) => {
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+  return fetch(url).then(response => {
+    return response.json();
+  }).catch(err => {
+    console.error(err);
+    return null;
+  })
+}
+
 let position = null;
 const locationText = document.getElementById('location');
 
@@ -18,24 +35,34 @@ const locationText = document.getElementById('location');
  * @param lat - The latitude .
  * @param lng - The longitude.
  */
-const setLocationText = (lat, lng) => {
-  locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
+const setLocationText = async (lat, lng) => {
+  // ensure lng lies between -180 and 180 so the API call works correctly
+  lng = ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
+  const data = await reverseGeocode(lat, lng);
+  locationText.innerHTML = '';
+  if (data && data.countryCode && data.principalSubdivision && data.city && data.locality) {
+    if (data.locality !== data.city) {
+      locationText.innerHTML += `${data.locality}, `;
+    }
+    locationText.innerHTML += `${data.city}, ${data.principalSubdivision}, ${data.countryCode}`;
+  }
+  locationText.innerHTML += `; Latitude ${lat}, Longitude ${lng}`;
 }
 
 /**
  * Clears the marker layer, adds a new marker at latlng position, and sets the location message to the position.
  * @param latlng - The object containing latitude and longitude.
  */
-const moveMarker = (latlng) => {
+const moveMarker = async (latlng) => {
   markers.clearLayers();
   L.marker(latlng).addTo(markers);
   position = latlng;
-  setLocationText(position.lat, position.lng);
+  await setLocationText(position.lat, position.lng);
 }
 
 /** Places a marker on the map at the mouse cursor's position on click. */
-const onMapClick = (e) => {
-  moveMarker(e.latlng);
+const onMapClick = async (e) => {
+  await moveMarker(e.latlng);
 };
 
 /**
@@ -43,14 +70,13 @@ const onMapClick = (e) => {
  * location. On failure, display an error message.
  */
 const findMe = () => {
-  const success = (pos) => {
+  const success = async (pos) => {
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
 
     map.setView([lat, lng], 15);
-    moveMarker({lat, lng})
+    await moveMarker({lat, lng})
     position = {lat, lng};
-    locationText.innerHTML = `Latitude ${lat}, Longitude ${lng}`;
   }
 
   const error = () => {
