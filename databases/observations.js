@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoDB = 'mongodb://localhost:27017/testingplantdb/';
+const mongoDB = 'mongodb://localhost:27017/floraExplorerDB';
 let connection;
 
 mongoose.Promise = global.Promise;

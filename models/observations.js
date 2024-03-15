@@ -39,7 +39,11 @@ let ObservationSchema = new Schema(
             type: String, required: true, immutable: true
         },
         image: {
-            type: Buffer, required: true, immutable: true
+            type: String, required: true, immutable: true,
+            validate: {
+                validator: fileName => (/(^.+\.(jpg|jpeg|png|gif|bmp|tif|tiff)$)/).test(fileName),
+                message: "Invalid file type"
+            }
         },
         name: {
             type: String, required: true, maxLength: 100
@@ -64,30 +68,26 @@ let ObservationSchema = new Schema(
         comments: [commentSchema],
         height: {
             type: String,
-            enum: ['NA', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
-            default: 'NA',
-            required: true,
+            enum: ['NP', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
+            default: 'NP',
             immutable: true
         },
         spread: {
             type: String,
-            enum: ['NA', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
-            default: 'NA',
-            required: true,
+            enum: ['NP', '<0.1m', '0.1-0.5m', '0.5-1m', '1-2m', '2-4m', '4-8m', '8+m'],
+            default: 'NP',
             immutable: true
         },
         sunlight: {
             type: String,
-            enum: ['NA','Shaded', 'Dappled', 'Partial', 'Full'],
-            default: 'NA',
-            required: true,
+            enum: ['NP','Shaded', 'Dappled', 'Partial', 'Full'],
+            default: 'NP',
             immutable: true
         },
         soilType: {
             type: String,
-            enum: ['NA', 'Chalk', 'Clay', 'Loam', 'Sand'],
-            default: 'NA',
-            required: true,
+            enum: ['NP', 'Chalk', 'Clay', 'Loam', 'Sand'],
+            default: 'NP',
             immutable: true
         },
         flowering: { type: Boolean, default: false, immutable: true },

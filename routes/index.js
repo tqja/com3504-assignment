@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var observations = require('../controllers/observations')
+
+var controller = require('../controllers/observations')
 const model = require('../models/observations');
 var multer = require('multer');
 
-
-
+// TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/images/uploads/');
@@ -20,40 +20,22 @@ var storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
-
-
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log(
-      new model({
-        posterNickname: "a",
-        image: 1,
-        name: "a",
-        //status:
-        dateSeen: Date.now(),
-        description: "a",
-        location: {latitude: 1, longitude: 1},
-        comments: [{username: "a", comment: "a", timestamp: Date.now()}],
-        height: 1,
-        spread: 1,
-        sunlight: "NA",
-        soil_type: "NA",
-      })
-  )
-  res.render('observationForm', { title: 'Express' });
+  res.render('newObservation', { title: 'Express' });
 });
 
 router.post('/', function(req, res) {
   console.log(req.body);
-  res.render('observationForm', { title: 'Express' });
+  res.render('newObservation', { title: 'Express'});
 });
 
-
+// TODO: Add proper error handling to routes
 router.post('/add', upload.single('image'), async function (req, res, next) {
     try {
         let userData = req.body;
         let filePath = req.file.path;
-        let result = await observations.create(userData, filePath);
+        let result = await controller.create(userData, filePath);
         console.log(result);
         res.redirect('/');
     } catch (error) {
@@ -61,9 +43,5 @@ router.post('/add', upload.single('image'), async function (req, res, next) {
         res.status(500).send("Error saving observation");
     }
 });
-
-
-
-
 
 module.exports = router;
