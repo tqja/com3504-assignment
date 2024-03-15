@@ -1,7 +1,26 @@
 var express = require('express');
 var router = express.Router();
-
+var observations = require('../controllers/observations')
 const model = require('../models/observations');
+var multer = require('multer');
+
+
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/uploads/');
+    },
+    filename: function (req, file, cb) {
+        var original = file.originalname;
+        var file_extension = original.split(".");
+        // Make the file name the date + the file extension
+        filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+        cb(null, filename);
+    }
+});
+let upload = multer({ storage: storage });
+
+
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -21,12 +40,30 @@ router.get('/', function(req, res) {
         soil_type: "NA",
       })
   )
-  res.render('index', { title: 'Express' });
+  res.render('observationForm', { title: 'Express' });
 });
 
 router.post('/', function(req, res) {
   console.log(req.body);
-  res.render('partials/observationForm', { title: 'Express' });
+  res.render('observationForm', { title: 'Express' });
 });
+
+
+router.post('/add', upload.single('image'), async function (req, res, next) {
+    try {
+        let userData = req.body;
+        let filePath = req.file.path;
+        let result = await observations.create(userData, filePath);
+        console.log(result);
+        res.redirect('/');
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error saving observation");
+    }
+});
+
+
+
+
 
 module.exports = router;

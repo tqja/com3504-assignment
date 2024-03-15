@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<form action="/add" method="POST" enctype="multipart/form-data">
+    <label for="nickname">nickname: </label>
+    <input type="text" id="nickname" name="nickname" required>
+    <br>
+    <br>
+    <label for="name">name: </label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <br>
+    <label for="image">Choose an image</label><br><br>
+    <input type="file" id="image" name="image" accept="image/*" required>
+    <br>
+    <br>
+    <label for="dateSeen">Date Seen: </label>
+    <input type="datetime-local" id="dateSeen" name="dateSeen" required>
+    <br>
+    <br>
+    <label for="description">Description: </label>
+    <textarea id="description" name="description" rows="4" cols="25" required></textarea>
+    <br>
+    <br>
+    <label for="latitude">Latitude: </label>
+    <input type="number" id="latitude" name="latitude" step="0.000001" min="-90" max="90" required>
+    <br>
+    <br>
+    <label for="longitude">Longitude: </label>
+    <input type="number" id="longitude" name="longitude" step="0.000001" min="-180" max="180" required>
+    <br>
+    <br>
+    <!-- Height -->
+    <label for="height">Height: </label>
+    <select id="height" name="height" required>
+        <option value="NA">N/A</option>
+        <option value="<0.1m"><0.1m</option>
+        <option value="0.1-0.5m">0.1-0.5m</option>
+        <option value="0.5-1m">0.5-1m</option>
+        <option value="1-2m">1-2m</option>
+        <option value="2-4m">2-4m</option>
+        <option value="4-8m">4-8m</option>
+        <option value="8+m">8+m</option>
+    </select>
+    <br>
+    <br>
+    <!-- Spread -->
+    <label for="spread">Spread: </label>
+    <select id="spread" name="spread" required>
+        <option value="NA">N/A</option>
+        <option value="<0.1m"><0.1m</option>
+        <option value="0.1-0.5m">0.1-0.5m</option>
+        <option value="0.5-1m">0.5-1m</option>
+        <option value="1-2m">1-2m</option>
+        <option value="2-4m">2-4m</option>
+        <option value="4-8m">4-8m</option>
+        <option value="8+m">8+m</option>
+    </select>
+    <br>
+    <br>
+    <!-- Sunlight -->
+    <label for="sunlight">Sunlight: </label>
+    <select id="sunlight" name="sunlight" required>
+        <option value="NA">N/A</option>
+        <option value="Shaded">Shaded</option>
+        <option value="Dappled">Dappled</option>
+        <option value="Partial">Partial</option>
+        <option value="Full">Full</option>
+    </select>
+    <br>
+    <br>
+    <!-- Soil Type -->
+    <label for="soilType">Soil Type: </label>
+    <select id="soiltype" name="soil_type" required>
+        <option value="NA">N/A</option>
+        <option value="Chalk">Chalk</option>
+        <option value="Clay">Clay</option>
+        <option value="Loam">Loam</option>
+        <option value="Sand">Sand</option>
+    </select>
+    <br>
+    <input type="checkbox" id="flowering" name="flowering">
+    <label for="flowering">Flowering</label>
+    <br>
+    <input type="checkbox" id="fragrant" name="fragrant">
+    <label for="fragrant">Fragrant</label>
+    <br>
+    <input type="checkbox" id="fruiting" name="fruiting">
+    <label for="fruiting">Fruiting</label>
+    <br>
+    <input type="checkbox" id="native" name="native">
+    <label for="native">Native</label>
+    <br>
+    <input type="submit" value="Create">
+</form>
+</body>
+</html>
