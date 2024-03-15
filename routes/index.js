@@ -34,6 +34,10 @@ router.post('/', function(req, res) {
   res.render('newObservation', { title: 'Express'});
 });
 
+router.get('/create', (req, res) => {
+  res.render('newObservation', { title: 'Create new plant' });
+})
+
 // TODO: Add proper error handling to routes
 router.post('/add', upload.single('image'), async function (req, res, next) {
     try {
