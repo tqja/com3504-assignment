@@ -37,3 +37,12 @@ exports.create = function (userData, filePath) {
         return null;
     });
 };
+
+exports.getAll = () => {
+    return observationModel.find().then(observations => {
+        return JSON.stringify(observations)
+    }).catch(err => {
+        console.log(err);
+        return null;
+    });
+};

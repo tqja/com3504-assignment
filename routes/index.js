@@ -8,13 +8,13 @@ var multer = require('multer');
 // TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/images/uploads/');
+        cb(null, '/images/uploads/');
     },
     filename: function (req, file, cb) {
         var original = file.originalname;
         var file_extension = original.split(".");
         // Make the file name the date + the file extension
-        filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+        var filename =  Date.now() + '.' + file_extension[file_extension.length-1];
         cb(null, filename);
     }
 });
@@ -22,7 +22,11 @@ let upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('newObservation', { title: 'Express' });
+    let result = controller.getAll();
+    result.then(observations => {
+       let data = JSON.parse(observations);
+        res.render('index', { title: 'Express', data: data });
+    });
 });
 
 router.post('/', function(req, res) {
