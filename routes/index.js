@@ -52,4 +52,8 @@ router.post('/add', upload.single('image'), async function (req, res, next) {
     }
 });
 
+router.get('/map', (req, res) => {
+  res.render('map', { title: 'Map' });
+});
+
 module.exports = router;
