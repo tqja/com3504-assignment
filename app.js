@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
-
+app.use('/public/images/uploads', express.static(path.join(__dirname, '/public/images/uploads')));
 app.use('/', indexRouter);
 app.use('/dbpedia', dbpediaRouter);
 
