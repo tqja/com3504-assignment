@@ -56,4 +56,20 @@ router.get('/map', (req, res) => {
   res.render('map', { title: 'Map' });
 });
 
+
+
+router.get('/observations/:id', async (req, res) => {
+    try {
+        const observation = await model.findById(req.params.id);
+        if (!observation) {
+            return res.status(404).send('Observation not found');
+        }
+        // Render a template for displaying the observation details
+        res.render('observationdetails', { observation: observation });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;

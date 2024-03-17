@@ -79,18 +79,19 @@
   </div>
 
 
-<div class="photo-grid">
-  <% if (data) { data.forEach(observation => { %>
-    <div class="photo-item">
-      <a href="#here">
-        <img src="<%= observation.image %>">
-      </a>
-      <div class="description-container">
-        <span class="photo-description"><%= observation.name %></span>
+  <div class="photo-grid">
+    <% if (data) { data.forEach(observation => { %>
+      <div class="photo-item">
+        <a href="/observations/<%= observation._id %>" style="width: 200px;">
+          <img src="<%= observation.image %>">
+        </a>
+        <div class="description-container">
+          <span class="photo-description"><%= observation.name %></span>
+        </div>
       </div>
-    </div>
-  <% });} %>
-</div>
+    <% });} %>
+  </div>
+
 </div>
 <script>
   function toggleFilter(filterId) {
