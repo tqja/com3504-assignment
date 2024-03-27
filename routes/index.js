@@ -56,7 +56,15 @@ router.get('/map', (req, res) => {
   res.render('map', { title: 'Map' });
 });
 
-
+router.get('/allObservations', function (req, res, next) {
+    controller.getAll().then(observations => {
+        console.log(observations);
+        return res.status(200).send(observations);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    });
+})
 
 router.get('/observations/:id', async (req, res) => {
     try {
