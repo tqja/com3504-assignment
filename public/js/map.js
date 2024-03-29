@@ -112,4 +112,4 @@ map.on('click', onMapClick);
 
 const findBtn = document.getElementById('find-me');
 findBtn.addEventListener('click', findMe);
-moveMarker({lat: 51.505, lng: -0.09}).then(r => null);
+moveMarker({lat: 51.505, lng: -0.09}).then(() => null);
