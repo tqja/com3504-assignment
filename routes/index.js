@@ -22,7 +22,7 @@ var storage = multer.diskStorage({
 let upload = multer({ storage: storage });
 
 /* GET home page. */
-router.get("/", function (req, res) {
+router.get("/", (req, res) => {
   let result = controller.getAll();
   result.then((observations) => {
     let data = JSON.parse(observations);
@@ -30,7 +30,7 @@ router.get("/", function (req, res) {
   });
 });
 
-router.post("/", function (req, res) {
+router.post("/", (req, res) => {
   console.log(req.body);
   res.render("newObservation", { title: "Express" });
 });
@@ -40,7 +40,7 @@ router.get("/create", (req, res) => {
 });
 
 // TODO: Add proper error handling to routes
-router.post("/add", upload.single("image"), async function (req, res, next) {
+router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let userData = req.body;
     let filePath = req.file.path;
