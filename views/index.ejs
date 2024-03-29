@@ -84,7 +84,7 @@
     <% if (data) { data.forEach(observation => { %>
       <div class="photo-item">
         <a href="/observations/<%= observation._id %>" style="width: 200px;">
-          <img src="<%= observation.image %>">
+          <img src="<%= observation.image %>" alt="Image of a plant">
         </a>
         <div class="description-container">
           <span class="photo-description"><%= observation.name %></span>
