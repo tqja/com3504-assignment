@@ -50,9 +50,9 @@ let ObservationSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ["In_progress", "Completed"],
+            enum: ["In progress", "Completed"],
             required: true,
-            default: "In_progress"
+            default: "In progress"
         },
         dateSeen: {
             type: Date, required: true, immutable: true, max: Date.now()

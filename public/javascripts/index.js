@@ -1,31 +1,33 @@
-const insertTodoInList = (todo) => {
-    if (todo.text) {
-        const copy = document.getElementById("todo_template").cloneNode()
-        copy.removeAttribute("id") // otherwise this will be hidden as well
-        copy.innerText = todo.text
-        copy.setAttribute("data-todo-id", todo.id)
+const insertObservationInList = (observation) => {
+    const photoGrid = document.getElementsByClassName("photo-grid").item(0);
 
-        // Insert sorted on string text order - ignoring case
-        const todolist = document.getElementById("todo_list")
-        const children = todolist.querySelectorAll("li[data-todo-id]")
-        let inserted = false
-        for (let i = 0; (i < children.length) && !inserted; i++) {
-            const child = children[i]
-            const copy_text = copy.innerText.toUpperCase()
-            const child_text = child.innerText.toUpperCase()
-            if (copy_text < child_text) {
-                todolist.insertBefore(copy, child)
-                inserted = true
-            }
-        }
-        if (!inserted) { // Append child
-            todolist.appendChild(copy)
-        }
-    }
+    let photoItem = document.createElement('div');
+    photoItem.classList.add('photo-item');
+
+    let link = document.createElement('a');
+    let url = new URL(`http://localhost:3000/observations?id=${observation._id}`);
+    link.setAttribute('href', url);
+    link.style.width = '200px';
+
+    let image = document.createElement('img');
+    image.setAttribute('src', observation.image);
+
+    let descriptionContainer = document.createElement('div');
+    descriptionContainer.classList.add('description-container');
+
+    let description = document.createElement('span');
+    description.classList.add('photo-description');
+    description.textContent = observation.name;
+
+    link.appendChild(image);
+    descriptionContainer.appendChild(description);
+    photoItem.appendChild(link);
+    photoItem.appendChild(descriptionContainer);
+
+    photoGrid.appendChild(photoItem);
 }
 
 window.onload = function () {
-    //
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js', {scope: '/'})
             .then(function (registration) {
@@ -59,24 +61,22 @@ window.onload = function () {
         fetch('http://localhost:3000/allObservations')
             .then((res) => {
                 return res.json();
-            }).then((newTodos) => {
+            }).then((observations) => {
             openObservationsIDB().then((db) => {
-                insertTodoInList(db, newTodos)
+                //insertObservationInList(db, observations)
                 deleteAllExistingObservationsFromIDB(db).then(() => {
-                    addNewObservationsToIDB(db, newTodos).then(() => {
-                        console.log("All new todos added to IDB")
+                    addNewObservationsToIDB(db, observations).then(() => {
+                        console.log("All new observations added to IDB")
                     })
                 })
             })
         })
     } else {
-        console.log("Offline mode")
-        openTodosIDB().then((db) => {
-            getAllTodos(db).then((todos) => {
-                for (const todo of todos) {
-                    insertTodoInList(todo)
-                }
-            })
-        })
+        // console.log("Offline mode")
+        // openObservationsIDB().then((db) => {
+        //     getAllObservations(db).then((observations) => {
+        //         insertObservationInList(observations)
+        //     })
+        // })
     }
 }

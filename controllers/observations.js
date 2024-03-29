@@ -46,3 +46,12 @@ exports.getAll = () => {
         return null;
     });
 };
+
+exports.get = (id) => {
+    return observationModel.findById(id).then(observation => {
+        return JSON.stringify(observation)
+    }).catch(err => {
+       console.log(err);
+       return null;
+    });
+}

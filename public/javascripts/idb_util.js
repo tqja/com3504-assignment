@@ -95,19 +95,33 @@ function openObservationsIDB() {
     });
 }
 
+const getObservation = (IDB, observationID) => {
+    return new Promise((resolve, reject) => {
+        const transaction = IDB.transaction(["observations"]);
+        const observationStore = transaction.objectStore("observations");
+        const request = observationStore.get(observationID);
+
+        request.addEventListener("success", (event) => {
+            resolve(event.target.result);
+        });
+
+        request.addEventListener("error", (event) => {
+            reject(event.target.error);
+        });
+    });
+}
+
 const getAllObservations = (IDB) => {
     return new Promise((resolve, reject) => {
         const transaction = IDB.transaction(["observations"]);
         const observationStore = transaction.objectStore("observations");
-        const getAllRequest = observationStore.getAll();
+        const request = observationStore.getAll();
 
-        // Handle success event
-        getAllRequest.addEventListener("success", (event) => {
-            resolve(event.target.result); // Use event.target.result to get the result
+        request.addEventListener("success", (event) => {
+            resolve(event.target.result);
         });
 
-        // Handle error event
-        getAllRequest.addEventListener("error", (event) => {
+        request.addEventListener("error", (event) => {
             reject(event.target.error);
         });
     });
@@ -129,9 +143,9 @@ const deleteAllExistingObservationsFromIDB = (IDB) => {
     });
 };
 
-const addNewObservationsToIDB = (todoIDB, observations) => {
+const addNewObservationsToIDB = (IDB, observations) => {
     return new Promise((resolve, reject) => {
-        const transaction = todoIDB.transaction(["observations"], "readwrite");
+        const transaction = IDB.transaction(["observations"], "readwrite");
         const observationStore = transaction.objectStore("observations");
 
         const addPromises = observations.map(observation => {
@@ -143,7 +157,7 @@ const addNewObservationsToIDB = (todoIDB, observations) => {
                     getRequest.addEventListener("success", () => {
                         console.log("Found " + JSON.stringify(getRequest.result));
                         // Assume insertTodoInList is defined elsewhere
-                        insertTodoInList(getRequest.result);
+                        insertObservationInList(getRequest.result);
                         resolveAdd(); // Resolve the add promise
                     });
                     getRequest.addEventListener("error", (event) => {

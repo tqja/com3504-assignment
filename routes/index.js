@@ -22,16 +22,12 @@ let upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    let result = controller.getAll();
-    result.then(observations => {
-       let data = JSON.parse(observations);
-        res.render('index', { title: 'Express', data: data });
-    });
-});
-
-router.post('/', function(req, res) {
-  console.log(req.body);
-  res.render('newObservation', { title: 'Express'});
+    // let result = controller.getAll();
+    // result.then(observations => {
+    //    let data = JSON.parse(observations);
+    //     res.render('index', { title: 'Express', data: data });
+    // });
+    res.render('index', { title: 'Express' });
 });
 
 router.get('/create', (req, res) => {
@@ -64,20 +60,20 @@ router.get('/allObservations', function (req, res, next) {
         console.log(err);
         res.status(500).send(err);
     });
-})
+});
 
-router.get('/observations/:id', async (req, res) => {
-    try {
-        const observation = await model.findById(req.params.id);
-        if (!observation) {
-            return res.status(404).send('Observation not found');
-        }
-        // Render a template for displaying the observation details
-        res.render('observationdetails', { observation: observation });
-    } catch (err) {
+router.get('/observation', function (req, res, next) {
+    model.findById(req.query.id).then(observation => {
+        console.log(observation);
+        return res.status(200).send(observation);
+    }).catch(err => {
         console.log(err);
-        res.status(500).send('Server error');
-    }
+        res.status(500).send(err);
+    });
+});
+
+router.get('/observations', (req, res) => {
+    res.render('observationdetails');
 });
 
 module.exports = router;
