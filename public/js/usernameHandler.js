@@ -6,19 +6,22 @@ import { getUsernameFromIDB, storeUsernameInIDB } from "./idbHelper.js";
  * @returns {Promise<void>}
  */
 const handleUsername = async () => {
-  const username = await getUsernameFromIDB();
-  if (username) {
-    // check if the username exists on the server
-    await verifyUsername(username);
-  } else {
+  let username = await getUsernameFromIDB();
+  if (!username) {
     // request a new username and save to indexedDB
-    await getNewUsername();
+    username = await getNewUsername();
+  }
+
+  // if on a form, fill the hidden nickname field
+  const nicknameInput = document.getElementById("nickname");
+  if (nicknameInput) {
+    nicknameInput.value = username;
   }
 };
 
 /**
- * Get a new username from the server and save to indexedDB
- * @returns {Promise<void>}
+ * Get a new username from the server and save to indexedDB.
+ * @returns {Promise<*|null>} The generated username on success, or null on failure
  */
 const getNewUsername = async () => {
   const res = await fetch("/new-user", {
@@ -34,8 +37,10 @@ const getNewUsername = async () => {
     // store the newly generated username in indexedDB
     const { username } = data;
     await storeUsernameInIDB(username);
+    return username;
   } else {
     console.error(data.error);
+    return null;
   }
 };
 
