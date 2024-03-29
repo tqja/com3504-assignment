@@ -1,8 +1,8 @@
 import { getUsernameFromIDB, storeUsernameInIDB } from "./idbHelper.js";
 
 /**
- * Attempt to retrieve an existing username from indexedDB and verify with server. If not present,
- * generate a new username and save in server + indexedDB.
+ * Attempt to retrieve an existing username from indexedDB. If not present,
+ * generate a new username and save in indexedDB.
  * @returns {Promise<void>}
  */
 const handleUsername = async () => {
@@ -12,30 +12,6 @@ const handleUsername = async () => {
     await verifyUsername(username);
   } else {
     // request a new username and save to indexedDB
-    await getNewUsername();
-  }
-};
-
-/**
- * Check if the username is present or not in the serverside database.
- * Verification on the serverside ensures that only generated nicknames are considered valid.
- * @param username The username to verify
- * @returns {Promise<void>}
- */
-const verifyUsername = async (username) => {
-  // verify that the stored username matches an entry on the server
-  const res = await fetch("/verify-username", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username }),
-  });
-
-  const data = await res.json();
-
-  if (!data.valid) {
-    // if username not on server, request a new username
     await getNewUsername();
   }
 };
