@@ -1,9 +1,10 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-var controller = require('../controllers/observations')
-const model = require('../models/observations');
-var multer = require('multer');
+var controller = require("../controllers/observations");
+const model = require("../models/observations");
+var multer = require("multer");
+const { generateUsername } = require("../utils/generateUsername");
 
 // TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
