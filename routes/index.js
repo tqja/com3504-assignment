@@ -57,16 +57,8 @@ router.get("/map", (req, res) => {
   res.render("map", { title: "Map" });
 });
 
-router.post("/verify-username", async (req, res) => {
-  const { username } = req.body;
-  // TODO: verify validity of username on serverside
-  const valid = true;
-  res.json({ valid: valid });
-});
-
 router.post("/new-user", async (req, res) => {
-  const newUsername = await generateUsername();
-  // TODO: check for conflict with existing name in server db/save in server db
+  const newUsername = generateUsername();
   res.json({ username: newUsername });
 });
 
