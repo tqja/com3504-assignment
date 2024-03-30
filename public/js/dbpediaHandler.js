@@ -3,6 +3,10 @@ const getDetailsFromDbpedia = async (plantName) => {
     .then(res => res.json())
     .then(data => {
       if (data && data[0]) {
+        // reveal the div
+        const dbpediaDiv = document.getElementById('dbpedia');
+        dbpediaDiv.removeAttribute('hidden');
+
         // fill the dbpedia elements with the fetched data
         const plant = data[0];
         const common = document.getElementById("dbpCommonName");
