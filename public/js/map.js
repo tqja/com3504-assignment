@@ -30,14 +30,31 @@ const reverseGeocode = (lat, lng) => {
 let position = null;
 const locationText = document.getElementById('location');
 
+const normaliseLng = (lng) => {
+  return ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
+}
+
+/**
+ * Inserts the latitude and longitude to the
+ * @param lat
+ * @param lng
+ * @returns {Promise<void>}
+ */
+const setLatLng = async (lat, lng) => {
+  lng = normaliseLng(lng);
+  const latInput = document.getElementById('latitude');
+  const lngInput = document.getElementById('longitude');
+  latInput.value = lat;
+  lngInput.value = lng;
+}
+
 /**
  * Displays the latitude and longitude in the locationText element.
  * @param lat - The latitude .
  * @param lng - The longitude.
  */
 const setLocationText = async (lat, lng) => {
-  // ensure lng lies between -180 and 180 so the API call works correctly
-  lng = ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
+  lng = normaliseLng(lng);
   const data = await reverseGeocode(lat, lng);
   locationText.innerHTML = '';
   if (data && data.countryCode && data.principalSubdivision && data.city && data.locality) {
@@ -57,7 +74,7 @@ const moveMarker = async (latlng) => {
   markers.clearLayers();
   L.marker(latlng).addTo(markers);
   position = latlng;
-  await setLocationText(position.lat, position.lng);
+  await setLatLng(position.lat, position.lng);
 }
 
 /** Places a marker on the map at the mouse cursor's position on click. */
@@ -95,3 +112,4 @@ map.on('click', onMapClick);
 
 const findBtn = document.getElementById('find-me');
 findBtn.addEventListener('click', findMe);
+moveMarker({lat: 51.505, lng: -0.09}).then(() => null);
