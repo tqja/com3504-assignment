@@ -11,26 +11,26 @@
 ## Adding new plant sightings
 
 - Details of a sighting cannot be modified after creation (except identification)
-- If online, send details to database
-	- Images transformed to base64
-	- Stored in MongoDB
+- If online, send details to database ✅
+	- ~~Images transformed to base64~~ Images stored locally on server
+	- ~~Stored in MongoDB~~
 	- Images can be uploaded from local files or from a URL
 - If offline, store changes locally (to upload once online)
 	- Should be able to hold several new plants locally
 	- Must be able to add chat messages to both newly and previously added plants
 
 ### Data contained in a sighting:
-- Date and time seen
-- Location (geolocation or optionally selecting from map)
-- Description (short)
-- Plant height and spread
-- Photograph of plant
-- Nickname of original user
+- Date and time seen ✅
+- Location (geolocation or optionally selecting from map) ✅
+- Description (short) ✅
+- Plant height and spread ✅
+- Photograph of plant ✅
+- Nickname of original user ✅
 - Characteristics
-    - Has flowers? (yes/no)
+    - Has flowers? (yes/no) ✅
     - Has leaves? (yes/no)
-    - Has fruits or seeds? (yes/no)
-    - Level of sun exposure (full sun/partial shade/full shade)
+    - Has fruits or seeds? (yes/no) ✅
+    - Level of sun exposure (full sun/partial shade/full shade) ✅
     - Colour of flowers
 - Identification (**can be modified after creation**)
     - Name of plant
@@ -38,21 +38,21 @@
         - Original user can enable suggestions from other users
         - Original user can approve a suggested name
     - Status of identification (completed/in-progress)
-    - Information from DBPedia knowledge graph
-        - Common and scientific name
-        - English language description
-        - URI linking to DBPedia page
+    - Information from DBPedia knowledge graph ✅
+        - Common and scientific name ✅
+        - English language description ✅
+        - URI linking to DBPedia page ✅
 
 
 ## Viewing plant sightings
 
-- Accessible to all users (no need for login or privacy rules)
+- Accessible to all users (no need for login or privacy rules) ✅
 - Sortable by
 	- Date/time sighted (newest/oldest)
 	- Has/has not been identified
 	- Distance away (from user?)
 - Filterable by plant characteristics
-- Selecting a plant shows the full details and live chat
+- Selecting a plant shows the full details and live chat ✅
 
 
 ## Live chat
@@ -84,13 +84,13 @@
 ## Data storage/retrieval
 
 ### Storage
-- MongoDB for network DB
-- indexedDB for browser storage (do not use cookies/local storage)
+- MongoDB for network DB ✅
+- indexedDB for browser storage (do not use cookies/local storage) ✅
 
 ### Information linked from DBPedia
-- Use fetch-sparql-endpoint module
-- Retrieve annotations from DBPedia SPARQL endpoint
-- Fetch data in real time from DBPedia, do not store it
+- Use fetch-sparql-endpoint module ✅
+- Retrieve annotations from DBPedia SPARQL endpoint ✅
+- Fetch data in real time from DBPedia, do not store it ✅
 
 
 ## Mark scheme
