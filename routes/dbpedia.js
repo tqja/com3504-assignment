@@ -14,7 +14,6 @@ const sparqlQuery = (req, res) => {
     });
 }
 
-router.get('/', dbpedia);
 router.get('/sparqlQuery', sparqlQuery);
 
 module.exports = router;
