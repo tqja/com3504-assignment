@@ -2,7 +2,6 @@ const getDetailsFromDbpedia = async (plantName) => {
   fetch(`/dbpedia/sparqlQuery?plantName=${plantName}`)
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       if (data && data[0]) {
         // fill the dbpedia elements with the fetched data
         const plant = data[0];

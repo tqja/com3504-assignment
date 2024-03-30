@@ -9,7 +9,6 @@ const fetchFromDbpedia = async (name) => {
   }
   name = name.toLowerCase();
   name = name.replace(name[0], name[0].toUpperCase());
-  console.log("Name: ", name);
 
   return new Promise(async (resolve, reject) => {
     const bindingsArray = [];
@@ -54,7 +53,6 @@ const fetchFromDbpedia = async (name) => {
       if (bindingsArray[0] && !bindingsArray[0].scientificName) {
         bindingsArray[0].scientificName = bindingsArray[0].commonName;
       }
-      console.log(bindingsArray);
       resolve(bindingsArray);
     });
   });
