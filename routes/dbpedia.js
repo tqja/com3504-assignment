@@ -2,28 +2,18 @@ const express = require('express');
 const router = express.Router();
 const { dbpediaController } = require('../controllers/dbpedia');
 
-/** Renders the dbpedia route, and passes context to data if available from a query. */
-const dbpedia = (req, res) => {
-  const context = req.queryData;
-  res.render('dbpedia', {title: 'DBPedia search', data: context});
-}
-
 /** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */
-const sparqlQuery = (req, res, next) => {
+const sparqlQuery = (req, res) => {
   dbpediaController(req, res)
     .then(data => {
-      req.queryData = data;
-    }).then(() => {
-      next();
-    }
-    ).catch(err => {
+      res.json(data);
+    })
+    .catch(err => {
       console.error(err);
-      req.queryData = [];
-      next();
+      res.status(500).json({ error: "Failed to fetch data" })
     });
 }
 
-router.get('/', dbpedia);
-router.get('/sparqlQuery', sparqlQuery, dbpedia);
+router.get('/sparqlQuery', sparqlQuery);
 
 module.exports = router;
