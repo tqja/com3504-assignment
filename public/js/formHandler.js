@@ -52,6 +52,18 @@ form.addEventListener("submit", (e) => {
 });
 
 /**
+ * Clears the image preview/inputs and switches back to submit div
+ */
+const cancelUpload = () => {
+  // clear values
+  previewImage.src = "";
+  urlInput.value = "";
+  imageInput.value = null;
+  // toggle to submitDiv
+  toggleImgDivs();
+};
+
+/**
  * Checks if a given URL is correctly formed.
  * @param url The URL to validate
  * @returns {boolean} Whether or not the URL is valid
