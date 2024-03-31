@@ -41,8 +41,8 @@ imageInput.addEventListener("change", (e) => {
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  // check if both image inputs are empty
-  if (!imageInput.files[0] && !urlInput.value) {
+  // check if both image inputs are empty or submitDiv is visible
+  if ((!imageInput.files[0] && !urlInput.value) || submitDiv.hidden === false) {
     alert("Please upload or link a URL to a photo");
   } else {
     form.submit();
