@@ -76,4 +76,26 @@ router.get("/observations/:id", async (req, res) => {
   }
 });
 
+/**
+ * Fetch the image from the URL and save it to the uploads filepath.
+ * @param imageUrl The URL to fetch and save
+ * @returns {Promise<string|*|null>} The upload path if successful, or null on failure
+ */
+async function saveFromURL(imageUrl) {
+  try {
+    // fetch the image and get filename + destination
+    const res = await fetch(imageUrl);
+    const filename = basename(parse(imageUrl).pathname);
+    const uploadPath = join("public", "images", "uploads", filename);
+
+    // write image to destination file
+    const writeStream = createWriteStream(uploadPath);
+    await pipeline(res.body, writeStream);
+    return uploadPath;
+  } catch (err) {
+    console.error("Error saving from URL: ", err);
+    return null;
+  }
+}
+
 module.exports = router;
