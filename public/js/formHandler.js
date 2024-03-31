@@ -54,6 +54,7 @@ form.addEventListener("submit", (e) => {
  */
 const cancelUpload = () => {
   // clear values
+  URL.revokeObjectURL(previewImage.src);
   previewImage.src = "";
   urlInput.value = "";
   imageInput.value = null;
