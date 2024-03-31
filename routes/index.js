@@ -5,6 +5,10 @@ var controller = require("../controllers/observations");
 const model = require("../models/observations");
 var multer = require("multer");
 const { generateUsername } = require("../utils/generateUsername");
+const { createWriteStream } = require("fs");
+const { basename, join } = require("path");
+const { pipeline } = require("stream/promises");
+const { parse } = require("url");
 
 // TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
@@ -43,12 +47,23 @@ router.get("/create", (req, res) => {
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let userData = req.body;
-    let filePath = req.file.path;
-    let result = await controller.create(userData, filePath);
-    console.log(result);
+    let filePath;
+
+    // check if uploading from file or URL
+    if (req.file) {
+      filePath = req.file.path;
+    } else if (req.body.imageUrl) {
+      filePath = await saveFromURL(req.body.imageUrl);
+    }
+
+    // save observation if filePath exists
+    if (filePath) {
+      await controller.create(userData, filePath);
+    }
+
     res.redirect("/");
   } catch (error) {
-    console.log(error);
+    console.error("Error saving observation: ", error);
     res.status(500).send("Error saving observation");
   }
 });
@@ -75,5 +90,27 @@ router.get("/observations/:id", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+/**
+ * Fetch the image from the URL and save it to the uploads filepath.
+ * @param imageUrl The URL to fetch and save
+ * @returns {Promise<string|*|null>} The upload path if successful, or null on failure
+ */
+async function saveFromURL(imageUrl) {
+  try {
+    // fetch the image and get filename + destination
+    const res = await fetch(imageUrl);
+    const filename = basename(parse(imageUrl).pathname);
+    const uploadPath = join("public", "images", "uploads", filename);
+
+    // write image to destination file
+    const writeStream = createWriteStream(uploadPath);
+    await pipeline(res.body, writeStream);
+    return uploadPath;
+  } catch (err) {
+    console.error("Error saving from URL: ", err);
+    return null;
+  }
+}
 
 module.exports = router;

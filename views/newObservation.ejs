@@ -13,10 +13,11 @@
     <link rel="stylesheet" href="stylesheets/map.css">
     <script src="js/map.js" defer></script>
     <script src="js/usernameHandler.js" type="module" defer></script>
+    <script src="js/formHandler.js" defer></script>
 </head>
 <body>
 <main>
-    <form action="/add" method="POST" enctype="multipart/form-data">
+    <form id="form" action="/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="nickname" name="nickname">
         <br>
         <br>
@@ -24,8 +25,18 @@
         <input type="text" id="name" name="name" required>
         <br>
         <br>
-        <label for="image">Choose an image</label><br><br>
-        <input type="file" id="image" name="image" accept="image/*" required>
+        <div>
+            <div id="submitDiv">
+                <input type="file" id="image" name="image" accept="image/*"><br>
+                <label for="imageUrl">or upload from URL</label><br>
+                <input type="text" id="imageUrl" name="imageUrl" placeholder="Enter URL to photo...">
+            </div>
+            <div id="previewDiv" hidden>
+                <img src="" id="previewImage" alt="Image preview"/>
+                <button id="cancelImage" type="button" onclick="cancelUpload()">Upload a different image</button>
+            </div>
+            <input type="hidden" id="image" name="image"/>
+        </div>
         <br>
         <br>
         <label for="dateSeen">Date Seen: </label>
