@@ -71,8 +71,10 @@ const validURL = (url) => {
   try {
     new URL(url);
     // url is correctly formed
+    urlInput.style.border = "1px solid #ced4da";
     return true;
   } catch {
+    urlInput.style.border = "1px solid red";
     // url invalid
     return false;
   }
