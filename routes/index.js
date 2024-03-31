@@ -5,6 +5,10 @@ var controller = require("../controllers/observations");
 const model = require("../models/observations");
 var multer = require("multer");
 const { generateUsername } = require("../utils/generateUsername");
+const { createWriteStream } = require("fs");
+const { basename, join } = require("path");
+const { pipeline } = require("stream/promises");
+const { parse } = require("url");
 
 // TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
@@ -43,9 +47,20 @@ router.get("/create", (req, res) => {
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let userData = req.body;
-    let filePath = req.file.path;
-    let result = await controller.create(userData, filePath);
-    console.log(result);
+    let filePath;
+
+    // check if uploading from file or URL
+    if (req.file) {
+      filePath = req.file.path;
+    } else if (req.body.imageUrl) {
+      filePath = await saveFromURL(req.body.imageUrl);
+    }
+
+    // save observation if filePath exists
+    if (filePath) {
+      await controller.create(userData, filePath);
+    }
+
     res.redirect("/");
   } catch (error) {
     console.error("Error saving observation: ", error);
