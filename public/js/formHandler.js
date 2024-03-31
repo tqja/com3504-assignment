@@ -33,7 +33,6 @@ imageInput.addEventListener("change", (e) => {
   if (imageUpload) {
     // create object URL for preview image and set to preview
     previewImage.src = URL.createObjectURL(imageUpload);
-    // switch to preview
     toggleImgDivs();
   }
 });
