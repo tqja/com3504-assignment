@@ -1,3 +1,5 @@
+const form = document.getElementById("form");
+
 // submission elements
 const submitDiv = document.getElementById("submitDiv");
 const imageInput = document.getElementById("image");
@@ -34,6 +36,18 @@ imageInput.addEventListener("change", (e) => {
     previewImage.src = URL.createObjectURL(imageUpload);
     // switch to preview
     toggleImgDivs();
+  }
+});
+
+// form validation for image input
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  // check if both image inputs are empty
+  if (!imageInput.files[0] && !urlInput.value) {
+    alert("Please upload or link a URL to a photo");
+  } else {
+    form.submit();
   }
 });
 
