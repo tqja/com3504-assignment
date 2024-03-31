@@ -48,7 +48,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
     console.log(result);
     res.redirect("/");
   } catch (error) {
-    console.log(error);
+    console.error("Error saving observation: ", error);
     res.status(500).send("Error saving observation");
   }
 });
