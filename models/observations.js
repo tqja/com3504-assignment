@@ -96,6 +96,25 @@ let ObservationSchema = new Schema(
         native:    { type: Boolean, default: false, immutable: true }
     }
 );
+  colour: {
+    type: String,
+    enum: [
+      "red",
+      "orange",
+      "brown",
+      "yellow",
+      "green",
+      "blue",
+      "purple",
+      "pink",
+      "black",
+      "grey",
+      "white",
+    ],
+    default: "red",
+    immutable: true,
+  },
+  leafy: { type: Boolean, default: false, immutable: true },
 
 ObservationSchema.set('toObject', { getters: true, virtuals: true });
 
