@@ -27,6 +27,7 @@ exports.create = function (userData, filePath) {
     });
     return observation.save().then(observation => {
         console.log(observation);
+    soilType: userData.soilType,
 
         return JSON.stringify(observation);
     }).catch(err => {
