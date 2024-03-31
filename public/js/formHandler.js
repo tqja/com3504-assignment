@@ -5,6 +5,7 @@ const urlInput = document.getElementById("imageUrl");
 
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
+const previewImage = document.getElementById("previewImage");
 const cancelBtn = document.getElementById("cancelImage");
 
 // when the url input updates, check if the url/image is valid and display
@@ -13,12 +14,12 @@ urlInput.addEventListener("input", () => {
   const imgUrl = urlInput.value.trim();
 
   if (validURL(imgUrl)) {
-    // construct image element
+    // construct image element to test if URL links to an image
     const image = new Image();
     image.src = imgUrl;
     image.onload = () => {
-      // insert into preview and switch to preview
-      previewDiv.insertBefore(image, cancelBtn);
+      // add url to src and switch to preview
+      previewImage.src = imgUrl;
       toggleImgDivs();
     };
   }
@@ -29,15 +30,9 @@ imageInput.addEventListener("change", (e) => {
   const imageUpload = e.target.files[0];
 
   if (imageUpload) {
-    // create object URL for preview image
-    const imgUrl = URL.createObjectURL(imageUpload);
-
-    // construct image element
-    const image = new Image();
-    image.src = imgUrl;
-
-    // insert into preview and switch to preview
-    previewDiv.insertBefore(image, cancelBtn);
+    // create object URL for preview image and set to preview
+    previewImage.src = URL.createObjectURL(imageUpload);
+    // switch to preview
     toggleImgDivs();
   }
 });
