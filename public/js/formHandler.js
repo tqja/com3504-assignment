@@ -8,7 +8,6 @@ const urlInput = document.getElementById("imageUrl");
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
 const previewImage = document.getElementById("previewImage");
-const cancelBtn = document.getElementById("cancelImage");
 
 // when the url input updates, check if the url/image is valid and display
 urlInput.addEventListener("input", () => {
