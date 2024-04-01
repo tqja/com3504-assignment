@@ -5,12 +5,11 @@
 - Add new plant sightings
 - View plants added by self/other users
 - Comment on the plant sightings
-- No login system required
 
 
 ## Adding new plant sightings
 
-- Details of a sighting cannot be modified after creation (except identification)
+- Details of a sighting cannot be modified after creation (except identification) ✅
 - If online, send details to database ✅
 	- ~~Images transformed to base64~~ Images stored locally on server ✅
 	- ~~Stored in MongoDB~~
@@ -34,10 +33,10 @@
     - Colour of flowers ✅
 - Identification (**can be modified after creation**)
     - Name of plant
-        - Can be set by original user
+        - Can be set by original user ✅
         - Original user can enable suggestions from other users
         - Original user can approve a suggested name
-    - Status of identification (completed/in-progress)
+    - Status of identification (completed/in-progress) ✅
     - Information from DBPedia knowledge graph ✅
         - Common and scientific name ✅
         - English language description ✅
@@ -48,7 +47,7 @@
 
 - Accessible to all users (no need for login or privacy rules) ✅
 - Sortable by
-	- Date/time sighted (newest/oldest)
+	- Date/time sighted (newest/oldest) ✅
 	- Has/has not been identified
 	- Distance away (from user?)
 - Filterable by plant characteristics
