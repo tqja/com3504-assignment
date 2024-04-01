@@ -93,6 +93,42 @@ const handleNameUpdate = async () => {
   }
 };
 
+statusBtn.addEventListener("click", () => {
+  // set new status to opposite of current
+  const newStatus =
+    status.textContent === "In_progress" ? "Completed" : "In_progress";
+
+  // post to edit route
+  fetch("/edit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      observationId: observationId,
+      status: newStatus,
+    }),
+  })
+    .then(() => {
+      status.textContent = newStatus;
+
+      // update button text
+      if (newStatus === "Completed") {
+        statusBtn.textContent = "Mark as in progress";
+      } else {
+        statusBtn.textContent = "Mark as completed";
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+});
+
+if (username === nickname) {
+  // reveal status button if original poster
+  statusBtn.hidden = false;
+}
+
 getDetailsFromDbpedia(plantName.textContent).catch((err) => {
   console.error(err);
 });
