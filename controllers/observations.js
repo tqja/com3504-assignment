@@ -44,7 +44,15 @@ const create = function (userData, filePath) {
     });
 };
 
-exports.getAll = () => {
+const edit = async (observationId, updateData) => {
+  try {
+    return await observationModel.findByIdAndUpdate(observationId, updateData);
+  } catch (err) {
+    return err.message;
+  }
+};
+
+const getAll = () => {
   return observationModel
     .find()
     .then((observations) => {
