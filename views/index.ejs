@@ -103,5 +103,44 @@
     }
   }
 </script>
+
+
+<div class="sort-container">
+  <label for="sort-by">Sort by:</label>
+  <select id="sort-by" onchange="sortPlants(this.value)">
+    <option value="dateSeen-asc">Date Seen (Oldest First)</option>
+    <option value="dateSeen-desc">Date Seen (Newest First)</option>
+  </select>
+</div>
+
+<script>
+  function sortPlants(sortBy) {
+    const [sortField, sortOrder] = sortBy.split('-');
+    fetch(`/sort?field=${sortField}&order=${sortOrder}`)
+            .then(response => response.json())
+            .then(data => {
+              updatePhotoGrid(data);
+            });
+  }
+
+  function updatePhotoGrid(data) {
+    const photoGrid = document.querySelector('.photo-grid');
+    photoGrid.innerHTML = ''; // Clear existing content
+    data.forEach(observation => {
+      const photoItem = document.createElement('div');
+      photoItem.className = 'photo-item';
+      photoItem.innerHTML = `
+        <a href="/observations/${observation._id}" style="width: 200px;">
+          <img src="${observation.image}">
+        </a>
+        <div class="description-container">
+          <span class="photo-description">${observation.name}</span>
+        </div>
+      `;
+      photoGrid.appendChild(photoItem);
+    });
+  }
+</script>
+
 </body>
 </html>
