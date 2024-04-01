@@ -26,6 +26,7 @@ if (username === nickname) {
       if (plantName.textContent.length > 40) {
         alert("Plant name cannot exceed 40 characters!");
       } else {
+        // post new name to edit route
         fetch("/edit", {
           method: "POST",
           headers: {
