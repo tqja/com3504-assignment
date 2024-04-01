@@ -12,10 +12,11 @@
             <!-- TODO: nowrap on span -->
             <h1><span id="plantName"><%= observation.name %></span></h1>
             <button id="nameBtn" type="button" hidden>Change name</button>
+            <button id="statusBtn" type="button" hidden>Mark as identified</button>
             <div class="observation-details">
                 <img src="/<%= observation.image %>" alt="Observation Image" style="max-width: 400px">
                 <p><strong>Nickname:</strong> <span id="nickname"><%= observation.nickname %></span></p>
-                <p><strong>Status:</strong> <%= observation.status %></p>
+                <p><strong>Status:</strong> <span id="status"><%= observation.status %></span></p>
                 <p><strong>Date Seen:</strong> <%= observation.dateSeen.toDateString() %></p>
                 <p><strong>Description:</strong> <%= observation.description %></p>
                 <p><strong>Location:</strong> Latitude <%= observation.location.latitude %>, Longitude <%= observation.location.longitude %></p>
