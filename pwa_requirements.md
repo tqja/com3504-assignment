@@ -12,9 +12,9 @@
 
 - Details of a sighting cannot be modified after creation (except identification)
 - If online, send details to database ✅
-	- ~~Images transformed to base64~~ Images stored locally on server
+	- ~~Images transformed to base64~~ Images stored locally on server ✅
 	- ~~Stored in MongoDB~~
-	- Images can be uploaded from local files or from a URL
+	- Images can be uploaded from local files or from a URL ✅
 - If offline, store changes locally (to upload once online)
 	- Should be able to hold several new plants locally
 	- Must be able to add chat messages to both newly and previously added plants
@@ -26,12 +26,12 @@
 - Plant height and spread ✅
 - Photograph of plant ✅
 - Nickname of original user ✅
-- Characteristics
+- Characteristics ✅
     - Has flowers? (yes/no) ✅
-    - Has leaves? (yes/no)
+    - Has leaves? (yes/no) ✅
     - Has fruits or seeds? (yes/no) ✅
     - Level of sun exposure (full sun/partial shade/full shade) ✅
-    - Colour of flowers
+    - Colour of flowers ✅
 - Identification (**can be modified after creation**)
     - Name of plant
         - Can be set by original user

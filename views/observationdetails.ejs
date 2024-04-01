@@ -16,11 +16,13 @@
                 <p><strong>Date Seen:</strong> <%= observation.dateSeen.toDateString() %></p>
                 <p><strong>Description:</strong> <%= observation.description %></p>
                 <p><strong>Location:</strong> Latitude <%= observation.location.latitude %>, Longitude <%= observation.location.longitude %></p>
+                <p><strong>Colour:</strong> <%= observation.colour %></p>
                 <p><strong>Height:</strong> <%= observation.height %></p>
                 <p><strong>Spread:</strong> <%= observation.spread %></p>
                 <p><strong>Sunlight:</strong> <%= observation.sunlight %></p>
                 <p><strong>Soil Type:</strong> <%= observation.soilType %></p>
                 <p><strong>Flowering:</strong> <%= observation.flowering ? 'Yes' : 'No' %></p>
+                <p><strong>Leafy:</strong> <%= observation.leafy ? 'Yes' : 'No' %></p>
                 <p><strong>Fragrant:</strong> <%= observation.fragrant ? 'Yes' : 'No' %></p>
                 <p><strong>Fruiting:</strong> <%= observation.fruiting ? 'Yes' : 'No' %></p>
                 <p><strong>Native:</strong> <%= observation.native ? 'Yes' : 'No' %></p>
