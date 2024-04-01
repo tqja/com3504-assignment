@@ -2,6 +2,7 @@ const observationModel = require("../models/observations");
 
 exports.create = function (userData, filePath) {
   const flowering = !!userData.flowering;
+  const leafy = !!userData.leafy;
   const fragrant = !!userData.fragrant;
   const fruiting = !!userData.fruiting;
   const native = !!userData.native;
@@ -20,7 +21,9 @@ exports.create = function (userData, filePath) {
     spread: userData.spread,
     sunlight: userData.sunlight,
     soilType: userData.soilType,
+    colour: userData.colour,
     flowering: flowering,
+    leafy: leafy,
     fragrant: fragrant,
     fruiting: fruiting,
     native: native,
