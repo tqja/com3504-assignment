@@ -94,10 +94,6 @@ const handleNameUpdate = async () => {
 };
 
 statusBtn.addEventListener("click", () => {
-  // set new status to opposite of current
-  const newStatus =
-    status.textContent === "In_progress" ? "Completed" : "In_progress";
-
   // post to edit route
   fetch("/edit", {
     method: "POST",
@@ -106,25 +102,19 @@ statusBtn.addEventListener("click", () => {
     },
     body: JSON.stringify({
       observationId: observationId,
-      status: newStatus,
+      status: "Completed",
     }),
   })
     .then(() => {
-      status.textContent = newStatus;
-
-      // update button text
-      if (newStatus === "Completed") {
-        statusBtn.textContent = "Mark as in progress";
-      } else {
-        statusBtn.textContent = "Mark as completed";
-      }
+      status.textContent = "Completed";
+      statusBtn.remove();
     })
     .catch((err) => {
       console.error(err);
     });
 });
 
-if (username === nickname) {
+if (username === nickname && status.textContent !== "Completed") {
   // reveal status button if original poster
   statusBtn.hidden = false;
 }
