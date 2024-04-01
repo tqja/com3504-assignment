@@ -5,6 +5,9 @@ const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
 const nickname = document.getElementById("nickname").textContent;
 const observationId = document.getElementById("observationId").innerHTML;
+const statusBtn = document.getElementById("statusBtn");
+const status = document.getElementById("status");
+const username = await getUsernameFromIDB(); // from indexedDB
 
 /**
  * Attempts to fetch a plant matching the name from DBPedia and fill the div with information.
@@ -46,9 +49,6 @@ const getDetailsFromDbpedia = async (plantName) => {
  * @returns {Promise<void>}
  */
 const handleNameUpdate = async () => {
-  // retrieve username from indexedDB
-  const username = await getUsernameFromIDB();
-
   if (username === nickname) {
     // reveal edit button for name if original poster
     nameBtn.hidden = false;
