@@ -1,6 +1,6 @@
 const observationModel = require("../models/observations");
 
-exports.create = function (userData, filePath) {
+const create = function (userData, filePath) {
   const flowering = !!userData.flowering;
   const leafy = !!userData.leafy;
   const fragrant = !!userData.fragrant;
@@ -55,3 +55,5 @@ exports.getAll = () => {
       return null;
     });
 };
+
+module.exports = { create, edit, getAll };
