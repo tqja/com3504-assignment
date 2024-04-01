@@ -52,8 +52,8 @@ router.post("/add", upload.single("image"), async (req, res) => {
     // check if uploading from file or URL
     if (req.file) {
       filePath = req.file.path;
-    } else if (req.body.imageUrl) {
-      filePath = await saveFromURL(req.body.imageUrl);
+    } else if (userData.imageUrl) {
+      filePath = await saveFromURL(userData.imageUrl);
     }
 
     // save observation if filePath exists
