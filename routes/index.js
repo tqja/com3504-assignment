@@ -91,19 +91,17 @@ router.get("/map", (req, res) => {
   res.render("map", { title: "Map" });
 });
 
-
-router.get('/sort', async (req, res) => {
+router.get("/sort", async (req, res) => {
   try {
-    const sortField = req.query.field || 'dateSeen';
-    const sortOrder = req.query.order === 'asc' ? 1 : -1;
+    const sortField = req.query.field || "dateSeen";
+    const sortOrder = req.query.order === "asc" ? 1 : -1;
     const observations = await model.find().sort({ [sortField]: sortOrder });
     res.json(observations);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
-
 
 router.post("/new-user", async (req, res) => {
   const newUsername = generateUsername();
