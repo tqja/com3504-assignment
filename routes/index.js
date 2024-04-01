@@ -82,6 +82,7 @@ router.post("/edit", async (req, res) => {
     }
 
     await controller.edit(data.observationId, updateData);
+    res.status(200).send("Observation updated successfully");
   } catch {
     res.status(500).send("Error saving observation");
   }
