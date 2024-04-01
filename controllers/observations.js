@@ -37,7 +37,7 @@ const create = function (userData, filePath) {
     })
     .catch((err) => {
       // Log the error if saving fails
-      console.log(err);
+      console.error(err);
 
       // Return null in case of an error
       return null;
