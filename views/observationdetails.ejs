@@ -4,15 +4,19 @@
         <meta charset="UTF-8">
         <title>Observation Detail</title>
         <link rel="stylesheet" href="/stylesheets/style.css">
-        <script src="/js/dbpediaHandler.js" defer></script>
+        <script src="/js/observationHandler.js" type="module" defer></script>
     </head>
     <body>
         <main>
-            <h1 id="plantName"><%= observation.name %></h1>
+            <div id="observationId" hidden><%= observation.id %></div>
+            <!-- TODO: nowrap on span -->
+            <h1><span id="plantName"><%= observation.name %></span></h1>
+            <button id="nameBtn" type="button" hidden>Change name</button>
+            <button id="statusBtn" type="button" hidden>Mark as identified</button>
             <div class="observation-details">
                 <img src="/<%= observation.image %>" alt="Observation Image" style="max-width: 400px">
-                <p><strong>Nickname:</strong> <%= observation.nickname %></p>
-                <p><strong>Status:</strong> <%= observation.status %></p>
+                <p><strong>Nickname:</strong> <span id="nickname"><%= observation.nickname %></span></p>
+                <p><strong>Status:</strong> <span id="status"><%= observation.status %></span></p>
                 <p><strong>Date Seen:</strong> <%= observation.dateSeen.toDateString() %></p>
                 <p><strong>Description:</strong> <%= observation.description %></p>
                 <p><strong>Location:</strong> Latitude <%= observation.location.latitude %>, Longitude <%= observation.location.longitude %></p>

@@ -1,6 +1,6 @@
 const observationModel = require("../models/observations");
 
-exports.create = function (userData, filePath) {
+const create = function (userData, filePath) {
   const flowering = !!userData.flowering;
   const leafy = !!userData.leafy;
   const fragrant = !!userData.fragrant;
@@ -37,14 +37,22 @@ exports.create = function (userData, filePath) {
     })
     .catch((err) => {
       // Log the error if saving fails
-      console.log(err);
+      console.error(err);
 
       // Return null in case of an error
       return null;
     });
 };
 
-exports.getAll = () => {
+const edit = async (observationId, updateData) => {
+  try {
+    return await observationModel.findByIdAndUpdate(observationId, updateData);
+  } catch (err) {
+    return err.message;
+  }
+};
+
+const getAll = () => {
   return observationModel
     .find()
     .then((observations) => {
@@ -55,3 +63,5 @@ exports.getAll = () => {
       return null;
     });
 };
+
+module.exports = { create, edit, getAll };

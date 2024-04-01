@@ -52,8 +52,8 @@ router.post("/add", upload.single("image"), async (req, res) => {
     // check if uploading from file or URL
     if (req.file) {
       filePath = req.file.path;
-    } else if (req.body.imageUrl) {
-      filePath = await saveFromURL(req.body.imageUrl);
+    } else if (userData.imageUrl) {
+      filePath = await saveFromURL(userData.imageUrl);
     }
 
     // save observation if filePath exists
@@ -68,23 +68,41 @@ router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+router.post("/edit", async (req, res) => {
+  try {
+    const data = req.body;
+    const updateData = {};
+
+    // set up object with plant name or status
+    if (data.plantName) {
+      updateData.name = data.plantName;
+    }
+    if (data.status) {
+      updateData.status = data.status;
+    }
+
+    await controller.edit(data.observationId, updateData);
+    res.status(200).send("Observation updated successfully");
+  } catch {
+    res.status(500).send("Error saving observation");
+  }
+});
+
 router.get("/map", (req, res) => {
   res.render("map", { title: "Map" });
 });
 
-
-router.get('/sort', async (req, res) => {
+router.get("/sort", async (req, res) => {
   try {
-    const sortField = req.query.field || 'dateSeen';
-    const sortOrder = req.query.order === 'asc' ? 1 : -1;
+    const sortField = req.query.field || "dateSeen";
+    const sortOrder = req.query.order === "asc" ? 1 : -1;
     const observations = await model.find().sort({ [sortField]: sortOrder });
     res.json(observations);
   } catch (err) {
     console.log(err);
-    res.status(500).send('Server error');
+    res.status(500).send("Server error");
   }
 });
-
 
 router.post("/new-user", async (req, res) => {
   const newUsername = generateUsername();
