@@ -68,6 +68,25 @@ router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+router.post("/edit", async (req, res) => {
+  try {
+    const data = req.body;
+    const updateData = {};
+
+    // set up object with plant name or status
+    if (data.plantName) {
+      updateData.name = data.plantName;
+    }
+    if (data.status) {
+      updateData.status = data.status;
+    }
+
+    await controller.edit(data.observationId, updateData);
+  } catch {
+    res.status(500).send("Error saving observation");
+  }
+});
+
 router.get("/map", (req, res) => {
   res.render("map", { title: "Map" });
 });
