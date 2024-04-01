@@ -6,8 +6,6 @@ const nameBtn = document.getElementById("nameBtn");
 const nickname = document.getElementById("nickname").textContent;
 const observationId = document.getElementById("observationId").innerHTML;
 
-// retrieve username from indexedDB
-const username = await getUsernameFromIDB();
 /**
  * Attempts to fetch a plant matching the name from DBPedia and fill the div with information.
  * @param plantName The plant to try and fetch information about
@@ -47,48 +45,58 @@ const getDetailsFromDbpedia = async (plantName) => {
  * Allows the original poster to update the name of the observation.
  * @returns {Promise<void>}
  */
+const handleNameUpdate = async () => {
+  // retrieve username from indexedDB
+  const username = await getUsernameFromIDB();
 
-if (username === nickname) {
-  // reveal edit button for name if original poster
-  nameBtn.hidden = false;
+  if (username === nickname) {
+    // reveal edit button for name if original poster
+    nameBtn.hidden = false;
 
-  let edit = false;
-  nameBtn.addEventListener("click", () => {
-    edit = !edit;
-    const originalName = plantName.textContent;
+    let edit = false;
+    nameBtn.addEventListener("click", () => {
+      edit = !edit;
+      const originalName = plantName.textContent;
 
-    if (edit) {
-      nameBtn.textContent = "Save";
-      plantName.contentEditable = true;
-      plantName.focus();
-    } else {
-      // set max length for input
-      if (plantName.textContent.length > 40) {
-        alert("Plant name cannot exceed 40 characters!");
+      if (edit) {
+        nameBtn.textContent = "Save";
+        plantName.contentEditable = true;
+        plantName.focus();
       } else {
-        // post new name to edit route
-        fetch("/edit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            observationId: observationId,
-            plantName: plantName.textContent,
-          }),
-        })
-          .then(() => {})
-          .catch(() => {
-            alert("Failed to update name");
-            plantName.textContent = originalName;
-          });
-        nameBtn.textContent = "Change name";
-        plantName.contentEditable = false;
+        // set max length for input
+        if (plantName.textContent.length > 40) {
+          alert("Plant name cannot exceed 40 characters!");
+        } else {
+          // post new name to edit route
+          fetch("/edit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              observationId: observationId,
+              plantName: plantName.textContent,
+            }),
+          })
+            .then(async () => {
+              await getDetailsFromDbpedia(plantName.textContent);
+            })
+            .catch(() => {
+              alert("Failed to update name");
+              plantName.textContent = originalName;
+            });
+          nameBtn.textContent = "Change name";
+          plantName.contentEditable = false;
+        }
       }
-    }
-  });
-}
+    });
+  }
+};
+
 getDetailsFromDbpedia(plantName.textContent).catch((err) => {
   console.error(err);
 });
 
+handleNameUpdate().catch((err) => {
+  console.error(err);
+});
