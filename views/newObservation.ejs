@@ -14,9 +14,11 @@
     <script src="js/map.js" defer></script>
     <script src="js/usernameHandler.js" type="module" defer></script>
     <script src="js/formHandler.js" defer></script>
+    <script src="js/navHandler.js" defer></script>
 </head>
 <body>
-<main>
+    <%- include("partials/header.ejs") %>
+    <main>
     <form id="form" action="/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="nickname" name="nickname">
         <br>
