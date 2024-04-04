@@ -18,16 +18,12 @@
     <script src="js/navHandler.js" defer></script>
 </head>
 <body>
-    <%- include("partials/header.ejs") %>
-    <main>
+<%- include("partials/header.ejs") %>
+<main>
     <form id="form" action="/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="nickname" name="nickname">
-        <br>
-        <br>
         <label for="name">name: </label>
         <input type="text" id="name" name="name" required>
-        <br>
-        <br>
         <div>
             <div id="submitDiv">
                 <input type="file" id="image" name="image" accept="image/*"><br>
