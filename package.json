@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "watch-css": "postcss public/stylesheets/tailwind.css -o public/stylesheets/style.css -w"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.19",
     "body-parser": "^1.20.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -15,6 +17,9 @@
     "http-errors": "~1.6.3",
     "mongoose": "^8.2.1",
     "morgan": "~1.9.1",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "postcss": "^8.4.38",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^3.4.3"
   }
 }

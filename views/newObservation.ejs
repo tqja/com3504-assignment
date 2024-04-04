@@ -10,13 +10,16 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin="" defer></script>
 
+    <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="stylesheets/map.css">
     <script src="js/map.js" defer></script>
     <script src="js/usernameHandler.js" type="module" defer></script>
     <script src="js/formHandler.js" defer></script>
+    <script src="js/navHandler.js" defer></script>
 </head>
 <body>
-<main>
+    <%- include("partials/header.ejs") %>
+    <main>
     <form id="form" action="/add" method="POST" enctype="multipart/form-data">
         <input type="hidden" id="nickname" name="nickname">
         <br>
