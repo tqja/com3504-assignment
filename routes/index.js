@@ -30,17 +30,17 @@ router.get("/", (req, res) => {
   let result = controller.getAll();
   result.then((observations) => {
     let data = JSON.parse(observations);
-    res.render("index", { title: "Express", data: data });
+    res.render("index", { title: "Home", data: data });
   });
 });
 
 router.post("/", (req, res) => {
   console.log(req.body);
-  res.render("newObservation", { title: "Express" });
+  res.render("newObservation", { title: "Home" });
 });
 
 router.get("/create", (req, res) => {
-  res.render("newObservation", { title: "Create new plant" });
+  res.render("newObservation", { title: "New post" });
 });
 
 // TODO: Add proper error handling to routes
@@ -116,7 +116,10 @@ router.get("/observations/:id", async (req, res) => {
       return res.status(404).send("Observation not found");
     }
     // Render a template for displaying the observation details
-    res.render("observationdetails", { observation: observation });
+    res.render("observationDetails", {
+      title: `${observation.name} details`,
+      observation: observation,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send("Server error");
