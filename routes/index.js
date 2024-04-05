@@ -1,9 +1,9 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var controller = require("../controllers/observations");
+const controller = require("../controllers/observations");
 const model = require("../models/observations");
-var multer = require("multer");
+const multer = require("multer");
 const { generateUsername } = require("../utils/generateUsername");
 const { createWriteStream } = require("fs");
 const { basename, join } = require("path");
@@ -11,15 +11,16 @@ const { pipeline } = require("stream/promises");
 const { parse } = require("url");
 
 // TODO: may need to change how filenames are generated
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/images/uploads/");
   },
   filename: function (req, file, cb) {
-    var original = file.originalname;
-    var file_extension = original.split(".");
+    const original = file.originalname;
+    const file_extension = original.split(".");
     // Make the file name the date + the file extension
-    var filename = Date.now() + "." + file_extension[file_extension.length - 1];
+    const filename =
+      Date.now() + "." + file_extension[file_extension.length - 1];
     cb(null, filename);
   },
 });
