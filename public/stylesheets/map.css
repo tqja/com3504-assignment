@@ -4,6 +4,6 @@ html, body {
 }
 
 #map {
-    height: 300px;
-    width: 450px;
+    min-width: 256px;
+    height: 450px;
 }
