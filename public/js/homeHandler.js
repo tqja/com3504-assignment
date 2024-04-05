@@ -33,15 +33,32 @@ function updatePhotoGrid(data) {
   data.forEach((observation) => {
     const photoItem = document.createElement("div");
     photoItem.className = "photo-item";
-    photoItem.innerHTML = `
-        <div class="w-screen drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
-            <a href="/observations/${observation._id}">
-              <img src="${observation.image}" alt="Image of a plant" class="object-cover aspect-square h-auto w-screen lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64 2xl:w-64">
-              <div class="font-semibold text-center py-2 bg-white w-auto lg:mb-0 lg:w-56 2xl:w-64">
-                <span class="photo-description">${observation.name}</span>
-              </div>
-            </a>
-      `;
+    let post = `
+      <div class="w-screen h-auto drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
+        <a href="/observations/${observation._id}">
+          <img src="${observation.image}" alt="Image of a plant"
+             class="object-cover aspect-square h-auto w-screen lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64 2xl:w-64">
+          <div class="font-semibold text-center py-2 bg-white w-auto lg:mb-0 lg:w-56 2xl:w-64">
+            <h2 class="photo-description overflow-hidden">${observation.name}</h2>
+            <div class="flex flex-wrap justify-between items-center mx-2 pt-2 border-t-2 border-gray-300 mt-1">
+              <div class="flex items-center">
+                <i class="fa-regular fa-user mr-1"></i>
+                <span id="nickname" class="text-xs">${observation.nickname}</span>
+              </div>`;
+    if (observation.status === "In_progress") {
+      post += `
+        <div class="flex items-center">
+          <span id="statusDot" class="inline-block h-3 w-3 mr-1 rounded-full bg-amber-400"></span>
+          <span id="status" class="text-xs">In progress</span>
+        </div>`;
+    } else {
+      post += `
+        <div class="flex items-center">
+          <span class="inline-block h-3 w-3 mr-1 rounded-full bg-green-400"></span>
+          <span id="status" class="text-xs">Completed</span>
+        </div>`;
+    }
+    photoItem.innerHTML = post;
     photoGrid.appendChild(photoItem);
   });
 }

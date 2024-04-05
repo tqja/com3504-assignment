@@ -42,7 +42,10 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   // check if both image inputs are empty or submitDiv is visible
-  if ((!imageInput.files[0] && !urlInput.value) || submitDiv.hidden === false) {
+  if (
+    (!imageInput.files[0] && !urlInput.value) ||
+    !submitDiv.classList.contains("hidden")
+  ) {
     alert("Please upload or link a URL to a photo");
   } else {
     form.submit();
@@ -80,8 +83,17 @@ const validURL = (url) => {
   }
 };
 
-/** Toggles the hidden attribute on the image submission/preview divs. */
+/** Toggles the hidden class on the image submission/preview divs. */
 const toggleImgDivs = () => {
-  submitDiv.hidden = !submitDiv.hidden;
-  previewDiv.hidden = !previewDiv.hidden;
+  if (submitDiv.classList.contains("hidden")) {
+    submitDiv.classList.remove("hidden");
+    previewDiv.classList.add("hidden");
+  } else {
+    submitDiv.classList.add("hidden");
+    previewDiv.classList.remove("hidden");
+  }
 };
+
+// set the current date and time as the default value
+const date = new Date();
+document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);

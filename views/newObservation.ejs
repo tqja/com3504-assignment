@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -9,58 +11,49 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin="" defer></script>
-
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="stylesheets/map.css">
-    <script src="js/map.js" defer></script>
-    <script src="js/usernameHandler.js" type="module" defer></script>
-    <script src="js/formHandler.js" defer></script>
-    <script src="js/navHandler.js" defer></script>
+    <script src="/js/map.js" defer></script>
+    <script src="/js/usernameHandler.js" type="module" defer></script>
+    <script src="/js/formHandler.js" defer></script>
+    <script src="/js/navHandler.js" defer></script>
 </head>
 <body>
-    <%- include("partials/header.ejs") %>
-    <main>
-    <form id="form" action="/add" method="POST" enctype="multipart/form-data">
+<%- include("partials/header.ejs") %>
+<main class="flex flex-col items-center w-full bg-gray-100">
+    <form id="form" action="/add" method="POST" enctype="multipart/form-data" class="flex flex-col w-full max-w-screen-md p-8 bg-white lg:drop-shadow-xl lg:border lg:border-gray-300 lg:rounded-lg lg:my-8">
         <input type="hidden" id="nickname" name="nickname">
-        <br>
-        <br>
-        <label for="name">name: </label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <br>
-        <div>
-            <div id="submitDiv">
-                <input type="file" id="image" name="image" accept="image/*"><br>
-                <label for="imageUrl">or upload from URL</label><br>
-                <input type="text" id="imageUrl" name="imageUrl" placeholder="Enter URL to photo...">
-            </div>
-            <div id="previewDiv" hidden>
-                <img src="" id="previewImage" alt="Image preview"/>
-                <button id="cancelImage" type="button" onclick="cancelUpload()">Upload a different image</button>
-            </div>
-            <input type="hidden" id="image" name="image"/>
+        <label for="name" class="text-xl font-semibold mb-2">Name</label>
+        <input type="text" id="name" name="name" maxlength="95" class="mb-4 p-2 rounded border border-gray-300" required>
+        <h2 class="text-xl font-semibold mb-2">Image</h2>
+        <div id="submitDiv" class="flex flex-col">
+            <label for="image" class="w-full px-4 py-2 bg-gray-200 rounded cursor-pointer hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center">Upload from storage</label>
+            <input type="file" id="image" name="image" accept="image/*" class="hidden">
+            <label for="imageUrl" class="text-center my-2">or from URL</label><br>
+            <input type="text" id="imageUrl" name="imageUrl" placeholder="Enter URL to photo..." class="mb-4 p-2 rounded border border-gray-300">
         </div>
-        <br>
-        <br>
-        <label for="dateSeen">Date Seen: </label>
-        <input type="datetime-local" id="dateSeen" name="dateSeen" required>
-        <br>
-        <br>
-        <label for="description">Description: </label>
-        <textarea id="description" name="description" rows="4" cols="25" required></textarea>
-        <br>
-        <br>
-        <div>
-            <div id="map"></div>
-            <button id="find-me" type="button">Find my location</button>
+        <div id="previewDiv" class="flex-col items-center hidden">
+            <img src="" id="previewImage" alt="Image preview" class="mx-auto aspect-square object-cover h-auto w-full max-w-screen-sm mb-6 shadow-2xl rounded-lg border-gray-300 border"/>
+            <button id="cancelImage" type="button" onclick="cancelUpload()" class="w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center">Upload a different image</button>
+        </div>
+        <input type="hidden" id="image" name="image"/>
+        <label for="dateSeen" class="text-xl font-semibold mb-2">Date seen</label>
+        <input type="datetime-local" id="dateSeen" name="dateSeen" class="mb-2" required>
+        <label for="description" class="text-xl font-semibold mb-2">Description</label>
+        <textarea id="description" name="description" maxlength="2400" rows="4" cols="25" class="mb-6 p-2 border border-gray-300 rounded" required></textarea>
+        <div class="flex flex-col">
+            <h2 class="text-xl font-semibold mb-2">Location</h2>
+            <div id="map" class="flex-grow w-full h-full mx-auto aspect-auto rounded border-gray-300 border mb-2"></div>
+            <button id="find-me" type="button" class="w-full px-4 py-2 mb-2 bg-gray-200 rounded hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center">Find my location</button>
+            <span id="locationSuccess" class="text-sm text-emerald-400 mb-2 hidden">Location found</span>
+            <span id="locationFailure" class="text-sm text-red-400 mb-2 hidden">Failed to get location!</span>
             <input type="hidden" id="latitude" name="latitude">
             <input type="hidden" id="longitude" name="longitude">
         </div>
-        <br>
-        <br>
         <!-- Height -->
-        <label for="height">Height: </label>
-        <select id="height" name="height" required>
+        <label for="height" class="text-xl font-semibold mb-2">Height</label>
+        <select id="height" name="height" class="w-full px-4 py-2 mb-2 bg-gray-200 rounded cursor-pointer" required>
             <option value="None">None</option>
             <option value="<0.1m"><0.1m</option>
             <option value="0.1-0.5m">0.1-0.5m</option>
@@ -70,11 +63,9 @@
             <option value="4-8m">4-8m</option>
             <option value="8+m">8+m</option>
         </select>
-        <br>
-        <br>
         <!-- Spread -->
-        <label for="spread">Spread: </label>
-        <select id="spread" name="spread" required>
+        <label for="spread" class="text-xl font-semibold mb-2">Spread</label>
+        <select id="spread" name="spread" class="w-full px-4 py-2 mb-2 bg-gray-200 rounded cursor-pointer" required>
             <option value="None">None</option>
             <option value="<0.1m"><0.1m</option>
             <option value="0.1-0.5m">0.1-0.5m</option>
@@ -84,32 +75,26 @@
             <option value="4-8m">4-8m</option>
             <option value="8+m">8+m</option>
         </select>
-        <br>
-        <br>
         <!-- Sunlight -->
-        <label for="sunlight">Sunlight: </label>
-        <select id="sunlight" name="sunlight" required>
+        <label for="sunlight" class="text-xl font-semibold mb-2">Sunlight</label>
+        <select id="sunlight" name="sunlight" class="w-full px-4 py-2 mb-2 bg-gray-200 rounded cursor-pointer" required>
             <option value="None">None</option>
             <option value="Shaded">Shaded</option>
             <option value="Dappled">Dappled</option>
             <option value="Partial">Partial</option>
             <option value="Full">Full</option>
         </select>
-        <br>
-        <br>
         <!-- Soil Type -->
-        <label for="soilType">Soil Type: </label>
-        <select id="soilType" name="soilType" required>
+        <label for="soilType" class="text-xl font-semibold mb-2">Soil Type</label>
+        <select id="soilType" name="soilType" class="w-full px-4 py-2 mb-2 bg-gray-200 rounded cursor-pointer" required>
             <option value="None">None</option>
             <option value="Chalk">Chalk</option>
             <option value="Clay">Clay</option>
             <option value="Loam">Loam</option>
             <option value="Sand">Sand</option>
         </select>
-        <br>
-        <br>
-        <label for="colour">Colour: </label>
-        <select id="colour" name="colour">
+        <label for="colour" class="text-xl font-semibold mb-2">Colour</label>
+        <select id="colour" name="colour" class="w-full px-4 py-2 mb-4 bg-gray-200 rounded cursor-pointer" required>
             <option value="Red">Red</option>
             <option value="Orange">Orange</option>
             <option value="Brown">Brown</option>
@@ -122,24 +107,31 @@
             <option value="Grey">Grey</option>
             <option value="White">White</option>
         </select>
-        <br>
-        <br>
-        <input type="checkbox" id="flowering" name="flowering">
-        <label for="flowering">Flowering</label>
-        <br>
-        <input type="checkbox" id="leafy" name="leafy">
-        <label for="leafy">Leafy</label>
-        <br>
-        <input type="checkbox" id="fragrant" name="fragrant">
-        <label for="fragrant">Fragrant</label>
-        <br>
-        <input type="checkbox" id="fruiting" name="fruiting">
-        <label for="fruiting">Fruiting</label>
-        <br>
-        <input type="checkbox" id="native" name="native">
-        <label for="native">Native</label>
-        <br>
-        <input type="submit" value="Create">
+
+        <h2 class="text-xl font-semibold mb-2">Characteristics</h2>
+        <label for="flowering" class="flex items-center bg-gray-200 p-2 rounded cursor-pointer mb-2 hover:bg-gray-300 active:bg-gray-400 transition ease-out">
+            <input type="checkbox" id="flowering" name="flowering" class="h-5 w-5 ml-2 hover:bg-gray-300">
+            <span class="text-lg ml-2">Flowering</span>
+        </label>
+        <label for="leafy" class="flex items-center bg-gray-200 p-2 rounded cursor-pointer mb-2 hover:bg-gray-300 active:bg-gray-400 transition ease-out">
+            <input type="checkbox" id="leafy" name="leafy" class="h-5 w-5 ml-2 hover:bg-gray-300">
+            <span class="text-lg ml-2">Leafy</span>
+        </label>
+        <label for="fragrant" class="flex items-center bg-gray-200 p-2 rounded cursor-pointer mb-2 hover:bg-gray-300 active:bg-gray-400 transition ease-out">
+            <input type="checkbox" id="fragrant" name="fragrant" class="h-5 w-5 ml-2 hover:bg-gray-300">
+            <span class="text-lg ml-2">Fragrant</span>
+        </label>
+        <label for="fruiting" class="flex items-center bg-gray-200 p-2 rounded cursor-pointer mb-2 hover:bg-gray-300 active:bg-gray-400 transition ease-out">
+            <input type="checkbox" id="fruiting" name="fruiting" class="h-5 w-5 ml-2 hover:bg-gray-300">
+            <span class="text-lg ml-2">Fruiting</span>
+        </label>
+        <label for="native" class="flex items-center bg-gray-200 p-2 rounded cursor-pointer mb-2 hover:bg-gray-300 active:bg-gray-400 transition ease-out">
+            <input type="checkbox" id="native" name="native" class="h-5 w-5 ml-2 hover:bg-gray-300">
+            <span class="text-lg ml-2">Native</span>
+        </label>
+        <button type="submit" class="bg-emerald-400 hover:bg-emerald-500 active:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition ease-out">
+            Submit
+        </button>
     </form>
 </main>
 </body>
