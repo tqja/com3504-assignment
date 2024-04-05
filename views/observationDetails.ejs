@@ -1,45 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/stylesheets/style.css">
-        <script src="/js/observationHandler.js" type="module" defer></script>
-    </head>
-    <body>
-        <main>
-            <div id="observationId" hidden><%= observation.id %></div>
-            <!-- TODO: nowrap on span -->
-            <h1><span id="plantName"><%= observation.name %></span></h1>
-            <button id="nameBtn" type="button" hidden>Change name</button>
-            <button id="statusBtn" type="button" hidden>Mark as identified</button>
-            <div class="observation-details">
-                <img src="/<%= observation.image %>" alt="Observation Image" style="max-width: 400px">
-                <p><strong>Nickname:</strong> <span id="nickname"><%= observation.nickname %></span></p>
-                <p><strong>Status:</strong> <span id="status"><%= observation.status %></span></p>
-                <p><strong>Date Seen:</strong> <%= observation.dateSeen.toDateString() %></p>
-                <p><strong>Description:</strong> <%= observation.description %></p>
-                <p><strong>Location:</strong> Latitude <%= observation.location.latitude %>, Longitude <%= observation.location.longitude %></p>
-                <p><strong>Colour:</strong> <%= observation.colour %></p>
-                <p><strong>Height:</strong> <%= observation.height %></p>
-                <p><strong>Spread:</strong> <%= observation.spread %></p>
-                <p><strong>Sunlight:</strong> <%= observation.sunlight %></p>
-                <p><strong>Soil Type:</strong> <%= observation.soilType %></p>
-                <p><strong>Flowering:</strong> <%= observation.flowering ? 'Yes' : 'No' %></p>
-                <p><strong>Leafy:</strong> <%= observation.leafy ? 'Yes' : 'No' %></p>
-                <p><strong>Fragrant:</strong> <%= observation.fragrant ? 'Yes' : 'No' %></p>
-                <p><strong>Fruiting:</strong> <%= observation.fruiting ? 'Yes' : 'No' %></p>
-                <p><strong>Native:</strong> <%= observation.native ? 'Yes' : 'No' %></p>
-            </div>
-
-            <div id="dbpedia" hidden>
-                <h1>DBPedia Entry</h1>
-                <hr>
-                <h2 id="dbpCommonName"></h2>
-                <h2 id="dbpScientificName"></h2>
-                <p id="dbpDescription"></p>
-                <a id="dbpURI"></a>
-            </div>
-        </main>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous"></script>
+    <script src="/js/observationHandler.js" type="module" defer></script>
+    <script src="/js/navHandler.js" defer></script>
+</head>
+<body>
+<%- include("partials/header.ejs") %>
+<main class="flex flex-col items-center w-full bg-gray-100">
+    <div class="flex flex-col w-full max-w-screen-lg px-8 py-4 bg-white lg:drop-shadow-xl lg:border lg:border-gray-300 lg:rounded-lg lg:my-8">
+        <div id="observationId" hidden><%= observation.id %></div>
+        <!-- TODO: nowrap on span -->
+        <h1 class="font-semibold text-3xl text-center w-full mx-auto mb-2 pb-2 border-b-2 border-gray-300"><span id="plantName"><%= observation.name %></span></h1>
+        <div class="flex flex-row justify-between items-center mx-2 mb-2">
+            <span>
+                <i class="fa-regular fa-user mr-1"></i>
+                <span id="nickname"><%= observation.nickname %></span>
+            </span>
+            <span class="flex items-center">
+                <% if (observation.status === "In_progress") { %>
+                    <span id="statusDot" class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-amber-400'></span>
+                    <span id="status">In progress</span>
+                <% } else { %>
+                    <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
+                    <span id="status">Completed</span>
+                <% } %>
+            </span>
+        </div>
+        <img src="/<%= observation.image %>" alt="Photograph of <%= observation.name %>" class="mb-2 lg:rounded-lg">
+        <div class="flex flex-wrap mb-2">
+            <span class="mr-2">
+                <i class="fa-regular fa-calendar fill-black mr-1"></i>
+                <span><%= observation.dateSeen.toDateString() %></span>
+            </span>
+            <span>
+                <i class="fa-solid fa-location-dot fill-black mr-1"></i>
+                <span id="location"></span>
+            </span>
+            <div id="lat" hidden><%= observation.location.latitude %></div>
+            <div id="lng" hidden><%= observation.location.longitude %></div>
+        </div>
+        <div class="flex flex-row mb-4">
+            <button id="nameBtn" type="button" class="w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center" hidden>Change name</button>
+            <button id="statusBtn" type="button" class="w-full ml-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center" hidden>Mark as identified</button>
+        </div>
+        <div class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg">
+            <h2 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">Description</h2>
+            <p><%= observation.description %></p>
+        </div>
+        <div class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg">
+            <h2 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">Characteristics</h2>
+            <p><strong>Colour:</strong> <%= observation.colour %></p>
+            <p><strong>Height:</strong> <%= observation.height %></p>
+            <p><strong>Spread:</strong> <%= observation.spread %></p>
+            <p><strong>Sunlight:</strong> <%= observation.sunlight %></p>
+            <p><strong>Soil Type:</strong> <%= observation.soilType %></p>
+            <p><strong>Flowering:</strong> <%= observation.flowering ? 'Yes' : 'No' %></p>
+            <p><strong>Leafy:</strong> <%= observation.leafy ? 'Yes' : 'No' %></p>
+            <p><strong>Fragrant:</strong> <%= observation.fragrant ? 'Yes' : 'No' %></p>
+            <p><strong>Fruiting:</strong> <%= observation.fruiting ? 'Yes' : 'No' %></p>
+            <p><strong>Native:</strong> <%= observation.native ? 'Yes' : 'No' %></p>
+        </div>
+        <div id="dbpedia" class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg" hidden>
+            <h1 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">DBPedia Entry</h1>
+            <h2 class="mb-2" id="dbpCommonName">Common name: </h2>
+            <h2 class="mb-2" id="dbpScientificName">Scientific name: </h2>
+            <p id="dbpDescription" class="mb-2"></p>
+            <a class="font-semibold text-blue-500" id="dbpURI"></a>
+        </div>
+    </div>
+</main>
+</body>
 </html>
