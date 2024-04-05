@@ -52,9 +52,6 @@ const getDetailsFromDbpedia = async (plantName) => {
  */
 const handleNameUpdate = async () => {
   if (username === nickname) {
-    // reveal edit button for name if original poster
-    nameBtn.hidden = false;
-
     let edit = false;
     nameBtn.addEventListener("click", () => {
       edit = !edit;
@@ -160,6 +157,7 @@ statusBtn.addEventListener("click", () => {
       statusDot.classList.add("bg-green-400");
       status.textContent = "Completed";
       statusBtn.remove();
+      nameBtn.remove();
     })
     .catch((err) => {
       console.error(err);
@@ -168,6 +166,7 @@ statusBtn.addEventListener("click", () => {
 
 if (username === nickname && status.textContent !== "Completed") {
   // reveal status button if original poster
+  nameBtn.hidden = false;
   statusBtn.hidden = false;
 }
 
