@@ -93,3 +93,7 @@ const toggleImgDivs = () => {
     previewDiv.classList.remove("hidden");
   }
 };
+
+// set the current date and time as the default value
+const date = new Date();
+document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);
