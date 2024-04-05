@@ -59,16 +59,13 @@ const findMe = () => {
     const lng = pos.coords.longitude;
 
     map.setView([lat, lng], 15);
-    await moveMarker({lat, lng})
-    position = {lat, lng};
-  }
     await moveMarker({ lat, lng });
     position = { lat, lng };
+    document.getElementById("locationSuccess").classList.remove("hidden");
   };
 
   const error = () => {
-    locationText.innerHTML = 'Unable to retrieve location automatically, please use the map to select your location.';
-  }
+    document.getElementById("locationFailure").classList.remove("hidden");
   };
 
   // check if the browser supports geolocation
