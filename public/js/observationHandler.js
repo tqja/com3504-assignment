@@ -7,6 +7,7 @@ const nickname = document.getElementById("nickname").textContent;
 const observationId = document.getElementById("observationId").innerHTML;
 const statusBtn = document.getElementById("statusBtn");
 const status = document.getElementById("status");
+const statusDot = document.getElementById("statusDot");
 const username = await getUsernameFromIDB(); // from indexedDB
 const locationText = document.getElementById("location");
 
@@ -155,6 +156,8 @@ statusBtn.addEventListener("click", () => {
     }),
   })
     .then(() => {
+      statusDot.classList.remove("bg-amber-400");
+      statusDot.classList.add("bg-green-400");
       status.textContent = "Completed";
       statusBtn.remove();
     })
