@@ -12,22 +12,6 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // add LayerGroup to map to contain markers
 let markers = L.layerGroup().addTo(map);
 
-/**
- * Uses the BigDataCloud reverse geocoding API to retrieve details of a location from the latitude and longitude.
- * @param lat - latitude of location to fetch
- * @param lng - longitude of location to fetch
- * @returns {Promise<any>}
- */
-const reverseGeocode = (lat, lng) => {
-  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
-  return fetch(url).then(response => {
-    return response.json();
-  }).catch(err => {
-    console.error(err);
-    return null;
-  })
-}
-
 let position = null;
 const locationText = document.getElementById("location");
 
@@ -47,25 +31,7 @@ const setLatLng = async (lat, lng) => {
   const lngInput = document.getElementById("longitude");
   latInput.value = lat;
   lngInput.value = lng;
-}
-
-/**
- * Displays the latitude and longitude in the locationText element.
- * @param lat - The latitude .
- * @param lng - The longitude.
- */
-const setLocationText = async (lat, lng) => {
-  lng = normaliseLng(lng);
-  const data = await reverseGeocode(lat, lng);
-  locationText.innerHTML = '';
-  if (data && data.countryCode && data.principalSubdivision && data.city && data.locality) {
-    if (data.locality !== data.city) {
-      locationText.innerHTML += `${data.locality}, `;
-    }
-    locationText.innerHTML += `${data.city}, ${data.principalSubdivision}, ${data.countryCode}`;
-  }
-  locationText.innerHTML += `; Latitude ${lat}, Longitude ${lng}`;
-}
+};
 
 /**
  * Clears the marker layer, adds a new marker at latlng position, and sets the location message to the position.

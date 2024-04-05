@@ -8,6 +8,7 @@ const observationId = document.getElementById("observationId").innerHTML;
 const statusBtn = document.getElementById("statusBtn");
 const status = document.getElementById("status");
 const username = await getUsernameFromIDB(); // from indexedDB
+const locationText = document.getElementById("location");
 
 /**
  * Attempts to fetch a plant matching the name from DBPedia and fill the div with information.
@@ -93,6 +94,54 @@ const handleNameUpdate = async () => {
   }
 };
 
+const normaliseLng = (lng) => {
+  return ((((lng + 180) % (180 * 2)) + 180 * 2) % (180 * 2)) - 180;
+};
+
+/**
+ * Uses the BigDataCloud reverse geocoding API to retrieve details of a location from the latitude and longitude.
+ * @param lat - latitude of location to fetch
+ * @param lng - longitude of location to fetch
+ * @returns {Promise<any>}
+ */
+const reverseGeocode = (lat, lng) => {
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`;
+  return fetch(url)
+    .then((response) => {
+      return response.json();
+    })
+    .catch((err) => {
+      console.error(err);
+      return null;
+    });
+};
+
+/**
+ * Displays the location name or latitude/longitude in the locationText element.
+ */
+const setLocationText = async () => {
+  const lat = parseFloat(document.getElementById("lat").textContent);
+  const lng = normaliseLng(
+    parseFloat(document.getElementById("lng").textContent),
+  );
+  const data = await reverseGeocode(lat, lng);
+  locationText.innerHTML = "";
+  if (
+    data &&
+    data.countryCode &&
+    data.principalSubdivision &&
+    data.city &&
+    data.locality
+  ) {
+    if (data.locality !== data.city) {
+      locationText.innerHTML += `${data.locality}, `;
+    }
+    locationText.innerHTML += `${data.city}, ${data.principalSubdivision}, ${data.countryCode}`;
+  } else {
+    locationText.innerHTML = `Latitude ${lat.toFixed(4)}, Longitude ${lng.toFixed(4)}`;
+  }
+};
+
 statusBtn.addEventListener("click", () => {
   // post to edit route
   fetch("/edit", {
@@ -126,3 +175,5 @@ getDetailsFromDbpedia(plantName.textContent).catch((err) => {
 handleNameUpdate().catch((err) => {
   console.error(err);
 });
+
+setLocationText().then(() => null);
