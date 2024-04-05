@@ -1,11 +1,12 @@
 // initialise Leaflet map
-const map = L.map('map').setView([51.505, -0.09], 8);
+const map = L.map("map").setView([51.505, -0.09], 8);
 map.setMinZoom(0.5);
 
 // add tile layer from OpenStreetMap
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
 // add LayerGroup to map to contain markers
@@ -28,11 +29,11 @@ const reverseGeocode = (lat, lng) => {
 }
 
 let position = null;
-const locationText = document.getElementById('location');
+const locationText = document.getElementById("location");
 
 const normaliseLng = (lng) => {
-  return ((lng + 180) % (180 * 2) + (180 * 2)) % (180 * 2) - 180;
-}
+  return ((((lng + 180) % (180 * 2)) + 180 * 2) % (180 * 2)) - 180;
+};
 
 /**
  * Inserts the latitude and longitude to the
@@ -42,8 +43,8 @@ const normaliseLng = (lng) => {
  */
 const setLatLng = async (lat, lng) => {
   lng = normaliseLng(lng);
-  const latInput = document.getElementById('latitude');
-  const lngInput = document.getElementById('longitude');
+  const latInput = document.getElementById("latitude");
+  const lngInput = document.getElementById("longitude");
   latInput.value = lat;
   lngInput.value = lng;
 }
@@ -75,7 +76,7 @@ const moveMarker = async (latlng) => {
   L.marker(latlng).addTo(markers);
   position = latlng;
   await setLatLng(position.lat, position.lng);
-}
+};
 
 /** Places a marker on the map at the mouse cursor's position on click. */
 const onMapClick = async (e) => {
@@ -95,21 +96,26 @@ const findMe = () => {
     await moveMarker({lat, lng})
     position = {lat, lng};
   }
+    await moveMarker({ lat, lng });
+    position = { lat, lng };
+  };
 
   const error = () => {
     locationText.innerHTML = 'Unable to retrieve location automatically, please use the map to select your location.';
   }
+  };
 
   // check if the browser supports geolocation
   if (!navigator.geolocation) {
-    locationText.innerHTML = 'Geolocation is not supported by your browser. Please use the map to select your location.';
+    locationText.innerHTML =
+      "Geolocation is not supported by your browser. Please use the map to select your location.";
   } else {
     navigator.geolocation.getCurrentPosition(success, error);
   }
-}
+};
 
-map.on('click', onMapClick);
+map.on("click", onMapClick);
 
-const findBtn = document.getElementById('find-me');
-findBtn.addEventListener('click', findMe);
-moveMarker({lat: 51.505, lng: -0.09}).then(() => null);
+const findBtn = document.getElementById("find-me");
+findBtn.addEventListener("click", findMe);
+moveMarker({ lat: 51.505, lng: -0.09 }).then(() => null);
