@@ -28,8 +28,8 @@ const getDetailsFromDbpedia = async (plantName) => {
         const description = document.getElementById("dbpDescription");
         const uri = document.getElementById("dbpURI");
 
-        common.textContent = `Common name: ${plant.commonName.value}`;
-        scientific.textContent = `Scientific name: ${plant.scientificName.value}`;
+        common.textContent += plant.commonName.value;
+        scientific.textContent += plant.scientificName.value;
         description.textContent = plant.description.value;
         uri.href = plant.plant.value;
         uri.textContent = plant.plant.value;
