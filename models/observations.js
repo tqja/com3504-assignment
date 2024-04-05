@@ -54,6 +54,9 @@ let ObservationSchema = new Schema(
             required: true,
             default: "In progress"
         },
+        lastModified: {
+          type: Date, required: true, default: Date.now(), max: Date.now()
+        },
         dateSeen: {
             type: Date, required: true, immutable: true, max: Date.now()
         },

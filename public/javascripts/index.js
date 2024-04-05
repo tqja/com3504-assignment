@@ -38,39 +38,39 @@ window.onload = function () {
             });
     }
 
-    // if ("Notification" in window) {
-    //     if (Notification.permission === "granted") {
-    //         // Notification permission granted
-    //     } else if (Notification.permission !== "denied") {
-    //         Notification.requestPermission().then((permission) => {
-    //             if (permission === "granted") {
-    //                 navigator.serviceWorker.ready
-    //                     .then((serviceWorkerRegistration => {
-    //                         serviceWorkerRegistration.showNotification("Todo App",
-    //                             {body: "Notifications are enabled!"})
-    //                             .then(r => {
-    //                                 console.log(r)
-    //                             });
-    //                     }));
-    //             }
-    //         });
-    //     }
-    // }
+    if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+            // Notification permission granted
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                    navigator.serviceWorker.ready
+                        .then((serviceWorkerRegistration => {
+                            serviceWorkerRegistration.showNotification("floraExplorer",
+                                {body: "Notifications are enabled!"})
+                                .then(r => {
+                                    console.log(r)
+                                });
+                        }));
+                }
+            });
+        }
+    }
 
     if (navigator.onLine) {
         fetch('http://localhost:3000/allObservations')
             .then((res) => {
                 return res.json();
             }).then((observations) => {
-            openObservationsIDB().then((db) => {
-                //insertObservationInList(db, observations)
-                deleteAllExistingObservationsFromIDB(db).then(() => {
-                    addNewObservationsToIDB(db, observations).then(() => {
-                        console.log("All new observations added to IDB")
+                openObservationsIDB().then((db) => {
+                    deleteAllObservations(db).then(() => {
+                        addAllObservations(db, observations).then(() => {
+                            observations.map((observation) => {insertObservationInList(observation)});
+                            console.log("All new observations added to IDB")
+                        })
                     })
                 })
             })
-        })
     } else {
         // console.log("Offline mode")
         // openObservationsIDB().then((db) => {

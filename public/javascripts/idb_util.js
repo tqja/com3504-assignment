@@ -127,7 +127,7 @@ const getAllObservations = (IDB) => {
     });
 }
 
-const deleteAllExistingObservationsFromIDB = (IDB) => {
+const deleteAllObservations = (IDB) => {
     const transaction = IDB.transaction(["observations"], "readwrite");
     const observationStore = transaction.objectStore("observations");
     const clearRequest = observationStore.clear();
@@ -143,7 +143,23 @@ const deleteAllExistingObservationsFromIDB = (IDB) => {
     });
 };
 
-const addNewObservationsToIDB = (IDB, observations) => {
+const addObservation = (IDB,observation) => {
+    return new Promise((resolve, reject) => {
+        const transaction = IDB.transaction(["observations"], "readwrite");
+        const observationStore = transaction.objectStore("observations");
+        const addRequest = observationStore.add(observation);
+
+        addRequest.addEventListener("success", () => {
+            resolve();
+        });
+
+        addRequest.addEventListener("error", (event) => {
+            reject(event.target.error);
+        });
+    });
+}
+
+const addAllObservations = (IDB, observations) => {
     return new Promise((resolve, reject) => {
         const transaction = IDB.transaction(["observations"], "readwrite");
         const observationStore = transaction.objectStore("observations");
@@ -151,30 +167,21 @@ const addNewObservationsToIDB = (IDB, observations) => {
         const addPromises = observations.map(observation => {
             return new Promise((resolveAdd, rejectAdd) => {
                 const addRequest = observationStore.add(observation);
+
                 addRequest.addEventListener("success", () => {
-                    console.log("Added " + "#" + addRequest.result + ": " + observation.text);
-                    const getRequest = observationStore.get(addRequest.result);
-                    getRequest.addEventListener("success", () => {
-                        console.log("Found " + JSON.stringify(getRequest.result));
-                        // Assume insertTodoInList is defined elsewhere
-                        insertObservationInList(getRequest.result);
-                        resolveAdd(); // Resolve the add promise
-                    });
-                    getRequest.addEventListener("error", (event) => {
-                        rejectAdd(event.target.error); // Reject the add promise if there's an error
-                    });
+                    resolveAdd();
                 });
+
                 addRequest.addEventListener("error", (event) => {
-                    rejectAdd(event.target.error); // Reject the add promise if there's an error
+                    rejectAdd(event.target.error);
                 });
             });
         });
 
-        // Resolve the main promise when all add operations are completed
         Promise.all(addPromises).then(() => {
             resolve();
         }).catch((error) => {
             reject(error);
         });
     });
-};
+}
