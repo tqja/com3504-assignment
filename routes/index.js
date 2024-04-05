@@ -127,6 +127,11 @@ router.get("/observations/:id", async (req, res) => {
   }
 });
 
+// handle 404 (ensure this route is last!)
+router.get("*", function (req, res) {
+  res.redirect("/");
+});
+
 /**
  * Fetch the image from the URL and save it to the uploads filepath.
  * @param imageUrl The URL to fetch and save
