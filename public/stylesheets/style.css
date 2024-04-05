@@ -654,9 +654,6 @@ video {
 .max-w-screen-sm {
   max-width: 640px;
 }
-.max-w-64 {
-  max-width: 16rem;
-}
 .flex-shrink-0 {
   flex-shrink: 0;
 }
@@ -690,23 +687,8 @@ video {
 .gap-4 {
   gap: 1rem;
 }
-.overflow-auto {
-  overflow: auto;
-}
 .overflow-hidden {
   overflow: hidden;
-}
-.overflow-clip {
-  overflow: clip;
-}
-.overflow-scroll {
-  overflow: scroll;
-}
-.overflow-ellipsis {
-  text-overflow: ellipsis;
-}
-.text-wrap {
-  text-wrap: wrap;
 }
 .rounded {
   border-radius: 0.25rem;
