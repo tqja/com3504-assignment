@@ -3,6 +3,7 @@ import { getUsernameFromIDB } from "./idbHelper.js";
 const dbpediaDiv = document.getElementById("dbpedia");
 const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
+const nameInput = document.getElementById("nameInput");
 const nickname = document.getElementById("nickname").textContent;
 const observationId = document.getElementById("observationId").innerHTML;
 const statusBtn = document.getElementById("statusBtn");
@@ -58,9 +59,9 @@ const handleNameUpdate = async () => {
       const originalName = plantName.textContent;
 
       if (edit) {
+        // reveal the name input and change button text
+        nameInput.classList.remove("hidden");
         nameBtn.textContent = "Save";
-        plantName.contentEditable = true;
-        plantName.focus();
       } else {
         // set max length for input
         if (plantName.textContent.length > 40) {
@@ -74,18 +75,20 @@ const handleNameUpdate = async () => {
             },
             body: JSON.stringify({
               observationId: observationId,
-              plantName: plantName.textContent,
+              plantName: nameInput.value,
             }),
           })
             .then(async () => {
-              await getDetailsFromDbpedia(plantName.textContent);
+              await getDetailsFromDbpedia(nameInput.value);
+              plantName.textContent = nameInput.value;
             })
             .catch(() => {
               alert("Failed to update name");
               plantName.textContent = originalName;
             });
+          // hide the name input and change button text
+          nameInput.classList.add("hidden");
           nameBtn.textContent = "Change name";
-          plantName.contentEditable = false;
         }
       }
     });
@@ -158,6 +161,7 @@ statusBtn.addEventListener("click", () => {
       status.textContent = "Completed";
       statusBtn.remove();
       nameBtn.remove();
+      nameInput.remove();
     })
     .catch((err) => {
       console.error(err);
