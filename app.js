@@ -6,7 +6,6 @@ const logger = require("morgan");
 const bodyParser = require("body-parser");
 
 const indexRouter = require("./routes/index");
-const dbpediaRouter = require("./routes/dbpedia");
 
 const app = express();
 
@@ -25,7 +24,6 @@ app.use(
   express.static(path.join(__dirname, "/public/images/uploads")),
 );
 app.use("/", indexRouter);
-app.use("/dbpedia", dbpediaRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

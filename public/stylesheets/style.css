@@ -760,47 +760,23 @@ video {
 .fill-current {
   fill: currentColor;
 }
-.fill-white {
-  fill: #fff;
+.fill-green-400 {
+  fill: #4ade80;
 }
 .fill-red-400 {
   fill: #f87171;
 }
-.fill-emerald-500 {
-  fill: #10b981;
-}
-.fill-emerald-300 {
-  fill: #6ee7b7;
-}
-.fill-emerald-400 {
-  fill: #34d399;
-}
-.fill-green-400 {
-  fill: #4ade80;
-}
-.fill-green-300 {
-  fill: #86efac;
-}
 .fill-transparent {
   fill: transparent;
 }
-.stroke-red-400 {
-  stroke: #f87171;
-}
-.stroke-emerald-500 {
-  stroke: #10b981;
-}
-.stroke-emerald-300 {
-  stroke: #6ee7b7;
-}
-.stroke-emerald-400 {
-  stroke: #34d399;
-}
-.stroke-green-300 {
-  stroke: #86efac;
+.fill-white {
+  fill: #fff;
 }
 .stroke-green-400 {
   stroke: #4ade80;
+}
+.stroke-red-400 {
+  stroke: #f87171;
 }
 .object-cover {
   -o-object-fit: cover;
@@ -909,9 +885,6 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-.opacity-0 {
-  opacity: 0;
 }
 .shadow-2xl {
   --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);

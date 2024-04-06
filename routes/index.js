@@ -9,6 +9,7 @@ const { createWriteStream } = require("fs");
 const { basename, join } = require("path");
 const { pipeline } = require("stream/promises");
 const { parse } = require("url");
+const { dbpediaController } = require("../controllers/dbpedia");
 
 // TODO: may need to change how filenames are generated
 const storage = multer.diskStorage({
@@ -125,6 +126,18 @@ router.get("/observations/:id", async (req, res) => {
     console.log(err);
     res.status(500).send("Server error");
   }
+});
+
+/** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */
+router.get("/sparqlQuery", (req, res) => {
+  dbpediaController(req, res)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    });
 });
 
 // handle 404 (ensure this route is last!)

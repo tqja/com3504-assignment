@@ -18,7 +18,7 @@ const locationText = document.getElementById("location");
  * @returns {Promise<void>}
  */
 const getDetailsFromDbpedia = async (plantName) => {
-  fetch(`/dbpedia/sparqlQuery?plantName=${plantName}`)
+  fetch(`/sparqlQuery?plantName=${plantName}`)
     .then((res) => res.json())
     .then((data) => {
       if (data && data[0]) {
