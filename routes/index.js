@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
     const file_extension = original.split(".");
     // Make the file name the date + the file extension
     const filename =
-      Date.now() + "." + file_extension[file_extension.length - 1];
+        Date.now() + "." + file_extension[file_extension.length - 1];
     cb(null, filename);
   },
 });
@@ -83,6 +83,7 @@ router.post("/edit", async (req, res) => {
       updateData.status = data.status;
     }
 
+
     await controller.edit(data.observationId, updateData);
     res.status(200).send("Observation updated successfully");
   } catch {
@@ -131,19 +132,52 @@ router.get("/observations/:id", async (req, res) => {
 /** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */
 router.get("/sparqlQuery", (req, res) => {
   dbpediaController(req, res)
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({ error: "Failed to fetch data" });
-    });
+      .then((data) => {
+        res.json(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch data" });
+      });
+});
+router.get("/filter", async (req, res) => {
+  try {
+    const { color, flowering, soil, sunlight, leafy, fragrant, fruiting, native } = req.query;
+    let query = {};
+
+    if (color && color !== 'no-preference') {
+      query.colour = color;
+    }
+    if (flowering && flowering !== 'no-preference') {
+      query.flowering = flowering === 'yes' ? true : false;
+    }
+    if (soil && soil !== 'no-preference') {
+      query.soilType = soil;
+    }
+    if (sunlight && sunlight !== 'no-preference') {
+      query.sunlight = sunlight;
+    }
+    if (leafy && leafy !== 'no-preference') {
+      query.leafy = leafy === 'yes' ? true : false;
+    }
+    if (fragrant && fragrant !== 'no-preference') {
+      query.fragrant = fragrant === 'yes' ? true : false;
+    }
+    if (fruiting && fruiting !== 'no-preference') {
+      query.fruiting = fruiting === 'yes' ? true : false;
+    }
+    if (native && native !== 'no-preference') {
+      query.native = native === 'yes' ? true : false;
+    }
+
+    const observations = await model.find(query);
+    res.json(observations);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server error");
+  }
 });
 
-// handle 404 (ensure this route is last!)
-router.get("*", function (req, res) {
-  res.redirect("/");
-});
 
 /**
  * Fetch the image from the URL and save it to the uploads filepath.
@@ -166,5 +200,14 @@ async function saveFromURL(imageUrl) {
     return null;
   }
 }
+
+
+// handle 404 (ensure this route is last!)
+router.get("*", function (req, res) {
+  res.redirect("/");
+});
+
+
+
 
 module.exports = router;
