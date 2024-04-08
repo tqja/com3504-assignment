@@ -26,8 +26,6 @@ exports.create = function (userData, filePath) {
         native: native
     });
     return observation.save().then(observation => {
-        console.log(observation);
-
         return JSON.stringify(observation);
     }).catch(err => {
         // Log the error if saving fails

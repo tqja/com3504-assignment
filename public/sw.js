@@ -8,6 +8,7 @@ self.addEventListener('install', event => {
             const cache = await caches.open("cache_v1");
             await cache.addAll([
                 '/',
+                '/create',
                 '/manifest.json',
                 '/javascripts/index.js',
                 '/javascripts/idb_util.js',

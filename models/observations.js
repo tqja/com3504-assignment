@@ -29,12 +29,14 @@ const commentSchema = new Schema({
         immutable: true
     },
     timestamp: {
-        type: Date, required: true, immutable: true, max: Date.now()
+        type: Date,
+        required: true,
+        immutable: true,
+        max: Date.now()
     }
 });
 
-let ObservationSchema = new Schema(
-    {
+let ObservationSchema = new Schema({
         nickname: {
             type: String, required: true, immutable: true
         },

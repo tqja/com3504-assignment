@@ -72,11 +72,11 @@ window.onload = function () {
                 })
             })
     } else {
-        // console.log("Offline mode")
-        // openObservationsIDB().then((db) => {
-        //     getAllObservations(db).then((observations) => {
-        //         insertObservationInList(observations)
-        //     })
-        // })
+        console.log("Offline mode")
+        openObservationsIDB().then((db) => {
+            getAllObservations(db).then((observations) => {
+                insertObservationInList(observations)
+            })
+        })
     }
 }
