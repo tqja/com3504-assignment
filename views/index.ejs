@@ -59,8 +59,32 @@
                 <option value="blue">Sand</option>
             </select>
 
+            <!-- Status filter -->
+            <h3 class="text-gray-600 pt-3 mt-3 border-t-2 border-gray-300">Status</h3>
+            <div id="statusFilter" class="flex justify-between pb-3">
+                <label for="status-no-preference" class="relative cursor-pointer">
+                    <input type="radio" id="status-no-preference" name="status" value="no-preference"
+                           class="peer sr-only" checked>
+                    <svg viewBox="0 0 1024 1024" xml:space="preserve"
+                         class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
+                        <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
+                              fill="#a0a0a0"/>
+                    </svg>
+                </label>
+                <label for="status-no" class="relative cursor-pointer">
+                    <input type="radio" id="status-no" name="status" value="no" class="peer sr-only">
+                    <svg viewBox="0 0 24 24" class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400" fill="none">
+                        <g stroke="#fbbf34" stroke-width="1.5"><path d="m12 12-2.958 2.929c-2.922 2.894-4.383 4.341-3.974 5.59.035.107.078.211.13.312C5.8 22 7.867 22 12 22c4.133 0 6.2 0 6.802-1.17.052-.1.095-.204.13-.311.41-1.249-1.052-2.696-3.974-5.59L12 12Zm0 0 2.958-2.929c2.922-2.894 4.383-4.341 3.974-5.59a2.12 2.12 0 0 0-.13-.312C18.2 2 16.133 2 12 2 7.867 2 5.8 2 5.198 3.17c-.052.1-.095.204-.13.311-.41 1.249 1.052 2.696 3.974 5.59L12 12Z"/><path d="M10 5.5h4M10 18.5h4" stroke-linecap="round"/></g>
+                    </svg>
+                </label>
+                <label for="status-yes" class="relative cursor-pointer">
+                    <input type="radio" id="status-yes" name="status" value="yes" class="peer sr-only">
+                    <svg viewBox="0 0 16 16" fill="#4ade80" class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400"><path fill="none" d="M0 0h16v16H0z"/><path d="M2 9.014 3.414 7.6l2.59 2.589L12.593 3.6l1.414 1.414-8.004 8.003L2 9.014Z"/></svg>
+                </label>
+            </div>
+
             <!-- Sunlight Filter -->
-            <h3 class="text-gray-600 pt-3 mb-3 mt-3 border-t-2 border-gray-300">Sunlight Exposure</h3>
+            <h3 class="text-gray-600 pt-3 mb-2 border-t-2 border-gray-300">Sunlight Exposure</h3>
             <div id="sunlightFilter" class="flex justify-between pb-3 mb-3 border-b-2 border-gray-300">
                 <label for="sunlight-no-preference" class="relative cursor-pointer">
                     <input type="radio" id="sunlight-no-preference" name="sunlight" value="no-preference"
@@ -276,22 +300,15 @@
                 </label>
                 <label for="native-yes" class="relative cursor-pointer">
                     <input type="radio" id="native-yes" name="native" value="yes" class="peer sr-only">
-                    <svg viewBox="0 0 24 24"
-                         class="w-14 h-14 fill-transparent stroke-green-400 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
-                        <g id="SVGRepo_iconCarrier">
-                            <path class="cls-1" d="m1 10.5 11-9 11 9"/>
-                            <path class="cls-1" d="M20 7.5v15H4v-15M22 22.5H2"/>
-                            <path class="cls-1"
-                                  d="M7 10.5h.77A4.23 4.23 0 0 1 12 14.73v.77h-.77A4.23 4.23 0 0 1 7 11.27v-.77Z"/>
-                            <path class="cls-1"
-                                  d="M16.23 11.5H17v.77a4.23 4.23 0 0 1-4.23 4.23H12v-.77a4.23 4.23 0 0 1 4.23-4.23Z"
-                                  transform="rotate(180 14.5 14)"/>
-                            <path class="cls-1" d="M12 21.5v-7"/>
-                        </g>
+                    <svg viewBox="0 0 24 24" class="w-14 h-14 fill-transparent stroke-green-400 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
+                        <path class="cls-1" d="m1 10.5 11-9 11 9"/>
+                        <path class="cls-1" d="M20 7.5v15H4v-15m18 15H2"/>
+                        <path class="cls-1" d="M7 10.5h.77A4.23 4.23 0 0 1 12 14.73v.77h-.77A4.23 4.23 0 0 1 7 11.27v-.77ZM12.77 16.5H12v-.77a4.23 4.23 0 0 1 4.23-4.23H17v.77a4.23 4.23 0 0 1-4.23 4.23ZM12 21.5v-7"/>
                     </svg>
                 </label>
             </div>
         </div>
+
         <div id="photo-grid"
              class="grid mx-auto w-auto grid-cols-1 gap-4 grid-rows-<%= data.length %> lg:grid-cols-3 lg:grid-rows-<%= Math.max(Math.ceil(data.length / 3), 4) %> lg:p-4 2xl:p-6 2xl:grid-rows-<%= Math.max(Math.ceil(data.length / 4), 4) %> 2xl:grid-cols-4">
             <% if (data) { data.forEach(observation => { %>
