@@ -138,7 +138,7 @@ let ObservationSchema = new Schema({
       "Grey",
       "White",
     ],
-    default: "red",
+    default: "Red",
     immutable: true,
   },
   flowering: { type: Boolean, default: false, immutable: true },

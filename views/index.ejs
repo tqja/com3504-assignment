@@ -35,28 +35,39 @@
             <!-- Colour Filter -->
             <label for="colour" class="block text-gray-600 mb-3">Colour</label>
             <select id="colour" class="w-full px-4 py-2 bg-gray-200 rounded">
-                <option value="red">Red</option>
-                <option value="orange">Orange</option>
-                <option value="brown">Brown</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-                <option value="blue">Blue</option>
-                <option value="purple">Purple</option>
-                <option value="pink">Pink</option>
-                <option value="black">Black</option>
-                <option value="grey">Grey</option>
-                <option value="white">White</option>
+                <option value="no-preference">Any</option>
+                <option value="Red">Red</option>
+                <option value="Orange">Orange</option>
+                <option value="Brown">Brown</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Green">Green</option>
+                <option value="Blue">Blue</option>
+                <option value="Purple">Purple</option>
+                <option value="Pink">Pink</option>
+                <option value="Black">Black</option>
+                <option value="Grey">Grey</option>
+                <option value="White">White</option>
             </select>
 
             <!-- Soil Filter -->
             <label for="soil" class="block text-gray-600 pt-3 mb-3 mt-3 border-t-2 border-gray-300">Soil Type</label>
             <select id="soil" class="w-full px-4 py-2 bg-gray-200 rounded">
-                <option value="red">Any</option>
-                <option value="orange">None</option>
-                <option value="brown">Chalk</option>
-                <option value="yellow">Clay</option>
-                <option value="green">Loam</option>
-                <option value="blue">Sand</option>
+                <option value="no-preference">Any</option>
+                <option value="None">None</option>
+                <option value="Chalk">Chalk</option>
+                <option value="Clay">Clay</option>
+                <option value="Loam">Loam</option>
+                <option value="Sand">Sand</option>
+            </select>
+
+            <!-- Sunlight Filter -->
+            <label for="sunlight" class="block text-gray-600 pt-3 mb-3 mt-3 border-t-2 border-gray-300">Sunlight Exposure</label>
+            <select id="sunlight" class="w-full px-4 py-2 bg-gray-200 rounded">
+                <option value="no-preference">Any</option>
+                <option value="Shaded">Shaded</option>
+                <option value="Dappled">Dappled</option>
+                <option value="Partial">Partial</option>
+                <option value="Full">Full</option>
             </select>
 
             <!-- Status filter -->
@@ -80,61 +91,6 @@
                 <label for="status-yes" class="relative cursor-pointer">
                     <input type="radio" id="status-yes" name="status" value="yes" class="peer sr-only">
                     <svg viewBox="0 0 16 16" fill="#4ade80" class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400"><path fill="none" d="M0 0h16v16H0z"/><path d="M2 9.014 3.414 7.6l2.59 2.589L12.593 3.6l1.414 1.414-8.004 8.003L2 9.014Z"/></svg>
-                </label>
-            </div>
-
-            <!-- Sunlight Filter -->
-            <h3 class="text-gray-600 pt-3 mb-2 border-t-2 border-gray-300">Sunlight Exposure</h3>
-            <div id="sunlightFilter" class="flex justify-between pb-3 mb-3 border-b-2 border-gray-300">
-                <label for="sunlight-no-preference" class="relative cursor-pointer">
-                    <input type="radio" id="sunlight-no-preference" name="sunlight" value="no-preference"
-                           class="peer sr-only" checked>
-                    <svg viewBox="0 0 1024 1024" xml:space="preserve"
-                         class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
-                <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
-                      fill="#a0a0a0"/>
-              </svg>
-                </label>
-                <label for="sunlight-full-shade" class="relative cursor-pointer">
-                    <input type="radio" id="sunlight-full-shade" name="sunlight" value="full-shade"
-                           class="peer sr-only">
-                    <svg viewBox="0 0 512.001 512.001" xml:space="preserve"
-                         class="w-14 h-14 rounded border-2 border-gray-300 peer-checked:border-blue-400">
-                <path style="fill:#d2d2d2"
-                      d="M464.024 192.041a73.46 73.46 0 0 0 .232-5.838c0-40.742-33.148-73.89-73.89-73.89-3.653 0-7.287.267-10.875.798-15.517-35.149-50.195-58.092-89.387-58.092-53.907 0-97.762 43.856-97.762 97.762 0 2.96.134 5.919.4 8.863-16.602 3.256-31.822 11.491-43.798 23.875-15.117 15.634-23.444 36.224-23.444 57.977 0 46.008 37.431 83.439 83.439 83.439h233.947c38.111 0 69.116-31.005 69.116-69.115-.002-30.278-19.938-56.723-47.978-65.779z"/>
-                        <path style="fill:#d2d2d2"
-                              d="M464.024 192.041a73.46 73.46 0 0 0 .232-5.838c0-40.742-33.148-73.89-73.89-73.89-3.653 0-7.287.267-10.875.798-15.517-35.149-50.195-58.092-89.387-58.092a97.235 97.235 0 0 0-34.558 6.329v265.586h187.339c38.111 0 69.116-31.005 69.116-69.115-.001-30.277-19.937-56.722-47.977-65.778z"/>
-                        <path style="fill:#e3e3e3"
-                              d="M388.905 303.702c.264-2.704.396-5.417.396-8.129 0-46.233-37.613-83.845-83.845-83.845-4.633 0-9.238.378-13.777 1.131-17.411-40.857-57.359-67.613-102.569-67.613-61.507 0-111.547 50.039-111.547 111.546 0 3.955.209 7.906.624 11.829-19.544 3.466-37.488 12.97-51.517 27.478C9.472 313.884 0 337.307 0 362.055c0 52.342 42.584 94.925 94.925 94.925h271.471c43.178 0 78.306-35.128 78.306-78.306.001-34.817-23.274-65.163-55.797-74.972z"/>
-                        <path style="fill:#e3e3e3"
-                              d="M388.905 303.702c.264-2.704.396-5.417.396-8.129 0-46.233-37.613-83.845-83.845-83.845-4.633 0-9.238.378-13.777 1.131a111.033 111.033 0 0 0-36.134-45.796v289.919h110.853c43.178 0 78.306-35.128 78.306-78.306-.001-34.819-23.276-65.165-55.799-74.974z"/>
-              </svg>
-                </label>
-                <label for="sunlight-partial" class="relative cursor-pointer">
-                    <input type="radio" id="sunlight-partial" name="sunlight" value="partial" class="peer sr-only">
-                    <svg width="50" height="50" viewBox="0 0 256 256" xml:space="preserve"
-                         class="w-14 h-14 rounded border-2 border-gray-300 peer-checked:border-blue-400">
-                <g style="stroke:none;stroke-width:0;stroke-dasharray:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;fill:none;fill-rule:nonzero;opacity:1"
-                   transform="matrix(2.81 0 0 2.81 1.407 1.407)">
-                    <circle cx="34.717" cy="35.307" r="19.817"
-                            style="stroke:none;stroke-width:1;stroke-dasharray:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;fill:#e8c500;fill-rule:nonzero;opacity:1"/>
-                    <path d="M42.869 37.202c.799-6.532 6.455-11.579 13.087-11.579 4.749 0 9.038 2.489 11.398 6.553a9.438 9.438 0 0 1 6.775-2.851c4.815 0 8.875 3.661 9.416 8.406A10.043 10.043 0 0 1 90 47.112c0 5.543-4.51 10.054-10.054 10.054h-35.41c-5.543 0-10.054-4.51-10.054-10.054 0-4.932 3.572-9.108 8.387-9.91z"
-                          style="stroke:none;stroke-width:1;stroke-dasharray:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;fill:#d2d2d2;fill-rule:nonzero;opacity:1"/>
-                    <path d="M62.119 48.202C61.066 39.593 53.612 32.94 44.87 32.94c-6.259 0-11.912 3.28-15.022 8.637a12.436 12.436 0 0 0-8.929-3.758c-6.347 0-11.698 4.825-12.411 11.079A13.24 13.24 0 0 0 0 61.263c0 7.306 5.944 13.251 13.251 13.251h46.672c7.306 0 13.251-5.945 13.251-13.251a13.242 13.242 0 0 0-11.055-13.061z"
-                          style="stroke:none;stroke-width:1;stroke-dasharray:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;fill:#e3e3e3;fill-rule:nonzero;opacity:1"/>
-                </g>
-              </svg>
-                </label>
-                <label for="sunlight-full" class="relative cursor-pointer">
-                    <input type="radio" id="sunlight-full" name="sunlight" value="full" class="peer sr-only">
-                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none"
-                         class="w-14 h-14 rounded border-2 border-gray-300 peer-checked:border-blue-400">
-                        <g fill="#e8c500">
-                            <path d="M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                  d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75ZM4.399 4.399a.75.75 0 0 1 1.06 0l.393.392a.75.75 0 0 1-1.06 1.061l-.393-.393a.75.75 0 0 1 0-1.06Zm15.202 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 0 1-1.06-1.06l.393-.393a.75.75 0 0 1 1.06 0ZM1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75Zm19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75Zm-2.102 6.148a.75.75 0 0 1 1.06 0l.393.393a.75.75 0 1 1-1.06 1.06l-.393-.393a.75.75 0 0 1 0-1.06Zm-12.296 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.061 0ZM12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75Z"/>
-                        </g>
-                    </svg>
                 </label>
             </div>
 
@@ -175,8 +131,7 @@
             <h3 class="text-gray-600 mb-2">Leafy</h3>
             <div id="leavesFilter" class="flex justify-between pb-3 mb-3 border-b-2 border-gray-300">
                 <label for="leaves-no-preference" class="relative cursor-pointer">
-                    <input type="radio" id="leaves-no-preference" name="leaves" value="no-preference"
-                           class="peer sr-only" checked>
+                    <input type="radio" id="leaves-no-preference" name="leaves" value="no-preference" class="peer sr-only" checked>
                     <svg viewBox="0 0 1024 1024" xml:space="preserve"
                          class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
                 <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
@@ -211,8 +166,7 @@
             <h3 class="text-gray-600 mb-2">Fragrant</h3>
             <div id="fragranceFilter" class="flex justify-between pb-3 mb-3 border-b-2 border-gray-300">
                 <label for="fragrance-no-preference" class="relative cursor-pointer">
-                    <input type="radio" id="fragrance-no-preference" name="fragrance" value="no-preference"
-                           class="peer sr-only" checked>
+                    <input type="radio" id="fragrance-no-preference" name="fragrance" value="no-preference" class="peer sr-only" checked>
                     <svg viewBox="0 0 1024 1024" xml:space="preserve"
                          class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
                 <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
@@ -240,8 +194,7 @@
             <h3 class="text-gray-600 mb-2">Fruiting</h3>
             <div id="fruitFilter" class="flex justify-between pb-3 mb-3 border-b-2 border-gray-300">
                 <label for="fruit-no-preference" class="relative cursor-pointer">
-                    <input type="radio" id="fruit-no-preference" name="fruit" value="no-preference" class="peer sr-only"
-                           checked>
+                    <input type="radio" id="fruit-no-preference" name="fruit" value="no-preference" class="peer sr-only" checked>
                     <svg viewBox="0 0 1024 1024" xml:space="preserve"
                          class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
                 <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
@@ -282,8 +235,7 @@
             <h3 class="text-gray-600 mb-2">Native</h3>
             <div id="nativeFilter" class="flex justify-between pb-3">
                 <label for="native-no-preference" class="relative cursor-pointer">
-                    <input type="radio" id="native-no-preference" name="native" value="no-preference"
-                           class="peer sr-only" checked>
+                    <input type="radio" id="native-no-preference" name="native" value="no-preference" class="peer sr-only" checked>
                     <svg viewBox="0 0 1024 1024" xml:space="preserve"
                          class="w-14 h-14 rounded-md border-2 border-gray-300 peer-checked:border-blue-400">
                         <path d="M512 128c-211.2 0-384 172.8-384 384s172.8 384 384 384 384-172.8 384-384-172.8-384-384-384zm0 85.333c66.133 0 128 23.467 179.2 59.734L273.067 691.2C236.8 640 213.333 578.133 213.333 512c0-164.267 134.4-298.667 298.667-298.667zm0 597.334c-66.133 0-128-23.467-179.2-59.734L750.933 332.8C787.2 384 810.667 445.867 810.667 512c0 164.267-134.4 298.667-298.667 298.667z"
