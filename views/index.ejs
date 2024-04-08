@@ -6,7 +6,7 @@
     <title><%= title %></title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="stylesheets/style.css">
-    <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous" defer></script>
     <script src="/js/homeHandler.js" defer></script>
     <script src="/js/navHandler.js" defer></script>
 </head>
@@ -22,8 +22,7 @@
     <div class="flex bg-gray-100">
         <div id="sidebar" class="top-0 left-0 hidden w-full bg-gray-100 p-4 shadow-none lg:block lg:w-80 lg:shadow-2xl">
             <div class="block">
-                <label for="sort-by" class="mb-3 inline-block w-full border-b-2 border-gray-300 pb-3 text-xl">Sort
-                    by</label>
+                <label for="sort-by" class="mb-3 inline-block w-full border-b-2 border-gray-300 pb-3 text-xl">Sort by</label>
                 <select id="sort-by" onchange="sortPlants(this.value)"
                         class="mb-6 w-full rounded bg-gray-200 px-4 py-2">
                     <option value="dateSeen-desc">Date Seen (Newest First)</option>
