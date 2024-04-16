@@ -13,7 +13,13 @@ self.addEventListener('install', event => {
                 '/javascripts/index.js',
                 '/javascripts/idb_util.js',
                 '/stylesheets/style.css',
-                '/images/Bird.jpg',
+                '/photos/flower-no.png',
+                '/photos/flower-yes.png',
+                '/photos/sun.png',
+                '/photos/sun-full.png',
+                '/photos/sun-partial.png',
+                // '/photos/sun-full-shaded.png',
+                '/photos/sun-no-preference.png'
             ]);
             console.log('Service Worker: App Shell Cached');
         }

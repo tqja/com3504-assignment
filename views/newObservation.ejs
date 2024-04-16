@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css'/>
 </head>
 <body>
-<form action="/add" method="POST" enctype="multipart/form-data" id="observation-form">
+<form action="" id="observation-form">
     <label for="nickname">nickname: </label>
     <input type="text" id="nickname" name="nickname" required>
     <br>
@@ -95,8 +95,9 @@
     <input type="checkbox" id="native" name="native">
     <label for="native">Native</label>
     <br>
-    <input type="submit" value="Create">
+    <button type="submit">Create</button>
 </form>
+<script src="javascripts/idb_util.js"></script>
 <script src="javascripts/newObservation.js"></script>
 </body>
 </html>

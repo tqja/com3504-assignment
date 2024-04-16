@@ -41,11 +41,7 @@ let ObservationSchema = new Schema({
             type: String, required: true, immutable: true
         },
         image: {
-            type: String, required: true, immutable: true,
-            validate: {
-                validator: fileName => (/(^.+\.(jpg|jpeg|png|gif|bmp|tif|tiff)$)/).test(fileName),
-                message: "Invalid file type"
-            }
+            type: Buffer, required: true, immutable: true
         },
         name: {
             type: String, required: true, maxLength: 100

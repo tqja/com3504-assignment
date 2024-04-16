@@ -8,7 +8,7 @@ function openObservationsIDB() {
 
         request.onupgradeneeded = function (event) {
             const db = event.target.result;
-            db.createObjectStore('observations', {keyPath: '_id'});
+            db.createObjectStore('observations', {keyPath: '_id', autoIncrement: true});
         };
 
         request.onsuccess = function (event) {
@@ -135,7 +135,7 @@ function openSyncObservationsIDB() {
 
         request.onupgradeneeded = function (event) {
             const db = event.target.result;
-            db.createObjectStore('sync-observations', {keyPath: 'id'});
+            db.createObjectStore('sync-observations', {keyPath: 'id', autoIncrement: true});
         };
 
         request.onsuccess = function (event) {
