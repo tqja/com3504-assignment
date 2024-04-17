@@ -1,17 +1,8 @@
 const getUserData = () => {
-    const image = document.getElementById("image").files[0];
-    const reader = new FileReader();
-    let imageBuffer;
-    reader.onload = function(event) {
-        const imageData = event.target.result;
-        imageBuffer = base64ToArrayBuffer(imageData.split(',')[1]);
-    }
-    reader.readAsDataURL(image);
-
-    return {
+   return {
         nickname: document.getElementById("nickname").value,
         name: document.getElementById("name").value,
-        image: imageBuffer,
+        image: document.getElementById("name").value,
         dateSeen: document.getElementById("dateSeen").value,
         description: document.getElementById("description").value,
         latitude: document.getElementById("latitude").value,
