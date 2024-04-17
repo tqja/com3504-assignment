@@ -46,7 +46,7 @@ async function saveFromURL(imageUrl) {
         // fetch the image and get filename + destination
         const res = await fetch(imageUrl);
         const filename = basename(parse(imageUrl).pathname);
-        const uploadPath = join("public", "images", "uploads", filename);
+        const uploadPath = join("public", "images", filename);
 
         // write image to destination file
         const writeStream = createWriteStream(uploadPath);

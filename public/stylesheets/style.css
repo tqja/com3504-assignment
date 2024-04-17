@@ -217,7 +217,7 @@ div {
 .checkbox-image {
   width: 20px; /* Adjust based on image size */
   height: 20px;
-  background-image: url('/images/Bird.jpg'); /* Replace with your unchecked image path */
+  background-image: url('/photos/fruits.png'); /* Replace with your unchecked image path */
   background-size: cover;
   background-position: center;
   transition: background-image 0.3s ease;

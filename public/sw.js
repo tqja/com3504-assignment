@@ -1,4 +1,16 @@
+const fs = require('fs');
+const path = require('path');
+
 importScripts('/javascripts/idb_util.js');
+
+function getAllFilePaths(directoryPath, fileList = []) {
+    const files = fs.readdirSync(directoryPath);
+    for (const file of files) {
+        const filePath = path.join(directoryPath, file);
+        fileList.push(filePath);
+    }
+    return fileList;
+}
 
 self.addEventListener('install', event => {
     console.log('Service Worker: Installing....');
@@ -6,21 +18,17 @@ self.addEventListener('install', event => {
         console.log('Service Worker: Caching App Shell at the moment......');
         try {
             const cache = await caches.open("cache_v1");
-            await cache.addAll([
+            let requests = [
                 '/',
                 '/create',
                 '/manifest.json',
                 '/javascripts/index.js',
                 '/javascripts/idb_util.js',
-                '/stylesheets/style.css',
-                '/photos/flower-no.png',
-                '/photos/flower-yes.png',
-                '/photos/sun.png',
-                '/photos/sun-full.png',
-                '/photos/sun-partial.png',
-                // '/photos/sun-full-shaded.png',
-                '/photos/sun-no-preference.png'
-            ]);
+                '/stylesheets/style.css'
+            ];
+            getAllFilePaths("/photos/", requests);
+            getAllFilePaths("/images/", requests);
+            await cache.addAll(requests);
             console.log('Service Worker: App Shell Cached');
         }
         catch{
