@@ -10,19 +10,21 @@ const fs = require("fs");
 const path = require("path");
 
 // TODO: may need to change how filenames are generated
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/images/uploads/');
     },
     filename: function (req, file, cb) {
-        var original = file.originalname;
-        var file_extension = original.split(".");
+        const original = file.originalname;
+        const file_extension = original.split(".");
         // Make the file name the date + the file extension
-        var filename =  Date.now() + '.' + file_extension[file_extension.length-1];
+        const filename = Date.now() + '.' + file_extension[file_extension.length-1];
+
         cb(null, filename);
     }
 });
-let upload = multer({ storage: storage });
+
+const upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -95,9 +97,6 @@ router.post("/add", upload.single("image"), async (req, res) => {
         let userData = req.body;
         let filePath;
 
-        console.log("Received userData:", userData);
-        console.log("Received file:", req.file);
-
         // Check if uploading from file or URL
         if (req.file) {
             filePath = req.file.path;
@@ -113,7 +112,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
             console.log("Observation saved.");
         }
 
-        res.redirect("/");
+        return res.status(200).send("Saved successfully");
     } catch (error) {
         console.error("Error saving observation:", error);
         res.status(500).send("Error saving observation");

@@ -26,7 +26,7 @@ window.onload = function () {
 
         const image = document.getElementById("image").files[0];
         let formData = new FormData(observationForm);
-        formData.append("image", image);
+        //formData.append("image", image);
 
         for (const entry of formData.entries()) {
             console.log(entry);
@@ -41,6 +41,7 @@ window.onload = function () {
                 openObservationsIDB().then((db) => {
                     addObservation(db, getUserData());
                 })
+                window.location.href = 'http://localhost:3000/';
             }).catch((error) => {
                 console.log(error);
             })

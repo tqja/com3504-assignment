@@ -1,10 +1,15 @@
 const observationModel = require('../models/observations');
 
 exports.create = function (userData, filePath) {
+    const flowering = !!userData.flowering;
+    const fragrant = !!userData.fragrant;
+    const fruiting = !!userData.fruiting;
+    const native = !!userData.native;
+
     let observation = new observationModel({
         nickname: userData.nickname,
         name: userData.name,
-        image: filePath,
+        image: filePath.replace(/^public\//, ''),
         dateSeen: userData.dateSeen,
         description: userData.description,
         location: {
@@ -15,10 +20,10 @@ exports.create = function (userData, filePath) {
         spread: userData.spread,
         sunlight: userData.sunlight,
         soil_type: userData.soil_type,
-        flowering: userData.flowering,
-        fragrant: userData.fragrant,
-        fruiting: userData.fruiting,
-        native: userData.native
+        flowering: flowering,
+        fragrant: fragrant,
+        fruiting: fruiting,
+        native: native
     });
     return observation.save().then(observation => {
         return JSON.stringify(observation);
