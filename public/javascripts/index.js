@@ -1,4 +1,4 @@
-const insertObservationInList = (observation) => {
+const insertObservationInList = (observation, rawImg = false) => {
     const photoGrid = document.getElementsByClassName("photo-grid").item(0);
 
     let photoItem = document.createElement('div');
@@ -10,7 +10,15 @@ const insertObservationInList = (observation) => {
     link.style.width = '200px';
 
     let image = document.createElement('img');
-    image.setAttribute('src', observation.image);
+    if ( rawImg ) {
+        var reader = new FileReader();
+        reader.onload = (event) => {
+            image.setAttribute('src', event.target.result);
+        }
+        reader.readAsDataURL(observation.image);
+    } else {
+        image.setAttribute('src', observation.image);
+    }
 
     let descriptionContainer = document.createElement('div');
     descriptionContainer.classList.add('description-container');
@@ -75,6 +83,12 @@ window.onload = function () {
         openObservationsIDB().then((db) => {
             getAllObservations(db).then((observations) => {
                 observations.map((observation) => {insertObservationInList(observation)});
+            })
+
+        })
+        openSyncObservationsIDB().then((sdb) => {
+            getAllSyncObservations(sdb).then((observations) => {
+                observations.map((observation) => {insertObservationInList(observation, true)});
             })
         })
     }
