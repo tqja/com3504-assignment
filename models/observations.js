@@ -17,18 +17,18 @@ const locationSchema = new Schema({
   },
 });
 
-const commentSchema = new Schema({
-  username: {
+const chatSchema = new Schema({
+  chat_username: {
     type: String,
     required: true,
     immutable: true,
   },
-  comment: {
+  chat_text: {
     type: String,
     required: true,
     immutable: true,
   },
-  timestamp: {
+  time: {
     type: Date,
     required: true,
     immutable: true,
@@ -80,7 +80,7 @@ let ObservationSchema = new Schema({
     required: true,
     immutable: true,
   },
-  comments: [commentSchema],
+  chat_history: [chatSchema],
   height: {
     type: String,
     enum: [

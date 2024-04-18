@@ -1,4 +1,5 @@
 const observationModel = require("../models/observations");
+const https = require("https");
 
 const create = function (userData, filePath) {
   const flowering = !!userData.flowering;
@@ -27,6 +28,7 @@ const create = function (userData, filePath) {
     fragrant: fragrant,
     fruiting: fruiting,
     native: native,
+    chat_history: []
   });
   return observation
     .save()
@@ -64,4 +66,21 @@ const getAll = () => {
     });
 };
 
-module.exports = { create, edit, getAll };
+observation_update_chat_history = async (chatDetails) => {
+  const observationId = chatDetails.observation_id
+  const chat_username = chatDetails.chat_username
+  const chat_text = chatDetails.chat_text
+  const message = { chat_username: chat_username, chat_text: chat_text }
+
+  try {
+    await observationModel.findByIdAndUpdate( observationId,
+        { $push: {
+            chat_history: message
+          }
+        }).exec()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+module.exports = { create, edit, observation_update_chat_history, getAll };

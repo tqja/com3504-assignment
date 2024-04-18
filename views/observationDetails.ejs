@@ -6,7 +6,9 @@
     <title><%= title %></title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous"></script>
+    <script src="/js/usernameHandler.js" type="module" defer></script>
     <script src="/js/observationHandler.js" type="module" defer></script>
     <script src="/js/navHandler.js" defer></script>
 </head>
@@ -75,6 +77,22 @@
             <h2 class="mb-2" id="dbpScientificName">Scientific name: </h2>
             <p id="dbpDescription" class="mb-2"></p>
             <a class="font-semibold text-blue-500" id="dbpURI"></a>
+        </div>
+        <div class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg">
+            <h1 class="text-lg font-semibold pb-1 mb-1">Live Chat</h1>
+            <div class="p-4 m-1 border-b-4 border-l-4 border-r border-t border-gray-300 rounded">
+                <div>
+                    <div id="messages" class="min-h-32 w-full hidden"><%= JSON.stringify(observation.chat_history) %></div>
+                    <div id="history"></div>
+                    <div id="input">
+                        <div class="w-full mt-3 pt-2 flex flex-row border-t border-gray-400">
+                            <label for="chat-input" id="chat-label" hidden>Send a message</label>
+                            <input type="text" id="chat-input" name="chat-input" placeholder="Enter message..." class="py-1 px-2 my-2 w-full border border-gray-400 rounded">
+                            <button id="chat-send" class="w-1/4 my-2 ml-4 px-4 bg-gray-200 rounded hover:bg-gray-300 active:bg-gray-400 transition ease-in text-center">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
