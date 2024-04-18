@@ -122,6 +122,7 @@ router.get("/observations/:id", async (req, res) => {
     res.render("observationDetails", {
       title: `${observation.name} details`,
       observation: observation,
+      observationId: req.params.id
     });
   } catch (err) {
     console.log(err);

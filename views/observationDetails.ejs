@@ -6,6 +6,7 @@
     <title><%= title %></title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous"></script>
     <script src="/js/observationHandler.js" type="module" defer></script>
     <script src="/js/navHandler.js" defer></script>
@@ -75,6 +76,35 @@
             <h2 class="mb-2" id="dbpScientificName">Scientific name: </h2>
             <p id="dbpDescription" class="mb-2"></p>
             <a class="font-semibold text-blue-500" id="dbpURI"></a>
+        </div>
+    </div>
+    <!--The div element for the chat interface -->
+    <div id="sighting-detail-chat">
+        <!-- div with sighting details -->
+        <div id="sighting_details"><!--The div element for the chat interface -->
+            <div id="chat_interface">
+                <div class="subtitle-container">
+                    <h2 class="small-title">
+                        <%= "Chat" %>
+                    </h2>
+                </div>
+                <div id="chat-window">
+                    <div>
+                        <div id="chatId" style="display: none;"><%= observationId %></div>
+                        <div id="messages" style="display: none;"><%= JSON.stringify(observation.chat_history) %></div>
+                        <div id="history"></div>
+                        <div id="input">
+                            <form onsubmit="return false;" style="width: 100%">
+                                <p>
+                                    <label for="chat_input" id="chat_label"> LIVE CHAT: </label>
+                                    <input type="text" id="chat_input" name="chat_input" style="width: 30%;">
+                                    <button id="chat_send">Send</button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>

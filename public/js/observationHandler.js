@@ -1,5 +1,10 @@
 import { getUsernameFromIDB } from "./idbHelper.js";
 
+let visitorUsername = null
+let chatId = null
+let socket = io()
+const sendChatButton = document.getElementById("chat_send")
+
 const dbpediaDiv = document.getElementById("dbpedia");
 const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
@@ -174,6 +179,78 @@ if (username === nickname && status.textContent !== "Completed") {
   statusBtn.hidden = false;
 }
 
+const initChat = () => {
+
+  // print chat history stored in MongoDB
+  let messagesStr = document.getElementById('messages').textContent
+  let messages = JSON.parse(messagesStr)
+
+  messages.forEach((message) => {
+    let chat_username = message.chat_username
+    let chat_text = message.chat_text
+    writeOnHistory('<b>'+chat_username+'</b>' + ' ' + chat_text)
+  })
+
+  // called when someone joins the room
+  socket.on('joined', (room, userId) => {
+    // notifies that someone has joined the room
+    writeOnHistory('<b>'+userId+'</b>' + ' joined the chat')
+  })
+
+  // called when a message is received
+  socket.on('chat', (room, userId, chatText) => {
+    writeOnHistory('<b>' + userId + ':</b> ' + chatText)
+  })
+}
+
+/**
+ * used to connect to a chat room.
+ */
+const connectToRoom = () => {
+  chatId = document.getElementById('chatId').innerHTML
+  socket.emit('create or join', chatId, visitorUsername)
+}
+
+/**
+ * called when the Send button is pressed. It gets the text to send from the interface
+ * and sends the message via socket
+ */
+const sendChatText = () => {
+  let chatText = document.getElementById('chat_input').value
+  socket.emit('chat', chatId, visitorUsername, chatText)
+}
+
+/**
+ * it appends the given html text to the history div
+ * @param text
+ */
+const writeOnHistory = (text) => {
+  let history = document.getElementById('history')
+  let paragraph = document.createElement('p')
+  paragraph.innerHTML = text
+  history.appendChild(paragraph)
+  document.getElementById('chat_input').value = ''
+}
+
+/**
+ * connects to the chat room where the visitor username serves
+ * as a chat username
+ * @param username
+ * @param observation
+ */
+const setVisitorUsername = () => {
+  visitorUsername = username
+  // connect to chat room when username retrieved
+  connectToRoom()
+  // and enable sending chat messages
+  sendChatButton.addEventListener('click', sendChatText)
+}
+
+
+
+
+setVisitorUsername()
+initChat()
 getDetailsFromDbpedia(plantName.textContent).catch((err) => {
   console.error(err);
 });
