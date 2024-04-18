@@ -100,7 +100,7 @@ function applyFilters() {
 
   let queryParams = [];
 
-  if (color !== 'no-preference') queryParams.push(`color=${color}`);
+  if (color !== 'Any') queryParams.push(`color=${color}`);
   if (flowering !== 'no-preference') queryParams.push(`flowering=${flowering}`);
   if (soil !== 'no-preference') queryParams.push(`soil=${soil}`);
   if (sunlight !== 'no-preference') queryParams.push(`sunlight=${sunlight}`);

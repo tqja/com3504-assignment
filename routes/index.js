@@ -145,7 +145,7 @@ router.get("/filter", async (req, res) => {
     const { color, flowering, soil, sunlight, leafy, fragrant, fruiting, native } = req.query;
     let query = {};
 
-    if (color && color !== 'no-preference') {
+    if (color && color !== 'Any') {
       query.colour = color;
     }
     if (flowering && flowering !== 'no-preference') {
