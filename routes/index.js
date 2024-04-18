@@ -6,6 +6,8 @@ const { pipeline } = require("stream/promises");
 var controller = require('../controllers/observations')
 const model = require('../models/observations');
 var multer = require('multer');
+const fs = require("fs");
+const path = require("path");
 
 // TODO: may need to change how filenames are generated
 var storage = multer.diskStorage({
@@ -36,6 +38,36 @@ router.get('/create', (req, res) => {
   res.render('newObservation', { title: 'Create new plant' });
 })
 
+// router.post('/dir', (req, res) => {
+//     const directoryPath = req.body.directoryPath;
+//     const files = fs.readdirSync(directoryPath);
+//     let fileList = [];
+//
+//     files.forEach(file => {
+//         const filePath = path.join(directoryPath, file);
+//         const stats = fs.statSync(filePath);
+//         fileList.push(filePath);
+//     });
+//
+//     return res.json({fileList: fileList});
+// })
+
+router.post('/dir', (req, res) => {
+    const directoryPath = req.body.directoryPath;
+    const files = fs.readdirSync(directoryPath);
+    let fileList = [];
+
+    files.forEach(file => {
+        const filePath = path.join(directoryPath, file);
+        const stats = fs.statSync(filePath);
+        // Remove the 'public/' prefix from the file path
+        const modifiedFilePath = filePath.replace(/^public\//, ''); // Using a regex to remove 'public/' from the beginning of the path
+        fileList.push(modifiedFilePath);
+    });
+
+    return res.json({fileList: fileList});
+});
+
 /**
  * Fetch the image from the URL and save it to the uploads filepath.
  * @param imageUrl The URL to fetch and save
@@ -58,30 +90,36 @@ async function saveFromURL(imageUrl) {
     }
 }
 
-// TODO: Add proper error handling to routes
 router.post("/add", upload.single("image"), async (req, res) => {
     try {
         let userData = req.body;
         let filePath;
 
-        // check if uploading from file or URL
+        console.log("Received userData:", userData);
+        console.log("Received file:", req.file);
+
+        // Check if uploading from file or URL
         if (req.file) {
             filePath = req.file.path;
-        }// } else if (userData.imageUrl) {
-        //     filePath = await saveFromURL(userData.imageUrl);
-        // }
+            console.log("File uploaded. File path:", filePath);
+        } else if (userData.imageUrl) {
+            filePath = await saveFromURL(userData.imageUrl);
+            console.log("URL uploaded. File path:", filePath);
+        }
 
-        // save observation if filePath exists
+        // Save observation if filePath exists
         if (filePath) {
             await controller.create(userData, filePath);
+            console.log("Observation saved.");
         }
 
         res.redirect("/");
     } catch (error) {
-        console.error("Error saving observation: ", error);
+        console.error("Error saving observation:", error);
         res.status(500).send("Error saving observation");
     }
 });
+
 
 router.get('/map', (req, res) => {
   res.render('map', { title: 'Map' });

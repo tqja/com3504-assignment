@@ -1,15 +1,25 @@
-const fs = require('fs');
-const path = require('path');
-
 importScripts('/javascripts/idb_util.js');
 
-function getAllFilePaths(directoryPath, fileList = []) {
-    const files = fs.readdirSync(directoryPath);
-    for (const file of files) {
-        const filePath = path.join(directoryPath, file);
-        fileList.push(filePath);
+async function getAllFilePaths(directoryPath) {
+    try {
+        const response = await fetch('/dir', {
+            method: 'POST',
+            body: JSON.stringify({
+                directoryPath: directoryPath
+            }),
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch directory listing');
+        }
+
+        const files = await response.json();
+        return files.fileList; // Return the fileList
+    } catch (err) {
+        console.error('Error fetching directory:', err);
+        throw err; // Rethrow the error for the caller to handle
     }
-    return fileList;
 }
 
 self.addEventListener('install', event => {
@@ -24,11 +34,13 @@ self.addEventListener('install', event => {
                 '/manifest.json',
                 '/javascripts/index.js',
                 '/javascripts/idb_util.js',
+                '/javascripts/newObservation.js',
                 '/stylesheets/style.css'
             ];
-            getAllFilePaths("/photos/", requests);
-            getAllFilePaths("/images/", requests);
-            await cache.addAll(requests);
+            let photos = await getAllFilePaths("public/photos");
+            let uploads = await getAllFilePaths("public/images/uploads");
+            console.log(requests.concat(photos).concat(uploads));
+            await cache.addAll(requests.concat(photos).concat(uploads));
             console.log('Service Worker: App Shell Cached');
         }
         catch{

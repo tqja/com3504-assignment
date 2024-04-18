@@ -1,10 +1,10 @@
 const observationModel = require('../models/observations');
 
-exports.create = function (userData) {
+exports.create = function (userData, filePath) {
     let observation = new observationModel({
         nickname: userData.nickname,
         name: userData.name,
-        image: userData.image,
+        image: filePath,
         dateSeen: userData.dateSeen,
         description: userData.description,
         location: {
