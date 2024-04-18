@@ -1,9 +1,8 @@
 import { getUsernameFromIDB } from "./idbHelper.js";
 
-let visitorUsername = null
-let chatId = null
-let socket = io()
-const sendChatButton = document.getElementById("chat_send")
+let socket = io();
+const chatButton = document.getElementById("chat-send");
+let chatInput = document.getElementById("chat-input");
 
 const dbpediaDiv = document.getElementById("dbpedia");
 const plantName = document.getElementById("plantName");
@@ -180,77 +179,81 @@ if (username === nickname && status.textContent !== "Completed") {
 }
 
 const initChat = () => {
-
   // print chat history stored in MongoDB
-  let messagesStr = document.getElementById('messages').textContent
-  let messages = JSON.parse(messagesStr)
+  let messagesStr = document.getElementById("messages").textContent;
+  let messages = JSON.parse(messagesStr);
 
   messages.forEach((message) => {
-    let chat_username = message.chat_username
-    let chat_text = message.chat_text
-    writeOnHistory('<b>'+chat_username+'</b>' + ' ' + chat_text)
-  })
+    let chat_username = message.chat_username;
+    let chat_text = message.chat_text;
+    writeOnHistory("<b>" + chat_username + "</b>" + ": " + chat_text);
+  });
 
   // called when someone joins the room
-  socket.on('joined', (room, userId) => {
+  socket.on("joined", (room, userId) => {
     // notifies that someone has joined the room
-    writeOnHistory('<b>'+userId+'</b>' + ' joined the chat')
-  })
+    if (username !== userId) {
+      writeOnHistory("<b>" + userId + "</b>" + " joined the chat");
+    }
+  });
 
   // called when a message is received
-  socket.on('chat', (room, userId, chatText) => {
-    writeOnHistory('<b>' + userId + ':</b> ' + chatText)
-  })
-}
+  socket.on("chat", (room, userId, chatText) => {
+    writeOnHistory("<b>" + userId + ":</b> " + chatText);
+  });
+};
 
 /**
- * used to connect to a chat room.
+ * Connects to a chat room.
  */
 const connectToRoom = () => {
-  chatId = document.getElementById('chatId').innerHTML
-  socket.emit('create or join', chatId, visitorUsername)
-}
+  socket.emit("create or join", observationId, username);
+};
 
 /**
- * called when the Send button is pressed. It gets the text to send from the interface
- * and sends the message via socket
+ * Gets the text to send from the interface and sends the message via socket
  */
 const sendChatText = () => {
-  let chatText = document.getElementById('chat_input').value
-  socket.emit('chat', chatId, visitorUsername, chatText)
-}
+  if (chatInput.value) {
+    socket.emit("chat", observationId, username, chatInput.value);
+  }
+};
 
 /**
- * it appends the given html text to the history div
+ * Appends the given text to the history div.
  * @param text
  */
 const writeOnHistory = (text) => {
-  let history = document.getElementById('history')
-  let paragraph = document.createElement('p')
-  paragraph.innerHTML = text
-  history.appendChild(paragraph)
-  document.getElementById('chat_input').value = ''
-}
+  let history = document.getElementById("history");
+  let paragraph = document.createElement("p");
+  paragraph.classList.add("break-all", "overflow-auto");
+  paragraph.innerHTML = text;
+  history.appendChild(paragraph);
+  chatInput.value = "";
+};
 
 /**
- * connects to the chat room where the visitor username serves
- * as a chat username
- * @param username
- * @param observation
+ * Connects to the chat room as the username defined in the browser's storage.
  */
-const setVisitorUsername = () => {
-  visitorUsername = username
-  // connect to chat room when username retrieved
-  connectToRoom()
-  // and enable sending chat messages
-  sendChatButton.addEventListener('click', sendChatText)
+const connectToChatroom = () => {
+  // connect to chat room and enable sending chat messages
+  connectToRoom();
+  chatButton.addEventListener("click", sendChatText);
+};
+
+chatInput.addEventListener("keyup", (e) => {
+  if (e.key !== "Enter") {
+    return;
+  }
+  sendChatText();
+  e.preventDefault();
+});
+
+if (username) {
+  connectToChatroom();
+  initChat();
 }
 
-
-
-
-setVisitorUsername()
-initChat()
 getDetailsFromDbpedia(plantName.textContent).catch((err) => {
   console.error(err);
 });
