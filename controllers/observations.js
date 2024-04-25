@@ -11,7 +11,7 @@ const create = function (userData, filePath) {
   let observation = new observationModel({
     nickname: userData.nickname,
     name: userData.name,
-    image: filePath,
+    image: filePath.replace(/^public\//, ''),
     dateSeen: userData.dateSeen,
     description: userData.description,
     location: {
@@ -32,10 +32,10 @@ const create = function (userData, filePath) {
   });
   return observation
     .save()
-    .then((observation) => {
+    .then((savedObservation) => {
       console.log(observation);
 
-      return JSON.stringify(observation);
+      return JSON.stringify(savedObservation);
     })
     .catch((err) => {
       // Log the error if saving fails
@@ -83,4 +83,4 @@ observation_update_chat_history = async (chatDetails) => {
   }
 }
 
-module.exports = { create, edit, observation_update_chat_history, getAll };
+module.exports = { create, edit, observation_update_chat_history, getAll};
