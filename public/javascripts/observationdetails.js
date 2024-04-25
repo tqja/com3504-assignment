@@ -1,12 +1,24 @@
-const injectDetails = (observation) => {
+const injectDetails = (observation, rawImg = false) => {
     const container = document.getElementsByClassName("observation-details").item(0);
 
     const title = document.createElement('h1');
     title.textContent = `Observation Details: ${observation.name}`;
     container.appendChild(title);
 
-    const image = document.createElement('img');
-    image.setAttribute('src', `/${observation.image}`);
+
+    let image = document.createElement('img');
+    if ( rawImg ) {
+        var reader = new FileReader();
+        reader.onload = (event) => {
+            image.setAttribute('src', event.target.result);
+        }
+        reader.readAsDataURL(observation.image);
+    } else {
+        image.setAttribute('src', observation.image);
+    }
+
+    //const image = document.createElement('img');
+    //image.setAttribute('src', `/${observation.image}`);
     image.setAttribute('alt', 'Observation Image');
     image.style.maxWidth = '400px';
     container.appendChild(image);
@@ -47,12 +59,32 @@ window.onload = function () {
                 injectDetails(observation)
             })
     } else {
-        console.log("Offline mode")
-        const id = new URLSearchParams(window.location.search).get('id');
-        openObservationsIDB().then((db) => {
-            getObservation(db, id).then((observation) => {
-                injectDetails(observation)
+        console.log("Offline mode");
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const syncN = params.has('syncN');
+        const syncU = params.has('syncU');
+
+        if ( syncN ) {
+            let nid = parseInt(id);
+            openNSyncObservationsIDB().then((db) => {
+                getNSyncObservation(db, nid).then((observation) => {
+                    injectDetails(observation, true)
+                })
             })
-        })
+        } else if ( syncU ) {
+            openUSyncObservationsIDB().then((db) => {
+                getUSyncObservation(db, id).then((observation) => {
+                    injectDetails(observation)
+                })
+            })
+        } else {
+            openObservationsIDB().then((db) => {
+                getObservation(db, id).then((observation) => {
+                    injectDetails(observation)
+                })
+            })
+        }
+
     }
 }

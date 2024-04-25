@@ -1,16 +1,23 @@
-const insertObservationInList = (observation, rawImg = false) => {
+const insertObservationInList = (observation, syncN = false, syncU = false) => {
     const photoGrid = document.getElementsByClassName("photo-grid").item(0);
 
     let photoItem = document.createElement('div');
     photoItem.classList.add('photo-item');
 
     let link = document.createElement('a');
-    let url = new URL(`http://localhost:3000/observations?id=${observation._id}`);
+    let url;
+    if ( syncN ) {
+        url = new URL(`http://localhost:3000/observations?id=${observation._id}&syncN`);
+    } else if ( syncU ) {
+        url = new URL(`http://localhost:3000/observations?id=${observation._id}&syncU`);
+    } else {
+        url = new URL(`http://localhost:3000/observations?id=${observation._id}`);
+    }
     link.setAttribute('href', url);
     link.style.width = '200px';
 
     let image = document.createElement('img');
-    if ( rawImg ) {
+    if ( syncN ) {
         var reader = new FileReader();
         reader.onload = (event) => {
             image.setAttribute('src', event.target.result);
@@ -80,15 +87,21 @@ window.onload = function () {
                 })
             })
     } else {
+        console.log("Offline mode")
         openObservationsIDB().then((db) => {
             getAllObservations(db).then((observations) => {
                 observations.map((observation) => {insertObservationInList(observation)});
             })
 
         })
-        openSyncObservationsIDB().then((sdb) => {
-            getAllSyncObservations(sdb).then((observations) => {
+        openNSyncObservationsIDB().then((ndb) => {
+            getAllNSyncObservations(ndb).then((observations) => {
                 observations.map((observation) => {insertObservationInList(observation, true)});
+            })
+        })
+        openUSyncObservationsIDB().then((udb) => {
+            getAllUSyncObservations(udb).then((observations) => {
+                observations.map((observation) => {insertObservationInList(observation)});
             })
         })
     }

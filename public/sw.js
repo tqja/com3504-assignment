@@ -1,4 +1,5 @@
 importScripts('/javascripts/idb_util.js');
+importScripts('/javascripts/new_sync_idb_util.js');
 
 async function getAllFilePaths(directoryPath) {
     try {
@@ -31,10 +32,14 @@ self.addEventListener('install', event => {
             let requests = [
                 '/',
                 '/create',
+                '/observations',
                 '/manifest.json',
                 '/javascripts/index.js',
                 '/javascripts/idb_util.js',
+                '/javascripts/new_sync_idb_util.js',
+                '/javascripts/updated_sync_idb_util.js',
                 '/javascripts/newObservation.js',
+                '/javascripts/observationdetails.js',
                 '/stylesheets/style.css'
             ];
             let photos = await getAllFilePaths("public/photos");
@@ -70,7 +75,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.respondWith((async () => {
         const cache = await caches.open("cache_v1");
-        const cachedResponse = await cache.match(event.request);
+        console.log(event.request);
+        const cachedResponse = await cache.match(event.request, {'ignoreSearch' : true});
         if (cachedResponse) {
             console.log('Service Worker: Fetching from Cache: ', event.request.url);
             return cachedResponse;

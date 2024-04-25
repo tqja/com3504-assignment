@@ -28,31 +28,12 @@ const upload = multer({ storage: storage });
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    // let result = controller.getAll();
-    // result.then(observations => {
-    //    let data = JSON.parse(observations);
-    //     res.render('index', { title: 'Express', data: data });
-    // });
     res.render('index', { title: 'Express' });
 });
 
 router.get('/create', (req, res) => {
   res.render('newObservation', { title: 'Create new plant' });
 })
-
-// router.post('/dir', (req, res) => {
-//     const directoryPath = req.body.directoryPath;
-//     const files = fs.readdirSync(directoryPath);
-//     let fileList = [];
-//
-//     files.forEach(file => {
-//         const filePath = path.join(directoryPath, file);
-//         const stats = fs.statSync(filePath);
-//         fileList.push(filePath);
-//     });
-//
-//     return res.json({fileList: fileList});
-// })
 
 router.post('/dir', (req, res) => {
     const directoryPath = req.body.directoryPath;
@@ -87,12 +68,39 @@ async function saveFromURL(imageUrl) {
         await pipeline(res.body, writeStream);
         return uploadPath;
     } catch (err) {
-        console.error("Error saving from URL: ", err);
-        return null;
+        throw err;
     }
 }
 
 router.post("/add", upload.single("image"), async (req, res) => {
+    // let userData = req.body;
+    // let filePath;
+    //
+    // // Check if uploading from file or URL
+    // if (req.file) {
+    //     filePath = req.file.path;
+    //     console.log("File uploaded. File path:", filePath);
+    // } else if (userData.imageUrl) {
+    //     try {
+    //         filePath = await saveFromURL(userData.imageUrl);
+    //         console.log("URL uploaded. File path:", filePath);
+    //     } catch (error) {
+    //         console.error("Error saving observation:", error);
+    //         res.status(500).send(`Error saving observation. Error: ${error}`);
+    //     }
+    // }
+    //
+    // // Save observation if filePath exists
+    // if (filePath) {
+    //     controller.create(userData, filePath).then(observation => {
+    //         console.log("Observation saved.");
+    //         return res.status(200).send(observation);
+    //     }).catch(error => {
+    //         console.error("Error saving observation:", error);
+    //         res.status(500).send(`Error saving observation. Error: ${error}`);
+    //     });
+    // }
+
     try {
         let userData = req.body;
         let filePath;
@@ -106,13 +114,15 @@ router.post("/add", upload.single("image"), async (req, res) => {
             console.log("URL uploaded. File path:", filePath);
         }
 
-        // Save observation if filePath exists
-        if (filePath) {
-            await controller.create(userData, filePath);
-            console.log("Observation saved.");
-        }
+        // // Save observation if filePath exists
+        // if (filePath) {
+        //     await controller.create(userData, filePath);
+        //     console.log("Observation saved.");
+        // }
 
-        return res.status(200).send("Saved successfully");
+        let observation = await controller.create(userData, filePath);
+        console.log("Observation saved.");
+        return res.status(200).send(observation);
     } catch (error) {
         console.error("Error saving observation:", error);
         res.status(500).send("Error saving observation");
