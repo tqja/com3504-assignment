@@ -1,3 +1,4 @@
+const observationModel = require("../../models/observations");
 const form = document.getElementById("form");
 
 // submission elements
@@ -97,3 +98,74 @@ const toggleImgDivs = () => {
 // set the current date and time as the default value
 const date = new Date();
 document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);
+
+const newObservation = function(data) {
+  const flowering = !!data.flowering;
+  const leafy = !!data.leafy;
+  const fragrant = !!data.fragrant;
+  const fruiting = !!data.fruiting;
+  const native = !!data.native;
+
+  return{
+    nickname: data.nickname,
+    name: data.name,
+    image: data.image,
+    dateSeen: data.dateSeen,
+    description: data.description,
+    location: {
+      latitude: data.latitude,
+      longitude: data.longitude,
+    },
+    height: data.height,
+    spread: data.spread,
+    sunlight: data.sunlight,
+    soilType: data.soilType,
+    colour: data.colour,
+    flowering: flowering,
+    leafy: leafy,
+    fragrant: fragrant,
+    fruiting: fruiting,
+    native: native,
+    chat_history: []
+  }
+}
+
+window.onload = function () {
+  const observationForm = document.getElementById("form");
+
+  observationForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    let formData = new FormData(observationForm);
+
+    if (navigator.onLine) {
+      fetch('http://localhost:3000/add', {
+        method: 'POST',
+        body: formData
+      }).then(response => {
+        if ( !response.ok ) {
+          throw new Error("Network response not ok");
+        }
+        return response;
+      }).then(observation => {
+        // Save data into the indexedDB
+        openObservationsIDB().then((db) => {
+          addObservation(db, observation);
+        })
+        window.location.href = 'http://localhost:3000/';
+      }).catch((error) => {
+        console.log(error);
+      })
+    } else {
+      console.log("Offline mode")
+      let formData = Object.fromEntries(new FormData(observationForm));
+
+      openNSyncObservationsIDB().then((sDB) => {
+        addNSyncObservation(sDB, newObservation(formData));
+        // window.location.href = 'http://localhost:3000/';
+      }).catch((error) => {
+        console.log('error');
+      })
+    }
+  });
+}

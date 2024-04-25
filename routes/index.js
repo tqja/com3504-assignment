@@ -10,6 +10,8 @@ const { basename, join } = require("path");
 const { pipeline } = require("stream/promises");
 const { parse } = require("url");
 const { dbpediaController } = require("../controllers/dbpedia");
+const fs = require("fs");
+const path = require("path");
 
 // TODO: may need to change how filenames are generated
 const storage = multer.diskStorage({
@@ -28,17 +30,26 @@ const storage = multer.diskStorage({
 let upload = multer({ storage: storage });
 
 /* GET home page. */
+// router.get("/", (req, res) => {
+//   let result = controller.getAll();
+//   result.then((observations) => {
+//     let data = JSON.parse(observations);
+//     res.render("index", { title: "Home", data: data });
+//   });
+// });
+
 router.get("/", (req, res) => {
-  let result = controller.getAll();
-  result.then((observations) => {
-    let data = JSON.parse(observations);
-    res.render("index", { title: "Home", data: data });
-  });
+  res.render("index", { title: "Home" });
 });
 
-router.post("/", (req, res) => {
-  console.log(req.body);
-  res.render("newObservation", { title: "Home" });
+router.get('/allObservations', function (req, res, next) {
+  controller.getAll().then(observations => {
+    console.log(observations);
+    return res.status(200).send(observations);
+  }).catch(err => {
+    console.log(err);
+    res.status(500).send(err);
+  });
 });
 
 router.get("/create", (req, res) => {
@@ -51,23 +62,36 @@ router.post("/add", upload.single("image"), async (req, res) => {
     let userData = req.body;
     let filePath;
 
-    // check if uploading from file or URL
+    // Check if uploading from file or URL
     if (req.file) {
       filePath = req.file.path;
     } else if (userData.imageUrl) {
       filePath = await saveFromURL(userData.imageUrl);
     }
 
-    // save observation if filePath exists
-    if (filePath) {
-      await controller.create(userData, filePath);
-    }
+    let observation = await controller.create(userData, filePath);
 
-    res.redirect("/");
+    return res.status(200).send(observation);
   } catch (error) {
-    console.error("Error saving observation: ", error);
+    console.error("Error saving observation:", error);
     res.status(500).send("Error saving observation");
   }
+});
+
+router.post('/dir', (req, res) => {
+  const directoryPath = req.body.directoryPath;
+  const files = fs.readdirSync(directoryPath);
+  let fileList = [];
+
+  files.forEach(file => {
+    const filePath = path.join(directoryPath, file);
+    const stats = fs.statSync(filePath);
+    // Remove the 'public/' prefix from the file path
+    const modifiedFilePath = filePath.replace(/^public\//, ''); // Using a regex to remove 'public/' from the beginning of the path
+    fileList.push(modifiedFilePath);
+  });
+
+  return res.json({fileList: fileList});
 });
 
 router.post("/edit", async (req, res) => {
@@ -198,7 +222,7 @@ async function saveFromURL(imageUrl) {
     return uploadPath;
   } catch (err) {
     console.error("Error saving from URL: ", err);
-    return null;
+    throw err;
   }
 }
 

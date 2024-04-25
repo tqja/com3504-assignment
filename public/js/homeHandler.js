@@ -29,6 +29,8 @@ function sortPlants(sortBy) {
  */
 function updatePhotoGrid(data) {
   const photoGrid = document.querySelector("#photo-grid");
+  photoGrid.classList.add(`grid`, `mx-auto`, `w-auto`, `lg:p-4`, `2xl:p-6`, `gap-4`, `grid-cols-1`, `lg:grid-cols-3`, `2xl:grid-cols-4`,
+      `grid-rows-${length}`, `lg:grid-rows-${Math.max(Math.ceil(length / 3), 4)}`, `2xl:grid-rows-${Math.max(Math.ceil(length / 4), 4)}`);
   photoGrid.innerHTML = ""; // Clear existing content
 
   if (data.length === 0) {
@@ -140,3 +142,65 @@ document.querySelectorAll('input[name="native"]').forEach(input => {
   input.addEventListener('change', applyFilters);
 });
 
+window.onload = function () {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', {scope: '/'})
+        .then(function (registration) {
+          console.log('Service Worker Registered!', registration);
+        })
+        .catch(function (err) {
+          console.log('Service Worker registration failed: ', err);
+        });
+  }
+
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      // Notification permission granted
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          navigator.serviceWorker.ready
+              .then((serviceWorkerRegistration => {
+                serviceWorkerRegistration.showNotification("floraExplorer",
+                    {body: "Notifications are enabled!"})
+                    .then(r => {
+                      console.log(r)
+                    });
+              }));
+        }
+      });
+    }
+  }
+
+  if (navigator.onLine) {
+    fetch('http://localhost:3000/allObservations')
+        .then((res) => {
+          return res.json();
+        }).then((observations) => {
+          openObservationsIDB().then((db) => {
+            deleteAllObservations(db).then(() => {
+              addAllObservations(db, observations).then(() => {
+                updatePhotoGrid(observations);
+                console.log("All new observations added to IDB")
+              })
+            })
+          })
+    })
+  } else {
+    console.log("Offline mode")
+    let data = [];
+
+    Promise.all([
+      openObservationsIDB().then(db => getAllObservations(db)),
+      openNSyncObservationsIDB().then(ndb => getAllNSyncObservations(ndb)),
+      openUSyncObservationsIDB().then(udb => getAllUSyncObservations(udb))
+    ])
+        .then(([observations, nSyncObservations, uSyncObservations]) => {
+          data = data.concat(observations, nSyncObservations, uSyncObservations);
+          updatePhotoGrid(data);
+        })
+        .catch(error => {
+          console.error('Error fetching data from IndexedDB:', error);
+        });
+  }
+}
