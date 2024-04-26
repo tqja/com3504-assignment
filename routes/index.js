@@ -29,15 +29,6 @@ const storage = multer.diskStorage({
 });
 let upload = multer({ storage: storage });
 
-/* GET home page. */
-// router.get("/", (req, res) => {
-//   let result = controller.getAll();
-//   result.then((observations) => {
-//     let data = JSON.parse(observations);
-//     res.render("index", { title: "Home", data: data });
-//   });
-// });
-
 router.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
@@ -61,7 +52,6 @@ router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let userData = req.body;
     let filePath;
-
     // Check if uploading from file or URL
     if (req.file) {
       filePath = req.file.path;

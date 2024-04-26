@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin="" defer></script>
+    <link rel="stylesheet" href="/stylesheets/leaflet.css"/>
+    <script src="/js/leaflet.js" defer></script>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="stylesheets/map.css">
@@ -24,7 +20,7 @@
 <body>
 <%- include("partials/header.ejs") %>
 <main class="flex flex-col items-center w-full bg-gray-100">
-    <form id="form" action="" class="flex flex-col w-full max-w-screen-md p-8 bg-white lg:drop-shadow-xl lg:border lg:border-gray-300 lg:rounded-lg lg:my-8">
+    <form action="" id="form" class="flex flex-col w-full max-w-screen-md p-8 bg-white lg:drop-shadow-xl lg:border lg:border-gray-300 lg:rounded-lg lg:my-8">
         <input type="hidden" id="nickname" name="nickname">
         <label for="name" class="text-xl font-semibold mb-2">Name</label>
         <input type="text" id="name" name="name" maxlength="95" class="mb-4 p-2 rounded border border-gray-300" required>

@@ -1,4 +1,3 @@
-const observationModel = require("../../models/observations");
 const form = document.getElementById("form");
 
 // submission elements
@@ -30,26 +29,10 @@ urlInput.addEventListener("input", () => {
 // when the file upload input changes, add the image to the preview and toggle to the preview
 imageInput.addEventListener("change", (e) => {
   const imageUpload = e.target.files[0];
-
   if (imageUpload) {
     // create object URL for preview image and set to preview
     previewImage.src = URL.createObjectURL(imageUpload);
     toggleImgDivs();
-  }
-});
-
-// form validation for image input
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  // check if both image inputs are empty or submitDiv is visible
-  if (
-    (!imageInput.files[0] && !urlInput.value) ||
-    !submitDiv.classList.contains("hidden")
-  ) {
-    alert("Please upload or link a URL to a photo");
-  } else {
-    form.submit();
   }
 });
 
@@ -100,27 +83,27 @@ const date = new Date();
 document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);
 
 const newObservation = function(data) {
-  const flowering = !!data.flowering;
-  const leafy = !!data.leafy;
-  const fragrant = !!data.fragrant;
-  const fruiting = !!data.fruiting;
-  const native = !!data.native;
-
+  const flowering = !!data.get('flowering');
+  const leafy = !!data.get('leafy');
+  const fragrant = !!data.get('fragrant');
+  const fruiting = !!data.get('fruiting');
+  const native = !!data.get('native');
   return{
-    nickname: data.nickname,
-    name: data.name,
-    image: data.image,
-    dateSeen: data.dateSeen,
-    description: data.description,
+    nickname: data.get('nickname'),
+    name: data.get('name'),
+    status: "In_progress",
+    image: data.get('image'),
+    dateSeen: data.get('dateSeen'),
+    description: data.get('description'),
     location: {
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude: data.get('latitude'),
+      longitude: data.get('longitude'),
     },
-    height: data.height,
-    spread: data.spread,
-    sunlight: data.sunlight,
-    soilType: data.soilType,
-    colour: data.colour,
+    height: data.get('height'),
+    spread: data.get('spread'),
+    sunlight: data.get('sunlight'),
+    soilType: data.get('soilType'),
+    colour: data.get('colour'),
     flowering: flowering,
     leafy: leafy,
     fragrant: fragrant,
@@ -130,15 +113,17 @@ const newObservation = function(data) {
   }
 }
 
-window.onload = function () {
-  const observationForm = document.getElementById("form");
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-  observationForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    let formData = new FormData(observationForm);
-
+  if (
+      (!imageInput.files[0] && !urlInput.value) ||
+      !submitDiv.classList.contains("hidden")
+  ) {
+    alert("Please upload or link a URL to a photo");
+  } else {
     if (navigator.onLine) {
+      let formData = new FormData(form);
       fetch('http://localhost:3000/add', {
         method: 'POST',
         body: formData
@@ -158,14 +143,13 @@ window.onload = function () {
       })
     } else {
       console.log("Offline mode")
-      let formData = Object.fromEntries(new FormData(observationForm));
-
+      let formData = new FormData(form);
       openNSyncObservationsIDB().then((sDB) => {
         addNSyncObservation(sDB, newObservation(formData));
-        // window.location.href = 'http://localhost:3000/';
+        window.location.href = 'http://localhost:3000/';
       }).catch((error) => {
-        console.log('error');
+        console.log(error);
       })
     }
-  });
-}
+  }
+});

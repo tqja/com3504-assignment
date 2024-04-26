@@ -68,7 +68,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     event.respondWith((async () => {
         const cache = await caches.open("cache_v1");
-        console.log(event.request);
         const cachedResponse = await cache.match(event.request, {'ignoreSearch' : true});
         if (cachedResponse) {
             console.log('Service Worker: Fetching from Cache: ', event.request.url);
