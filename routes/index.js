@@ -68,6 +68,10 @@ router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+router.get("/observations",  (req, res) => {
+  res.render("observationDetails", { title: "Observation details" });
+});
+
 router.post('/dir', (req, res) => {
   const directoryPath = req.body.directoryPath;
   const files = fs.readdirSync(directoryPath);
@@ -77,7 +81,7 @@ router.post('/dir', (req, res) => {
     const filePath = path.join(directoryPath, file);
     const stats = fs.statSync(filePath);
     // Remove the 'public/' prefix from the file path
-    const modifiedFilePath = filePath.replace(/^public\//, ''); // Using a regex to remove 'public/' from the beginning of the path
+    const modifiedFilePath = filePath.replace(/^public\//, '');
     fileList.push(modifiedFilePath);
   });
 
@@ -96,7 +100,6 @@ router.post("/edit", async (req, res) => {
     if (data.status) {
       updateData.status = data.status;
     }
-
 
     await controller.edit(data.observationId, updateData);
     res.status(200).send("Observation updated successfully");
@@ -124,24 +127,6 @@ router.get("/sort", async (req, res) => {
 router.post("/new-user", async (req, res) => {
   const newUsername = generateUsername();
   res.json({ username: newUsername });
-});
-
-router.get("/observations/:id", async (req, res) => {
-  try {
-    const observation = await model.findById(req.params.id);
-    if (!observation) {
-      return res.status(404).send("Observation not found");
-    }
-    // Render a template for displaying the observation details
-    res.render("observationDetails", {
-      title: `${observation.name} details`,
-      observation: observation,
-      observationId: req.params.id
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server error");
-  }
 });
 
 /** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */

@@ -1,20 +1,16 @@
-// define db and store names
-const dbName = "clientData";
-const storeName = "userStore";
-
 /**
  * Retrieve the value of the username item in the indexedDB.
  * @returns {Promise<unknown>} The error code on failure, or the username on success
  */
-export const getUsernameFromIDB = () => {
+const getUsernameFromIDB = () => {
   return new Promise((resolve, reject) => {
-    const req = window.indexedDB.open(dbName, 1);
+    const req = window.indexedDB.open("clientData", 1);
 
     req.onsuccess = (e) => {
       // open db/store and get the value from "username" key
       const db = e.target.result;
-      const transaction = db.transaction([storeName]);
-      const store = transaction.objectStore(storeName);
+      const transaction = db.transaction(["userStore"]);
+      const store = transaction.objectStore("userStore");
       const req = store.get("username");
 
       req.onsuccess = (e) => {
@@ -33,8 +29,8 @@ export const getUsernameFromIDB = () => {
     req.onupgradeneeded = (e) => {
       const db = e.target.result;
       // create object store if it doesn't already exist
-      if (!db.objectStoreNames.contains(storeName)) {
-        db.createObjectStore(storeName);
+      if (!db.objectStoreNames.contains("userStore")) {
+        db.createObjectStore("userStore");
       }
     };
   });
@@ -45,9 +41,9 @@ export const getUsernameFromIDB = () => {
  * @param username The username to store
  * @returns {Promise<unknown>} The error code on failure, or undefined value on success
  */
-export const storeUsernameInIDB = (username) => {
+const storeUsernameInIDB = (username) => {
   return new Promise((resolve, reject) => {
-    const req = window.indexedDB.open(dbName, 1);
+    const req = window.indexedDB.open("clientData", 1);
 
     req.onerror = (e) => {
       reject(e.target.errorCode);
@@ -56,8 +52,8 @@ export const storeUsernameInIDB = (username) => {
     req.onsuccess = (e) => {
       const db = e.target.result;
       // readwrite transaction in order to store username
-      const transaction = db.transaction([storeName], "readwrite");
-      const store = transaction.objectStore(storeName);
+      const transaction = db.transaction(["userStore"], "readwrite");
+      const store = transaction.objectStore("userStore");
       const req = store.put(username, "username");
 
       req.onsuccess = () => {
@@ -72,8 +68,8 @@ export const storeUsernameInIDB = (username) => {
     req.onupgradeneeded = (e) => {
       const db = e.target.result;
       // create object store if it doesn't already exist
-      if (!db.objectStoreNames.contains(storeName)) {
-        db.createObjectStore(storeName);
+      if (!db.objectStoreNames.contains("userStore")) {
+        db.createObjectStore("userStore");
       }
     };
   });

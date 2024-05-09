@@ -6,45 +6,39 @@
     <title><%= title %></title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="stylesheet" href="/stylesheets/style.css">
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script src="https://kit.fontawesome.com/eff69f9267.js" crossorigin="anonymous"></script>
+    <script src="/js/socket.io.min.js"></script>
+    <script src="/js/fontawesome_eff69f9267.js"></script>
     <script src="/js/usernameHandler.js" type="module" defer></script>
     <script src="/js/observationHandler.js" type="module" defer></script>
     <script src="/js/navHandler.js" defer></script>
+    <script src="/js/idb_util.js" defer></script>
+    <script src="/js/new_sync_idb_util.js" defer></script>
+    <script src="/js/updated_sync_idb_util.js" defer></script>
 </head>
 <body>
 <%- include("partials/header.ejs") %>
 <main class="flex flex-col items-center w-full bg-gray-100">
     <div class="flex flex-col w-full max-w-screen-lg px-8 py-4 bg-white lg:drop-shadow-xl lg:border lg:border-gray-300 lg:rounded-lg lg:my-8">
-        <div id="observationId" hidden><%= observation.id %></div>
-        <h1 class="font-semibold text-3xl text-center w-full mx-auto mb-2 pb-2 border-b-2 border-gray-300"><span id="plantName"><%= observation.name %></span></h1>
+        <h1 class="font-semibold text-3xl text-center w-full mx-auto mb-2 pb-2 border-b-2 border-gray-300"><span id="plantName"></span></h1>
         <div class="flex flex-row justify-between items-center mx-2 mb-2">
             <span>
                 <i class="fa-regular fa-user mr-1"></i>
-                <span id="nickname"><%= observation.nickname %></span>
+                <span id="nickname"></span>
             </span>
-            <span class="flex items-center">
-                <% if (observation.status === "In_progress") { %>
-                    <span id="statusDot" class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-amber-400'></span>
-                    <span id="status">In progress</span>
-                <% } else { %>
-                    <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
-                    <span id="status">Completed</span>
-                <% } %>
-            </span>
+            <span id="statusSpan" class="flex items-center"></span>
         </div>
-        <img src="/<%= observation.image %>" alt="Photograph of <%= observation.name %>" class="mb-2 lg:rounded-lg">
+        <img id="image" class="mb-2 lg:rounded-lg">
         <div class="flex flex-wrap mb-2">
             <span class="mr-2">
                 <i class="fa-regular fa-calendar fill-black mr-1"></i>
-                <span><%= observation.dateSeen.toDateString() %></span>
+                <span id="dateSeen"></span>
             </span>
             <span>
                 <i class="fa-solid fa-location-dot fill-black mr-1"></i>
                 <span id="location"></span>
             </span>
-            <div id="lat" hidden><%= observation.location.latitude %></div>
-            <div id="lng" hidden><%= observation.location.longitude %></div>
+            <div id="lat" hidden></div>
+            <div id="lng" hidden></div>
         </div>
         <div class="flex flex-wrap mb-4">
             <div class="flex flex-row w-full mb-2">
@@ -56,20 +50,20 @@
         </div>
         <div class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg">
             <h2 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">Description</h2>
-            <p><%= observation.description %></p>
+            <p id="description"></p>
         </div>
         <div class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg">
             <h2 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">Characteristics</h2>
-            <p><strong>Colour:</strong> <%= observation.colour %></p>
-            <p><strong>Height:</strong> <%= observation.height %></p>
-            <p><strong>Spread:</strong> <%= observation.spread %></p>
-            <p><strong>Sunlight:</strong> <%= observation.sunlight %></p>
-            <p><strong>Soil Type:</strong> <%= observation.soilType %></p>
-            <p><strong>Flowering:</strong> <%= observation.flowering ? 'Yes' : 'No' %></p>
-            <p><strong>Leafy:</strong> <%= observation.leafy ? 'Yes' : 'No' %></p>
-            <p><strong>Fragrant:</strong> <%= observation.fragrant ? 'Yes' : 'No' %></p>
-            <p><strong>Fruiting:</strong> <%= observation.fruiting ? 'Yes' : 'No' %></p>
-            <p><strong>Native:</strong> <%= observation.native ? 'Yes' : 'No' %></p>
+            <p id="colour"><strong>Colour:</strong> </p>
+            <p id="height"><strong>Height:</strong> </p>
+            <p id="spread"><strong>Spread:</strong> </p>
+            <p id="sunlight"><strong>Sunlight:</strong> </p>
+            <p id="soilType"><strong>Soil Type:</strong> </p>
+            <p id="flowering"><strong>Flowering:</strong> </p>
+            <p id="leafy"><strong>Leafy:</strong> </p>
+            <p id="fragrant"><strong>Fragrant:</strong> </p>
+            <p id="fruiting"><strong>Fruiting:</strong> </p>
+            <p id="native"><strong>Native:</strong> </p>
         </div>
         <div id="dbpedia" class="p-4 mb-4 bg-gray-100 border border-gray-300 rounded drop-shadow-lg" hidden>
             <h1 class="text-lg font-semibold pb-1 mb-1 border-b-2 border-gray-300">DBPedia Entry</h1>
@@ -82,7 +76,7 @@
             <h1 class="text-lg font-semibold pb-1 mb-1">Live Chat</h1>
             <div class="p-4 m-1 border-b-4 border-l-4 border-r border-t border-gray-300 rounded">
                 <div>
-                    <div id="messages" class="min-h-32 w-full hidden"><%= JSON.stringify(observation.chat_history) %></div>
+                    <div id="messages" class="min-h-32 w-full hidden"></div>
                     <div id="history"></div>
                     <div id="input">
                         <div class="w-full mt-3 pt-2 flex flex-row border-t border-gray-400">

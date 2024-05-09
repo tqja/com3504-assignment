@@ -1,4 +1,8 @@
-import { getUsernameFromIDB } from "./idbHelper.js";
+const params = new URLSearchParams(window.location.search);
+const id = params.get('id');
+const syncN = params.has('syncN');
+const syncU = params.has('syncU');
+let observation;
 
 let socket = io();
 const chatButton = document.getElementById("chat-send");
@@ -8,10 +12,11 @@ const dbpediaDiv = document.getElementById("dbpedia");
 const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
 const nameInput = document.getElementById("nameInput");
-const nickname = document.getElementById("nickname").textContent;
-const observationId = document.getElementById("observationId").innerHTML;
+const nickname = document.getElementById("nickname");
 const statusBtn = document.getElementById("statusBtn");
-const status = document.getElementById("status");
+const latitude = document.getElementById("lat");
+const longitude = document.getElementById("lng");
+const messagesElem = document.getElementById("messages");
 const statusDot = document.getElementById("statusDot");
 const username = await getUsernameFromIDB(); // from indexedDB
 const locationText = document.getElementById("location");
@@ -56,7 +61,7 @@ const getDetailsFromDbpedia = async (plantName) => {
  * @returns {Promise<void>}
  */
 const handleNameUpdate = async () => {
-  if (username === nickname) {
+  if (username === nickname.textContent) {
     let edit = false;
     nameBtn.addEventListener("click", () => {
       edit = !edit;
@@ -78,7 +83,7 @@ const handleNameUpdate = async () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              observationId: observationId,
+              id: id,
               plantName: nameInput.value,
             }),
           })
@@ -125,10 +130,8 @@ const reverseGeocode = (lat, lng) => {
  * Displays the location name or latitude/longitude in the locationText element.
  */
 const setLocationText = async () => {
-  const lat = parseFloat(document.getElementById("lat").textContent);
-  const lng = normaliseLng(
-    parseFloat(document.getElementById("lng").textContent),
-  );
+  const lat = parseFloat(latitude.textContent);
+  const lng = normaliseLng(parseFloat(longitude.textContent));
   const data = await reverseGeocode(lat, lng);
   locationText.innerHTML = "";
   if (
@@ -147,40 +150,112 @@ const setLocationText = async () => {
   }
 };
 
+const createObservationElem = () => {
+  plantName.textContent = observation.name;
+  nickname.textContent = observation.nickname;
+
+  const statusSpan = document.getElementById("statusSpan");
+  if (observation.status === "In_progress") {
+    statusSpan.innerHTML += `
+    <span id="statusDot" class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-amber-400'></span>
+    <span id="status">In progress</span>`;
+  } else {
+    statusSpan.innerHTML += `
+    <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
+    <span id="status">Completed</span>`
+  }
+
+  let src;
+  if (syncN) {
+    src = URL.createObjectURL(observation.image);
+  } else {
+    src = observation.image;
+  }
+  const image = document.getElementById("image");
+  image.src = src;
+  image.alt = `Photograph of ${observation.name}`;
+
+  document.getElementById("dateSeen").textContent = observation.dateSeen;
+
+  latitude.textContent = observation.location.latitude;
+  longitude.textContent = observation.location.longitude;
+
+  document.getElementById("description").textContent = observation.description;
+
+  document.getElementById("colour").textContent += observation.colour;
+  document.getElementById("height").textContent += observation.height;
+  document.getElementById("spread").textContent += observation.spread;
+  document.getElementById("sunlight").textContent += observation.sunlight;
+  document.getElementById("soilType").textContent += observation.soilType;
+  document.getElementById("flowering").textContent += observation.flowering ? 'Yes' : 'No';
+  document.getElementById("leafy").textContent += observation.leafy ? 'Yes' : 'No';
+  document.getElementById("fragrant").textContent += observation.fragrant ? 'Yes' : 'No';
+  document.getElementById("fruiting").textContent += observation.fruiting ? 'Yes' : 'No';
+  document.getElementById("native").textContent += observation.native ? 'Yes' : 'No';
+
+  messagesElem.textContent = JSON.stringify(observation.chat_history);
+}
+
+const updateStatusElements = () => {
+  statusDot.classList.remove("bg-amber-400");
+  statusDot.classList.add("bg-green-400");
+  const status = document.getElementById("status");
+  status.textContent = "Completed";
+  statusBtn.remove();
+  nameBtn.remove();
+  nameInput.remove();
+}
+
 statusBtn.addEventListener("click", () => {
   // post to edit route
-  fetch("/edit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      observationId: observationId,
-      status: "Completed",
-    }),
-  })
-    .then(() => {
-      statusDot.classList.remove("bg-amber-400");
-      statusDot.classList.add("bg-green-400");
-      status.textContent = "Completed";
-      statusBtn.remove();
-      nameBtn.remove();
-      nameInput.remove();
+  if (navigator.onLine) {
+    fetch("/edit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+        status: "Completed",
+      }),
     })
-    .catch((err) => {
-      console.error(err);
-    });
+        .then(() => {
+          updateStatusElements();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+  } else {
+    observation.status = "Completed";
+    if ( syncN ) {
+      openNSyncObservationsIDB().then((db) => {
+        observation.status = "Completed";
+        updateNSyncObservation(db, observation).then(() => {
+          updateStatusElements();
+        })
+      })
+    } else if ( syncU ) {
+      openUSyncObservationsIDB().then((db) => {
+        updateUSyncObservation(db, observation).then(() => {
+          updateStatusElements();
+        })
+      })
+    } else {
+      openObservationsIDB().then((db) => {
+        openUSyncObservationsIDB().then((udb) => {
+          addUSyncObservation(udb, observation).then(() => {
+            updateStatusElements();
+            deleteObservation(db, observation);
+          })
+        });
+      })
+    }
+  }
 });
-
-if (username === nickname && status.textContent !== "Completed") {
-  // reveal status button if original poster
-  nameBtn.hidden = false;
-  statusBtn.hidden = false;
-}
 
 const initChat = () => {
   // print chat history stored in MongoDB
-  let messagesStr = document.getElementById("messages").textContent;
+  let messagesStr = messagesElem.textContent;
   let messages = JSON.parse(messagesStr);
 
   messages.forEach((message) => {
@@ -207,7 +282,7 @@ const initChat = () => {
  * Connects to a chat room.
  */
 const connectToRoom = () => {
-  socket.emit("create or join", observationId, username);
+  socket.emit("create or join", id, username);
 };
 
 /**
@@ -215,7 +290,7 @@ const connectToRoom = () => {
  */
 const sendChatText = () => {
   if (chatInput.value) {
-    socket.emit("chat", observationId, username, chatInput.value);
+    socket.emit("chat", id, username, chatInput.value);
   }
 };
 
@@ -249,10 +324,32 @@ chatInput.addEventListener("keyup", (e) => {
   e.preventDefault();
 });
 
-if (username) {
-  connectToChatroom();
-  initChat();
+let promise;
+if (syncN) {
+  promise = openNSyncObservationsIDB().then((db) => getNSyncObservation(db, id));
+} else if (syncU) {
+  promise = openUSyncObservationsIDB().then((db) => getUSyncObservation(db, id));
+} else {
+  promise = openObservationsIDB().then((db) => getObservation(db, id));
 }
+
+promise.then((retrievedObservation) => {
+  observation = retrievedObservation;
+  createObservationElem();
+
+  if (username) {
+    connectToChatroom();
+    initChat();
+  }
+
+  if (username === nickname && document.getElementById("status").textContent !== "Completed") {
+    // reveal status button if original poster
+    nameBtn.hidden = false;
+    statusBtn.hidden = false;
+  }
+
+  setLocationText().then(() => null);
+});
 
 getDetailsFromDbpedia(plantName.textContent).catch((err) => {
   console.error(err);
@@ -261,5 +358,3 @@ getDetailsFromDbpedia(plantName.textContent).catch((err) => {
 handleNameUpdate().catch((err) => {
   console.error(err);
 });
-
-setLocationText().then(() => null);

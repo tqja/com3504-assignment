@@ -46,7 +46,7 @@ function createPostElements(observations, syncN = false, syncU = false) {
     const photoItem = document.createElement("div");
     photoItem.className = "photo-item";
 
-    let url = `/observations/${observation._id}`;
+    let url = `/observations?id=${observation._id}`;
     if (syncN) {
       url = url.concat('&syncN');
     } else if (syncU) {
@@ -62,7 +62,7 @@ function createPostElements(observations, syncN = false, syncU = false) {
 
     let post = `
   <div class="w-screen h-auto drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
-    <a href=${src}>
+    <a href=${url}>
       <img src=${src} alt="Image of a plant"
          class="object-cover aspect-square h-auto w-screen lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64 2xl:w-64">
       <div class="font-semibold text-center py-2 bg-white w-auto lg:mb-0 lg:w-56 2xl:w-64">

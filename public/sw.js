@@ -32,7 +32,7 @@ self.addEventListener('install', event => {
             let requests = [
                 '/',
                 '/create',
-                // '/observations',
+                '/observations',
                 '/manifest.json',
                 '/images/favicon.ico'
             ];
