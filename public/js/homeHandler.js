@@ -171,4 +171,5 @@ document.querySelectorAll('input[name="native"]').forEach((input) => {
 });
 
 // sort the photo grid with initial sort
+sortInput.value = "dateSeen-desc";
 sortPlants(sortInput.value);
