@@ -2,6 +2,7 @@ const sidebar = document.getElementById("sidebar");
 const grid = document.getElementById("photo-grid");
 const sidebarBtn = document.getElementById("sidebarBtn");
 const sortSpinner = document.getElementById("sortSpinner");
+const sortInput = document.getElementById("sortInput");
 
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
@@ -88,7 +89,7 @@ window.addEventListener("resize", () => {
   }
 });
 
-document.getElementById("sort-by").addEventListener("change", function () {
+sortInput.addEventListener("change", function () {
   if (this.value.startsWith("closest") || this.value.startsWith("furthest")) {
     // show the loading spinner until the location is acquired
     sortSpinner.classList.remove("hidden");
@@ -168,3 +169,6 @@ document.querySelectorAll('input[name="fruit"]').forEach((input) => {
 document.querySelectorAll('input[name="native"]').forEach((input) => {
   input.addEventListener("change", applyFilters);
 });
+
+// sort the photo grid with initial sort
+sortPlants(sortInput.value);
