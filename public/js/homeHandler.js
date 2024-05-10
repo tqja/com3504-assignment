@@ -89,24 +89,23 @@ window.addEventListener("resize", () => {
 });
 
 document.getElementById('sort-by').addEventListener('change', function () {
-  console.log("Dropdown change event triggered");
-  if (this.value === 'closest-to') {
+  if (this.value.startsWith('closest') || this.value.startsWith('furthest')) {
+    const order = this.value.split('-')[0];  // "closest" or "furthest"
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      console.log("Coordinates:", latitude, longitude); // Confirm coordinates are logged
-      const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}`;
+      const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
       const response = await fetch(url);
       const sortedData = await response.json();
-      console.log("Sorted data received:", sortedData); // Check what data is received
-      updatePhotoGrid(sortedData); // Ensure this is called
+      updatePhotoGrid(sortedData);
     }, (err) => {
       console.error("Error retrieving location:", err);
       alert('Unable to retrieve location');
     });
   } else {
-    sortPlants(this.value); // This handles the other sorting options
+    sortPlants(this.value);
   }
 });
+
 
 
 function applyFilters() {

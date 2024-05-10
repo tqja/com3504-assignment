@@ -202,20 +202,23 @@ async function saveFromURL(imageUrl) {
   }
 }
 router.get("/sort-by-distance", async (req, res) => {
-  const { latitude, longitude } = req.query;
-  console.log("Received coordinates:", latitude, longitude);  // Debug log
+  const { latitude, longitude, order = "closest" } = req.query; // Default to closest if not specified
+  console.log("Received coordinates:", latitude, longitude);
+
   try {
     const observations = await model.find();
-    console.log("Fetched observations:", observations.length);  // Debug log
+    console.log("Fetched observations:", observations.length);
 
     const sortedObservations = observations.map(observation => {
       const latDiff = observation.location.latitude - parseFloat(latitude);
       const lonDiff = observation.location.longitude - parseFloat(longitude);
       const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
       return { ...observation.toObject(), distance };
-    }).sort((a, b) => a.distance - b.distance);
+    }).sort((a, b) => {
+      return order === "closest" ? a.distance - b.distance : b.distance - a.distance;
+    });
 
-    console.log("Sorted observations:", sortedObservations.length);  // Debug log
+    console.log("Sorted observations:", sortedObservations.length);
     res.json(sortedObservations);
   } catch (error) {
     console.error("Error sorting observations by distance: ", error);
