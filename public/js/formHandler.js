@@ -8,6 +8,8 @@ const urlInput = document.getElementById("imageUrl");
 const mapDiv = document.getElementById("map");
 const latField = document.getElementById("latitude");
 const lngField = document.getElementById("longitude");
+latLabel = document.getElementById("latLabel");
+lngLabel = document.getElementById("lngLabel");
 
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
@@ -109,4 +111,6 @@ if (typeof navigator !== "undefined" && !navigator.onLine) {
   mapDiv.classList.add("hidden");
   latField.type = "text";
   lngField.type = "text";
+  latLabel.classList.remove("hidden");
+  lngLabel.classList.remove("hidden");
 }
