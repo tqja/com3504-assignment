@@ -1,6 +1,7 @@
 const sidebar = document.getElementById("sidebar");
 const grid = document.getElementById("photo-grid");
 const sidebarBtn = document.getElementById("sidebarBtn");
+const sortSpinner = document.getElementById("sortSpinner");
 
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
@@ -89,9 +90,13 @@ window.addEventListener("resize", () => {
 
 document.getElementById("sort-by").addEventListener("change", function () {
   if (this.value.startsWith("closest") || this.value.startsWith("furthest")) {
+    // show the loading spinner until the location is acquired
+    sortSpinner.classList.remove("hidden");
     const order = this.value.split("-")[0]; // "closest" or "furthest"
     navigator.geolocation.getCurrentPosition(
       async (position) => {
+        // hide the spinner after location acquired
+        sortSpinner.classList.add("hidden");
         const { latitude, longitude } = position.coords;
         const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
         const response = await fetch(url);
@@ -99,6 +104,8 @@ document.getElementById("sort-by").addEventListener("change", function () {
         updatePhotoGrid(sortedData);
       },
       (err) => {
+        // hide the spinner if fetching location fails
+        sortSpinner.classList.add("hidden");
         console.error("Error retrieving location:", err);
         alert("Unable to retrieve location");
       },
