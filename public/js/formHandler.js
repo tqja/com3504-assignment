@@ -3,7 +3,11 @@ const form = document.getElementById("form");
 // submission elements
 const submitDiv = document.getElementById("submitDiv");
 const imageInput = document.getElementById("image");
+const urlLabel = document.getElementById("urlLabel");
 const urlInput = document.getElementById("imageUrl");
+const mapDiv = document.getElementById("map");
+const latField = document.getElementById("latitude");
+const lngField = document.getElementById("longitude");
 
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
@@ -97,3 +101,12 @@ const toggleImgDivs = () => {
 // set the current date and time as the default value
 const date = new Date();
 document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);
+
+// hide elements that require offline, show lat/lng for manual input
+if (typeof navigator !== "undefined" && !navigator.onLine) {
+  urlLabel.classList.add("hidden");
+  urlInput.classList.add("hidden");
+  mapDiv.classList.add("hidden");
+  latField.type = "text";
+  lngField.type = "text";
+}
