@@ -5,7 +5,7 @@ const sidebarBtn = document.getElementById("sidebarBtn");
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
   sidebarBtn.textContent =
-      sidebarBtn.textContent === "Sort/Filter" ? "Close" : "Sort/Filter";
+    sidebarBtn.textContent === "Sort/Filter" ? "Close" : "Sort/Filter";
   sidebar.classList.toggle("hidden");
   grid.classList.toggle("hidden");
 };
@@ -17,10 +17,10 @@ const toggleSidebar = () => {
 function sortPlants(sortBy) {
   const [sortField, sortOrder] = sortBy.split("-");
   fetch(`/sort?field=${sortField}&order=${sortOrder}`)
-      .then((response) => response.json())
-      .then((data) => {
-        updatePhotoGrid(data);
-      });
+    .then((response) => response.json())
+    .then((data) => {
+      updatePhotoGrid(data);
+    });
 }
 
 /**
@@ -70,7 +70,6 @@ function updatePhotoGrid(data) {
   });
 }
 
-
 // ensure the correct content is displayed when the breakpoints are reached
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 1024) {
@@ -88,74 +87,77 @@ window.addEventListener("resize", () => {
   }
 });
 
-document.getElementById('sort-by').addEventListener('change', function () {
-  if (this.value.startsWith('closest') || this.value.startsWith('furthest')) {
-    const order = this.value.split('-')[0];  // "closest" or "furthest"
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
-      const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
-      const response = await fetch(url);
-      const sortedData = await response.json();
-      updatePhotoGrid(sortedData);
-    }, (err) => {
-      console.error("Error retrieving location:", err);
-      alert('Unable to retrieve location');
-    });
+document.getElementById("sort-by").addEventListener("change", function () {
+  if (this.value.startsWith("closest") || this.value.startsWith("furthest")) {
+    const order = this.value.split("-")[0]; // "closest" or "furthest"
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
+        const response = await fetch(url);
+        const sortedData = await response.json();
+        updatePhotoGrid(sortedData);
+      },
+      (err) => {
+        console.error("Error retrieving location:", err);
+        alert("Unable to retrieve location");
+      },
+    );
   } else {
     sortPlants(this.value);
   }
 });
 
-
-
 function applyFilters() {
-  const color = document.getElementById('colour').value;
-  const flowering = document.querySelector('input[name="flowers"]:checked').value;
-  const soil = document.getElementById('soil').value;
-  const sunlight = document.getElementById('sunlight').value;
+  const color = document.getElementById("colour").value;
+  const flowering = document.querySelector(
+    'input[name="flowers"]:checked',
+  ).value;
+  const soil = document.getElementById("soil").value;
+  const sunlight = document.getElementById("sunlight").value;
   const leafy = document.querySelector('input[name="leaves"]:checked').value;
-  const fragrant = document.querySelector('input[name="fragrance"]:checked').value;
+  const fragrant = document.querySelector(
+    'input[name="fragrance"]:checked',
+  ).value;
   const fruiting = document.querySelector('input[name="fruit"]:checked').value;
   const native = document.querySelector('input[name="native"]:checked').value;
 
   let queryParams = [];
 
-  if (color !== 'Any') queryParams.push(`color=${color}`);
-  if (flowering !== 'no-preference') queryParams.push(`flowering=${flowering}`);
-  if (soil !== 'no-preference') queryParams.push(`soil=${soil}`);
-  if (sunlight !== 'no-preference') queryParams.push(`sunlight=${sunlight}`);
-  if (leafy !== 'no-preference') queryParams.push(`leafy=${leafy}`);
-  if (fragrant !== 'no-preference') queryParams.push(`fragrant=${fragrant}`);
-  if (fruiting !== 'no-preference') queryParams.push(`fruiting=${fruiting}`);
-  if (native !== 'no-preference') queryParams.push(`native=${native}`);
+  if (color !== "Any") queryParams.push(`color=${color}`);
+  if (flowering !== "no-preference") queryParams.push(`flowering=${flowering}`);
+  if (soil !== "no-preference") queryParams.push(`soil=${soil}`);
+  if (sunlight !== "no-preference") queryParams.push(`sunlight=${sunlight}`);
+  if (leafy !== "no-preference") queryParams.push(`leafy=${leafy}`);
+  if (fragrant !== "no-preference") queryParams.push(`fragrant=${fragrant}`);
+  if (fruiting !== "no-preference") queryParams.push(`fruiting=${fruiting}`);
+  if (native !== "no-preference") queryParams.push(`native=${native}`);
 
-  const queryString = queryParams.join('&');
+  const queryString = queryParams.join("&");
 
   fetch(`/filter?${queryString}`)
-      .then(response => response.json())
-      .then(data => {
-        updatePhotoGrid(data);
-      });
+    .then((response) => response.json())
+    .then((data) => {
+      updatePhotoGrid(data);
+    });
 }
 
-
 // Add event listeners to the filter inputs
-document.getElementById('colour').addEventListener('change', applyFilters);
-document.querySelectorAll('input[name="flowers"]').forEach(input => {
-  input.addEventListener('change', applyFilters);
+document.getElementById("colour").addEventListener("change", applyFilters);
+document.querySelectorAll('input[name="flowers"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
 });
-document.getElementById('soil').addEventListener('change', applyFilters);
-document.getElementById('sunlight').addEventListener('change', applyFilters);
-document.querySelectorAll('input[name="leaves"]').forEach(input => {
-  input.addEventListener('change', applyFilters);
+document.getElementById("soil").addEventListener("change", applyFilters);
+document.getElementById("sunlight").addEventListener("change", applyFilters);
+document.querySelectorAll('input[name="leaves"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
 });
-document.querySelectorAll('input[name="fragrance"]').forEach(input => {
-  input.addEventListener('change', applyFilters);
+document.querySelectorAll('input[name="fragrance"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
 });
-document.querySelectorAll('input[name="fruit"]').forEach(input => {
-  input.addEventListener('change', applyFilters);
+document.querySelectorAll('input[name="fruit"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
 });
-document.querySelectorAll('input[name="native"]').forEach(input => {
-  input.addEventListener('change', applyFilters);
+document.querySelectorAll('input[name="native"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
 });
-
