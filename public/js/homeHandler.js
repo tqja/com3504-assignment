@@ -89,20 +89,25 @@ window.addEventListener("resize", () => {
 });
 
 document.getElementById('sort-by').addEventListener('change', function () {
+  console.log("Dropdown change event triggered");
   if (this.value === 'closest-to') {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
+      console.log("Coordinates:", latitude, longitude); // Confirm coordinates are logged
       const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}`;
       const response = await fetch(url);
       const sortedData = await response.json();
-      // Update your page elements with sortedData
-      console.log(sortedData);  // Implement display logic based on your app's setup
+      console.log("Sorted data received:", sortedData); // Check what data is received
+      updatePhotoGrid(sortedData); // Ensure this is called
     }, (err) => {
-      console.error(err);
+      console.error("Error retrieving location:", err);
       alert('Unable to retrieve location');
     });
+  } else {
+    sortPlants(this.value); // This handles the other sorting options
   }
 });
+
 
 function applyFilters() {
   const color = document.getElementById('colour').value;
@@ -133,7 +138,6 @@ function applyFilters() {
         updatePhotoGrid(data);
       });
 }
-
 
 
 // Add event listeners to the filter inputs
