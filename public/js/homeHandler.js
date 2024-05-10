@@ -88,6 +88,22 @@ window.addEventListener("resize", () => {
   }
 });
 
+document.getElementById('sort-by').addEventListener('change', function () {
+  if (this.value === 'closest-to') {
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}`;
+      const response = await fetch(url);
+      const sortedData = await response.json();
+      // Update your page elements with sortedData
+      console.log(sortedData);  // Implement display logic based on your app's setup
+    }, (err) => {
+      console.error(err);
+      alert('Unable to retrieve location');
+    });
+  }
+});
+
 function applyFilters() {
   const color = document.getElementById('colour').value;
   const flowering = document.querySelector('input[name="flowers"]:checked').value;

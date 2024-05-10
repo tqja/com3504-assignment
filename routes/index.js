@@ -201,12 +201,34 @@ async function saveFromURL(imageUrl) {
     return null;
   }
 }
+router.get("/sort-by-distance", async (req, res) => {
+  const { latitude, longitude } = req.query;
+  console.log("Received coordinates:", latitude, longitude);  // Debug log
+  try {
+    const observations = await model.find();
+    console.log("Fetched observations:", observations.length);  // Debug log
+
+    const sortedObservations = observations.map(observation => {
+      const latDiff = observation.location.latitude - parseFloat(latitude);
+      const lonDiff = observation.location.longitude - parseFloat(longitude);
+      const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
+      return { ...observation.toObject(), distance };
+    }).sort((a, b) => a.distance - b.distance);
+
+    console.log("Sorted observations:", sortedObservations.length);  // Debug log
+    res.json(sortedObservations);
+  } catch (error) {
+    console.error("Error sorting observations by distance: ", error);
+    res.status(500).send("Error sorting observations by distance");
+  }
+});
 
 
 // handle 404 (ensure this route is last!)
 router.get("*", function (req, res) {
   res.redirect("/");
 });
+
 
 
 
