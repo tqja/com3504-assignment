@@ -91,6 +91,9 @@ window.addEventListener("resize", () => {
 
 sortInput.addEventListener("change", function () {
   if (this.value.startsWith("closest") || this.value.startsWith("furthest")) {
+    // disable the input until finished loading new photo grid
+    sortInput.disabled = true;
+
     // show the loading spinner until the location is acquired
     sortSpinner.classList.remove("hidden");
     const order = this.value.split("-")[0]; // "closest" or "furthest"
@@ -103,10 +106,14 @@ sortInput.addEventListener("change", function () {
         const response = await fetch(url);
         const sortedData = await response.json();
         updatePhotoGrid(sortedData);
+        // enable input after update
+        sortInput.disabled = false;
       },
       (err) => {
         // hide the spinner if fetching location fails
         sortSpinner.classList.add("hidden");
+        // enable input after failure
+        sortInput.disabled = false;
         console.error("Error retrieving location:", err);
         alert("Unable to retrieve location");
       },
