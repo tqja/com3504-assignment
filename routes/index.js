@@ -64,7 +64,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
     return res.status(200).send(observation);
   } catch (error) {
     console.error("Error saving observation:", error);
-    res.status(500).send("Error saving observation");
+    return res.status(500).send("Error saving observation");
   }
 });
 
@@ -101,10 +101,11 @@ router.post("/edit", async (req, res) => {
       updateData.status = data.status;
     }
 
-    await controller.edit(data.observationId, updateData);
-    res.status(200).send("Observation updated successfully");
+    let observation = await controller.edit(data.id, updateData);
+    console.log(observation);
+    return res.status(200).send(observation);
   } catch {
-    res.status(500).send("Error saving observation");
+    return res.status(500).send("Error saving observation");
   }
 });
 

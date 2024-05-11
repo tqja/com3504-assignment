@@ -1,7 +1,8 @@
+import { getUsernameFromIDB } from "./idbHelper.js";
+
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
 const syncN = params.has('syncN');
-const syncU = params.has('syncU');
 let observation;
 
 let socket = io();
@@ -17,7 +18,6 @@ const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
 const messagesElem = document.getElementById("messages");
-const statusDot = document.getElementById("statusDot");
 const username = await getUsernameFromIDB(); // from indexedDB
 const locationText = document.getElementById("location");
 
@@ -61,47 +61,53 @@ const getDetailsFromDbpedia = async (plantName) => {
  * @returns {Promise<void>}
  */
 const handleNameUpdate = async () => {
-  if (username === nickname.textContent) {
-    let edit = false;
-    nameBtn.addEventListener("click", () => {
-      edit = !edit;
-      const originalName = plantName.textContent;
+  let edit = false;
+  nameBtn.addEventListener("click", () => {
+    edit = !edit;
+    const originalName = plantName.textContent;
 
-      if (edit) {
-        // reveal the name input and change button text
-        nameInput.classList.remove("hidden");
-        nameBtn.textContent = "Save";
+    if (edit) {
+      // reveal the name input and change button text
+      nameInput.classList.remove("hidden");
+      nameBtn.textContent = "Save";
+    } else {
+      // set max length for input
+      if (plantName.textContent.length > 40) {
+        alert("Plant name cannot exceed 40 characters!");
       } else {
-        // set max length for input
-        if (plantName.textContent.length > 40) {
-          alert("Plant name cannot exceed 40 characters!");
-        } else {
-          // post new name to edit route
-          fetch("/edit", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              id: id,
-              plantName: nameInput.value,
-            }),
-          })
-            .then(async () => {
-              await getDetailsFromDbpedia(nameInput.value);
-              plantName.textContent = nameInput.value;
+        // post new name to edit route
+        fetch("/edit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id,
+            plantName: nameInput.value,
+          }),
+        }).then((response) => {
+          if ( !response.ok ) {
+            throw new Error("Network response not ok");
+          }
+          return response;
+        }).then(() => {
+          observation.name = nameInput.value;
+            openObservationsIDB().then((db) => {
+              updateObservation(db, observation).then(() => {
+                getDetailsFromDbpedia(nameInput.value);
+                plantName.textContent = nameInput.value;
+              })
             })
-            .catch(() => {
-              alert("Failed to update name");
-              plantName.textContent = originalName;
-            });
-          // hide the name input and change button text
-          nameInput.classList.add("hidden");
-          nameBtn.textContent = "Change name";
-        }
+          }).catch(() => {
+            alert("Failed to update name");
+            plantName.textContent = originalName;
+          });
+        // hide the name input and change button text
+        nameInput.classList.add("hidden");
+        nameBtn.textContent = "Change name";
       }
-    });
-  }
+    }
+  });
 };
 
 const normaliseLng = (lng) => {
@@ -132,7 +138,7 @@ const reverseGeocode = (lat, lng) => {
 const setLocationText = async () => {
   const lat = parseFloat(latitude.textContent);
   const lng = normaliseLng(parseFloat(longitude.textContent));
-  const data = await reverseGeocode(lat, lng);
+  const data = navigator.onLine ? await reverseGeocode(lat, lng) : null;
   locationText.innerHTML = "";
   if (
     data &&
@@ -162,7 +168,7 @@ const createObservationElem = () => {
   } else {
     statusSpan.innerHTML += `
     <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
-    <span id="status">Completed</span>`
+    <span id="status">Completed</span>`;
   }
 
   let src;
@@ -175,7 +181,7 @@ const createObservationElem = () => {
   image.src = src;
   image.alt = `Photograph of ${observation.name}`;
 
-  document.getElementById("dateSeen").textContent = observation.dateSeen;
+  document.getElementById("dateSeen").textContent = new Date(observation.dateSeen).toDateString();
 
   latitude.textContent = observation.location.latitude;
   longitude.textContent = observation.location.longitude;
@@ -197,6 +203,7 @@ const createObservationElem = () => {
 }
 
 const updateStatusElements = () => {
+  const statusDot = document.getElementById("statusDot");
   statusDot.classList.remove("bg-amber-400");
   statusDot.classList.add("bg-green-400");
   const status = document.getElementById("status");
@@ -218,36 +225,34 @@ statusBtn.addEventListener("click", () => {
         id: id,
         status: "Completed",
       }),
-    })
-        .then(() => {
-          updateStatusElements();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-  } else {
-    observation.status = "Completed";
-    if ( syncN ) {
-      openNSyncObservationsIDB().then((db) => {
+    }).then((response) => {
+      if ( !response.ok ) {
+        throw new Error("Network response not ok");
+      }
+      return response;
+    }).then(() => {
+      openObservationsIDB().then((db) => {
         observation.status = "Completed";
-        updateNSyncObservation(db, observation).then(() => {
+        updateObservation(db, observation).then(() => {
           updateStatusElements();
         })
       })
-    } else if ( syncU ) {
-      openUSyncObservationsIDB().then((db) => {
-        updateUSyncObservation(db, observation).then(() => {
+    }).catch((err) => {
+      console.error(err);
+    });
+  } else {
+    observation.status = "Completed";
+    if (syncN) {
+      openNSyncObservationsIDB().then((db) => {
+        updateNSyncObservation(db, observation).then(() => {
           updateStatusElements();
         })
       })
     } else {
       openObservationsIDB().then((db) => {
-        openUSyncObservationsIDB().then((udb) => {
-          addUSyncObservation(udb, observation).then(() => {
-            updateStatusElements();
-            deleteObservation(db, observation);
-          })
-        });
+        updateObservation(db, observation).then(() => {
+          updateStatusElements();
+        })
       })
     }
   }
@@ -327,8 +332,6 @@ chatInput.addEventListener("keyup", (e) => {
 let promise;
 if (syncN) {
   promise = openNSyncObservationsIDB().then((db) => getNSyncObservation(db, id));
-} else if (syncU) {
-  promise = openUSyncObservationsIDB().then((db) => getUSyncObservation(db, id));
 } else {
   promise = openObservationsIDB().then((db) => getObservation(db, id));
 }
@@ -342,19 +345,21 @@ promise.then((retrievedObservation) => {
     initChat();
   }
 
-  if (username === nickname && document.getElementById("status").textContent !== "Completed") {
+  if (username === nickname.textContent && document.getElementById("status").textContent === "In progress") {
     // reveal status button if original poster
     nameBtn.hidden = false;
     statusBtn.hidden = false;
   }
 
   setLocationText().then(() => null);
-});
 
-getDetailsFromDbpedia(plantName.textContent).catch((err) => {
-  console.error(err);
-});
+  getDetailsFromDbpedia(plantName.textContent).catch((err) => {
+    console.error(err);
+  });
 
-handleNameUpdate().catch((err) => {
-  console.error(err);
+  if (username === nickname.textContent) {
+    handleNameUpdate().catch((err) => {
+      console.error(err);
+    });
+  }
 });

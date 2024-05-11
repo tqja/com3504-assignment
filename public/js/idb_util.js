@@ -80,6 +80,22 @@ const deleteAllObservations = (IDB) => {
     });
 };
 
+const updateObservation = (IDB, observation) => {
+    return new Promise((resolve, reject) => {
+        const transaction = IDB.transaction(["observations"], "readwrite")
+        const observationStore = transaction.objectStore("observations")
+        const request = observationStore.put(observation)
+
+        request.addEventListener("success", () => {
+            resolve(request.result);
+        });
+
+        request.addEventListener("error", (event) => {
+            reject(event.target.error);
+        });
+    })
+}
+
 // TODO: must be replaced with a 'sync' method which adds only the necessary updates to the IDB
 const addObservation = (IDB, observation) => {
     return new Promise((resolve, reject) => {

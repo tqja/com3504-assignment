@@ -33,25 +33,22 @@ const create = function (userData, filePath) {
   return observation
     .save()
     .then((savedObservation) => {
-      console.log(observation);
-
       return JSON.stringify(savedObservation);
     })
     .catch((err) => {
-      // Log the error if saving fails
       console.error(err);
-
-      // Return null in case of an error
       return null;
     });
 };
 
-const edit = async (observationId, updateData) => {
-  try {
-    return await observationModel.findByIdAndUpdate(observationId, updateData);
-  } catch (err) {
-    return err.message;
-  }
+const edit = (observationId, updateData) => {
+  return observationModel.findByIdAndUpdate(observationId, updateData, {new: true})
+      .then((observation) => {
+        return JSON.stringify(observation);
+      }).catch((err) => {
+        console.error(err);
+        return null;
+      });
 };
 
 const getAll = () => {

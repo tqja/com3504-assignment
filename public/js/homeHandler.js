@@ -41,7 +41,7 @@ function updatePhotoGrid(photoItems) {
   photoItems.forEach((photoItem) => photoGrid.appendChild(photoItem));
 }
 
-function createPostElements(observations, syncN = false, syncU = false) {
+function createPostElements(observations, syncN = false) {
   return observations.map((observation) => {
     const photoItem = document.createElement("div");
     photoItem.className = "photo-item";
@@ -49,8 +49,6 @@ function createPostElements(observations, syncN = false, syncU = false) {
     let url = `/observations?id=${observation._id}`;
     if (syncN) {
       url = url.concat('&syncN');
-    } else if (syncU) {
-      url = url.concat('&syncU');
     }
 
     let src;
@@ -209,14 +207,12 @@ window.onload = function () {
   } else {
     Promise.all([
       openObservationsIDB().then(db => getAllObservations(db)),
-      openNSyncObservationsIDB().then(ndb => getAllNSyncObservations(ndb)),
-      openUSyncObservationsIDB().then(udb => getAllUSyncObservations(udb))
+      openNSyncObservationsIDB().then(ndb => getAllNSyncObservations(ndb))
     ])
         .then(([observations, nSyncObservations, uSyncObservations]) => {
           let postElems = createPostElements(observations);
           let NPostElems = createPostElements(nSyncObservations, true);
-          let UPostElems = createPostElements(uSyncObservations, false, true);
-          updatePhotoGrid(postElems.concat(NPostElems).concat(UPostElems));
+          updatePhotoGrid(postElems.concat(NPostElems));
         })
         .catch(error => {
           console.error('Error fetching data from IndexedDB:', error);
