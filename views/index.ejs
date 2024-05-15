@@ -256,7 +256,40 @@
             </div>
         </div>
 
-        <div id="photo-grid"></div>
+        <div id="photo-grid"
+             class="grid mx-auto w-auto lg:p-4 2xl:p-6 gap-4 grid-cols-1 lg:grid-cols-3 2xl:grid-cols-4
+                    grid-rows-<%= data.length %> lg:grid-rows-<%= Math.max(Math.ceil(data.length / 3), 4) %>
+                    2xl:grid-rows-<%= Math.max(Math.ceil(data.length / 4), 4) %>">
+            <% if (data) { data.forEach(observation => { %>
+                <div class="h-auto w-screen drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
+                    <a href="/observations/<%= observation._id %>">
+                        <img src="<%= observation.image %>" alt="Image of a plant"
+                             class="aspect-square h-auto w-screen object-cover lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64
+                                    2xl:w-64">
+                        <div class="w-auto bg-white py-2 text-center font-semibold lg:mb-0 lg:w-56 2xl:w-64">
+                            <h2 class="overflow-hidden photo-description"><%= observation.name %></h2>
+                            <div class="mx-2 mt-1 flex flex-wrap items-center justify-between border-t-2 border-gray-300
+                                        pt-2">
+                                <div class="flex items-center">
+                                    <i class="mr-1 fa-regular fa-user"></i>
+                                    <span id="nickname" class="text-xs"><%= observation.nickname %></span>
+                                </div>
+                                <div class="flex items-center">
+                                    <% if (observation.status === "In_progress") { %>
+                                        <span id="statusDot"
+                                              class="mr-1 inline-block h-3 w-3 rounded-full bg-amber-400"></span>
+                                        <span id="status" class="text-xs">In progress</span>
+                                    <% } else { %>
+                                        <span class="mr-1 inline-block h-3 w-3 rounded-full bg-green-400"></span>
+                                        <span id="status" class="text-xs">Completed</span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <% });} %>
+        </div>
     </div>
 </main>
 </body>

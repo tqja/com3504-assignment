@@ -31,8 +31,20 @@ function sortPlants(sortBy) {
  */
 function updatePhotoGrid(photoItems) {
   const photoGrid = document.querySelector("#photo-grid");
-  photoGrid.classList.add(`grid`, `mx-auto`, `w-auto`, `lg:p-4`, `2xl:p-6`, `gap-4`, `grid-cols-1`, `lg:grid-cols-3`, `2xl:grid-cols-4`,
-      `grid-rows-${length}`, `lg:grid-rows-${Math.max(Math.ceil(length / 3), 4)}`, `2xl:grid-rows-${Math.max(Math.ceil(length / 4), 4)}`);
+  photoGrid.classList.add(
+    "grid",
+    "mx-auto",
+    "w-auto",
+    "lg:p-4",
+    "2xl:p-6",
+    "gap-4",
+    "grid-cols-1",
+    "lg:grid-cols-3",
+    "2xl:grid-cols-4",
+    `grid-rows-${length}`,
+    `lg:grid-rows-${Math.max(Math.ceil(length / 3), 4)}`,
+    `2xl:grid-rows-${Math.max(Math.ceil(length / 4), 4)}`,
+  );
   photoGrid.innerHTML = ""; // Clear existing content
 
   if (photoItems.length === 0) {
@@ -46,11 +58,18 @@ function updatePhotoGrid(photoItems) {
 function createPostElements(observations, syncN = false) {
   return observations.map((observation) => {
     const photoItem = document.createElement("div");
-    photoItem.className = "photo-item";
+    photoItem.classList.add(
+      "w-screen",
+      "h-auto",
+      "drop-shadow-xl",
+      "lg:w-56",
+      "lg:rounded",
+      "2xl:w-64",
+    );
 
     let url = `/observations?id=${observation._id}`;
     if (syncN) {
-      url = url.concat('&syncN');
+      url = url.concat("&syncN");
     }
 
     let src;
@@ -61,7 +80,6 @@ function createPostElements(observations, syncN = false) {
     }
 
     let post = `
-  <div class="w-screen h-auto drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
     <a href=${url}>
       <img src=${src} alt="Image of a plant"
          class="object-cover aspect-square h-auto w-screen lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64 2xl:w-64">
@@ -86,7 +104,7 @@ function createPostElements(observations, syncN = false) {
           <span id="status" class="text-xs">Completed</span>
         </div>`;
     }
-    post += `</div></div></a></div>`;
+    post += `</div></div></a>`;
     photoItem.innerHTML = post;
     return photoItem;
   });
@@ -205,14 +223,22 @@ sortInput.value = "dateSeen-desc";
 sortPlants(sortInput.value);
 
 async function syncObservations() {
-  const localObservations = await openObservationsIDB().then(db => getAllObservations(db));
-  const newObservations = await openNSyncObservationsIDB().then(db => getAllNSyncObservations(db));
-  const remoteObservations = await fetch('/allObservations').then(observations => observations.json());
+  const localObservations = await openObservationsIDB().then((db) =>
+    getAllObservations(db),
+  );
+  const newObservations = await openNSyncObservationsIDB().then((db) =>
+    getAllNSyncObservations(db),
+  );
+  const remoteObservations = await fetch("/allObservations").then(
+    (observations) => observations.json(),
+  );
   const username = await getUsernameFromIDB();
 
-  localObservations.forEach(localObservation => {
-    let updateData = {id: localObservation._id};
-    const remoteObservation = remoteObservations.find(remote => remote._id === localObservation._id);
+  localObservations.forEach((localObservation) => {
+    let updateData = { id: localObservation._id };
+    const remoteObservation = remoteObservations.find(
+      (remote) => remote._id === localObservation._id,
+    );
     if (remoteObservation) {
       if (localObservation.name !== remoteObservation.name) {
         if (localObservation.username === username) {
@@ -230,7 +256,10 @@ async function syncObservations() {
         }
       }
 
-      const mergedChatHistory = mergeChatHistories(localObservation.chat_history, remoteObservation.chat_history);
+      const mergedChatHistory = mergeChatHistories(
+        localObservation.chat_history,
+        remoteObservation.chat_history,
+      );
       if (mergedChatHistory) {
         localObservation.chat_history = mergedChatHistory;
         updateData.chat_history = mergedChatHistory;
@@ -243,35 +272,44 @@ async function syncObservations() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updateData),
-        }).then((response) => {
-          if ( !response.ok ) {
-            throw new Error("Network response not ok");
-          }
-          return response;
-        }).then(() => {
-          openObservationsIDB().then(db => updateObservation(db, localObservation));
-        }).catch((err) => {
-          console.error(err);
         })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response not ok");
+            }
+            return response;
+          })
+          .then(() => {
+            openObservationsIDB().then((db) =>
+              updateObservation(db, localObservation),
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
     }
-  })
+  });
 
-  const localObservationIDs = new Set(localObservations.map(observation => observation._id));
-  const newRemoteObservations = remoteObservations.filter(remoteObservation => !localObservationIDs.has(remoteObservation._id));
-  newRemoteObservations.forEach(observation => {
+  const localObservationIDs = new Set(
+    localObservations.map((observation) => observation._id),
+  );
+  const newRemoteObservations = remoteObservations.filter(
+    (remoteObservation) => !localObservationIDs.has(remoteObservation._id),
+  );
+  newRemoteObservations.forEach((observation) => {
     openObservationsIDB().then((db) => {
       addObservation(db, observation);
-    })
-  })
+    });
+  });
 
-  return await openObservationsIDB().then(db => getAllObservations(db));
+  return await openObservationsIDB().then((db) => getAllObservations(db));
 }
 
 function mergeChatHistories(localHistory, remoteHistory) {
   const merged = [...localHistory, ...remoteHistory];
   const uniqueTimestamps = new Set();
-  const uniqueMessages = merged.filter(msg => {
+  const uniqueMessages = merged.filter((msg) => {
     if (!uniqueTimestamps.has(msg.timestamp)) {
       uniqueTimestamps.add(msg.timestamp);
       return true;
@@ -288,14 +326,15 @@ function mergeChatHistories(localHistory, remoteHistory) {
 }
 
 window.onload = function () {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', {scope: '/'})
-        .then(function (registration) {
-          console.log('Service Worker Registered!', registration);
-        })
-        .catch(function (err) {
-          console.log('Service Worker registration failed: ', err);
-        });
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/sw.js", { scope: "/" })
+      .then(function (registration) {
+        console.log("Service Worker Registered!", registration);
+      })
+      .catch(function (err) {
+        console.log("Service Worker registration failed: ", err);
+      });
   }
 
   if ("Notification" in window) {
@@ -304,14 +343,15 @@ window.onload = function () {
     } else if (Notification.permission !== "denied") {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
-          navigator.serviceWorker.ready
-              .then((serviceWorkerRegistration => {
-                serviceWorkerRegistration.showNotification("floraExplorer",
-                    {body: "Notifications are enabled!"})
-                    .then(r => {
-                      console.log(r)
-                    });
-              }));
+          navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+            serviceWorkerRegistration
+              .showNotification("floraExplorer", {
+                body: "Notifications are enabled!",
+              })
+              .then((r) => {
+                console.log(r);
+              });
+          });
         }
       });
     }
@@ -320,19 +360,19 @@ window.onload = function () {
   if (navigator.onLine) {
     syncObservations().then((observations) => {
       updatePhotoGrid(createPostElements(observations));
-    })
+    });
   } else {
     Promise.all([
-      openObservationsIDB().then(db => getAllObservations(db)),
-      openNSyncObservationsIDB().then(ndb => getAllNSyncObservations(ndb))
+      openObservationsIDB().then((db) => getAllObservations(db)),
+      openNSyncObservationsIDB().then((ndb) => getAllNSyncObservations(ndb)),
     ])
-        .then(([observations, nSyncObservations]) => {
-          let postElems = createPostElements(observations);
-          let NPostElems = createPostElements(nSyncObservations, true);
-          updatePhotoGrid(postElems.concat(NPostElems));
-        })
-        .catch(error => {
-          console.error('Error fetching data from IndexedDB:', error);
-        });
+      .then(([observations, nSyncObservations]) => {
+        let postElems = createPostElements(observations);
+        let NPostElems = createPostElements(nSyncObservations, true);
+        updatePhotoGrid(postElems.concat(NPostElems));
+      })
+      .catch((error) => {
+        console.error("Error fetching data from IndexedDB:", error);
+      });
   }
-}
+};
