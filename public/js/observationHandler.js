@@ -1,6 +1,6 @@
 const params = new URLSearchParams(window.location.search);
-const id = params.get('id');
-const syncN = params.has('syncN');
+const id = params.get("id");
+const syncN = params.has("syncN");
 let observation;
 
 let socket = io();
@@ -15,9 +15,17 @@ const nickname = document.getElementById("nickname");
 const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
-const username = openUsernameIDB().then((db) => getUsername(db));
 const messagesElem = document.getElementById("messages");
 const locationText = document.getElementById("location");
+
+let username = "undefined";
+getUsernameFromIDB()
+  .then((u) => {
+    username = u;
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 /**
  * Attempts to fetch a plant matching the name from DBPedia and fill the div with information.
@@ -83,20 +91,23 @@ const handleNameUpdate = async () => {
             id: id,
             plantName: nameInput.value,
           }),
-        }).then((response) => {
-          if ( !response.ok ) {
-            throw new Error("Network response not ok");
-          }
-          return response;
-        }).then(() => {
-          observation.name = nameInput.value;
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response not ok");
+            }
+            return response;
+          })
+          .then(() => {
+            observation.name = nameInput.value;
             openObservationsIDB().then((db) => {
               updateObservation(db, observation).then(() => {
                 getDetailsFromDbpedia(nameInput.value);
                 plantName.textContent = nameInput.value;
-              })
-            })
-          }).catch(() => {
+              });
+            });
+          })
+          .catch(() => {
             alert("Failed to update name");
             plantName.textContent = originalName;
           });
@@ -179,7 +190,9 @@ const createObservationElem = () => {
   image.src = src;
   image.alt = `Photograph of ${observation.name}`;
 
-  document.getElementById("dateSeen").textContent = new Date(observation.dateSeen).toDateString();
+  document.getElementById("dateSeen").textContent = new Date(
+    observation.dateSeen,
+  ).toDateString();
 
   latitude.textContent = observation.location.latitude;
   longitude.textContent = observation.location.longitude;
@@ -191,14 +204,24 @@ const createObservationElem = () => {
   document.getElementById("spread").textContent += observation.spread;
   document.getElementById("sunlight").textContent += observation.sunlight;
   document.getElementById("soilType").textContent += observation.soilType;
-  document.getElementById("flowering").textContent += observation.flowering ? 'Yes' : 'No';
-  document.getElementById("leafy").textContent += observation.leafy ? 'Yes' : 'No';
-  document.getElementById("fragrant").textContent += observation.fragrant ? 'Yes' : 'No';
-  document.getElementById("fruiting").textContent += observation.fruiting ? 'Yes' : 'No';
-  document.getElementById("native").textContent += observation.native ? 'Yes' : 'No';
+  document.getElementById("flowering").textContent += observation.flowering
+    ? "Yes"
+    : "No";
+  document.getElementById("leafy").textContent += observation.leafy
+    ? "Yes"
+    : "No";
+  document.getElementById("fragrant").textContent += observation.fragrant
+    ? "Yes"
+    : "No";
+  document.getElementById("fruiting").textContent += observation.fruiting
+    ? "Yes"
+    : "No";
+  document.getElementById("native").textContent += observation.native
+    ? "Yes"
+    : "No";
 
   messagesElem.textContent = JSON.stringify(observation.chat_history);
-}
+};
 
 const updateStatusElements = () => {
   const statusDot = document.getElementById("statusDot");
@@ -209,7 +232,7 @@ const updateStatusElements = () => {
   statusBtn.remove();
   nameBtn.remove();
   nameInput.remove();
-}
+};
 
 statusBtn.addEventListener("click", () => {
   // post to edit route
@@ -223,35 +246,38 @@ statusBtn.addEventListener("click", () => {
         id: id,
         status: "Completed",
       }),
-    }).then((response) => {
-      if ( !response.ok ) {
-        throw new Error("Network response not ok");
-      }
-      return response;
-    }).then(() => {
-      openObservationsIDB().then((db) => {
-        observation.status = "Completed";
-        updateObservation(db, observation).then(() => {
-          updateStatusElements();
-        })
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response not ok");
+        }
+        return response;
       })
-    }).catch((err) => {
-      console.error(err);
-    });
+      .then(() => {
+        openObservationsIDB().then((db) => {
+          observation.status = "Completed";
+          updateObservation(db, observation).then(() => {
+            updateStatusElements();
+          });
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   } else {
     observation.status = "Completed";
     if (syncN) {
       openNSyncObservationsIDB().then((db) => {
         updateNSyncObservation(db, observation).then(() => {
           updateStatusElements();
-        })
-      })
+        });
+      });
     } else {
       openObservationsIDB().then((db) => {
         updateObservation(db, observation).then(() => {
           updateStatusElements();
-        })
-      })
+        });
+      });
     }
   }
 });
@@ -329,7 +355,9 @@ chatInput.addEventListener("keyup", (e) => {
 
 let promise;
 if (syncN) {
-  promise = openNSyncObservationsIDB().then((db) => getNSyncObservation(db, id));
+  promise = openNSyncObservationsIDB().then((db) =>
+    getNSyncObservation(db, id),
+  );
 } else {
   promise = openObservationsIDB().then((db) => getObservation(db, id));
 }
@@ -337,13 +365,15 @@ if (syncN) {
 promise.then((retrievedObservation) => {
   observation = retrievedObservation;
   createObservationElem();
-  console.log(username);
   if (username) {
     connectToChatroom();
     initChat();
   }
 
-  if (username === nickname.textContent && document.getElementById("status").textContent === "In progress") {
+  if (
+    username === nickname.textContent &&
+    document.getElementById("status").textContent === "In progress"
+  ) {
     // reveal status button if original poster
     nameBtn.hidden = false;
     statusBtn.hidden = false;
