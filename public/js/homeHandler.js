@@ -53,6 +53,10 @@ function updatePhotoGrid(photoItems) {
   }
 
   photoItems.forEach((photoItem) => photoGrid.appendChild(photoItem));
+
+  // sort the photo grid with initial sort
+  sortInput.value = "dateSeen-desc";
+  sortPlants(sortInput.value);
 }
 
 function createPostElements(observations, syncN = false) {
@@ -218,9 +222,6 @@ document.querySelectorAll('input[name="native"]').forEach((input) => {
 document.querySelectorAll('input[name="status"]').forEach((input) => {
   input.addEventListener("change", applyFilters);
 });
-// sort the photo grid with initial sort
-sortInput.value = "dateSeen-desc";
-sortPlants(sortInput.value);
 
 async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
