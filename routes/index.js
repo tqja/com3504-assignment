@@ -23,23 +23,35 @@ const storage = multer.diskStorage({
     const file_extension = original.split(".");
     // Make the file name the date + the file extension
     const filename =
-        Date.now() + "." + file_extension[file_extension.length - 1];
+      Date.now() + "." + file_extension[file_extension.length - 1];
     cb(null, filename);
   },
 });
 let upload = multer({ storage: storage });
 
 router.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+  let result = controller.getAll();
+  result
+    .then((observations) => {
+      const data = JSON.parse(observations);
+      res.render("index", { title: "Home", data: data });
+    })
+    .catch(() => {
+      const data = {};
+      res.render("index", { title: "Home", data: data });
+    });
 });
 
-router.get('/allObservations', function (req, res, next) {
-  controller.getAll().then(observations => {
-    return res.status(200).send(observations);
-  }).catch(err => {
-    console.log(err);
-    res.status(500).send(err);
-  });
+router.get("/allObservations", function (req, res, next) {
+  controller
+    .getAll()
+    .then((observations) => {
+      return res.status(200).send(observations);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err);
+    });
 });
 
 router.get("/create", (req, res) => {
@@ -67,24 +79,24 @@ router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
-router.get("/observations",  (req, res) => {
+router.get("/observations", (req, res) => {
   res.render("observationDetails", { title: "Observation details" });
 });
 
-router.post('/dir', (req, res) => {
+router.post("/dir", (req, res) => {
   const directoryPath = req.body.directoryPath;
   const files = fs.readdirSync(directoryPath);
   let fileList = [];
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(directoryPath, file);
     const stats = fs.statSync(filePath);
     // Remove the 'public/' prefix from the file path
-    const modifiedFilePath = filePath.replace(/^public\//, '');
+    const modifiedFilePath = filePath.replace(/^public\//, "");
     fileList.push(modifiedFilePath);
   });
 
-  return res.json({fileList: fileList});
+  return res.json({ fileList: fileList });
 });
 
 router.post("/edit", async (req, res) => {
@@ -135,48 +147,58 @@ router.post("/new-user", async (req, res) => {
 /** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */
 router.get("/sparqlQuery", (req, res) => {
   dbpediaController(req, res)
-      .then((data) => {
-        res.json(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: "Failed to fetch data" });
-      });
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Failed to fetch data" });
+    });
 });
 router.get("/filter", async (req, res) => {
   try {
-    const {status, color, flowering, soil, sunlight, leafy, fragrant, fruiting, native } = req.query;
+    const {
+      status,
+      color,
+      flowering,
+      soil,
+      sunlight,
+      leafy,
+      fragrant,
+      fruiting,
+      native,
+    } = req.query;
     let query = {};
-    if (status && status !== 'no-preference') {
-      if (status === 'no') {
-        query.status = 'In_progress';
-      } else if (status === 'yes') {
-        query.status = 'Completed';
+    if (status && status !== "no-preference") {
+      if (status === "no") {
+        query.status = "In_progress";
+      } else if (status === "yes") {
+        query.status = "Completed";
       }
     }
-    if (color && color !== 'Any') {
+    if (color && color !== "Any") {
       query.colour = color;
     }
-    if (flowering && flowering !== 'no-preference') {
-      query.flowering = flowering === 'yes' ? true : false;
+    if (flowering && flowering !== "no-preference") {
+      query.flowering = flowering === "yes" ? true : false;
     }
-    if (soil && soil !== 'no-preference') {
+    if (soil && soil !== "no-preference") {
       query.soilType = soil;
     }
-    if (sunlight && sunlight !== 'no-preference') {
+    if (sunlight && sunlight !== "no-preference") {
       query.sunlight = sunlight;
     }
-    if (leafy && leafy !== 'no-preference') {
-      query.leafy = leafy === 'yes' ? true : false;
+    if (leafy && leafy !== "no-preference") {
+      query.leafy = leafy === "yes" ? true : false;
     }
-    if (fragrant && fragrant !== 'no-preference') {
-      query.fragrant = fragrant === 'yes' ? true : false;
+    if (fragrant && fragrant !== "no-preference") {
+      query.fragrant = fragrant === "yes" ? true : false;
     }
-    if (fruiting && fruiting !== 'no-preference') {
-      query.fruiting = fruiting === 'yes' ? true : false;
+    if (fruiting && fruiting !== "no-preference") {
+      query.fruiting = fruiting === "yes" ? true : false;
     }
-    if (native && native !== 'no-preference') {
-      query.native = native === 'yes' ? true : false;
+    if (native && native !== "no-preference") {
+      query.native = native === "yes" ? true : false;
     }
 
     const observations = await model.find(query);
@@ -186,7 +208,6 @@ router.get("/filter", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
 
 /**
  * Fetch the image from the URL and save it to the uploads filepath.
@@ -217,14 +238,18 @@ router.get("/sort-by-distance", async (req, res) => {
     const observations = await model.find();
     console.log("Fetched observations:", observations.length);
 
-    const sortedObservations = observations.map(observation => {
-      const latDiff = observation.location.latitude - parseFloat(latitude);
-      const lonDiff = observation.location.longitude - parseFloat(longitude);
-      const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
-      return { ...observation.toObject(), distance };
-    }).sort((a, b) => {
-      return order === "closest" ? a.distance - b.distance : b.distance - a.distance;
-    });
+    const sortedObservations = observations
+      .map((observation) => {
+        const latDiff = observation.location.latitude - parseFloat(latitude);
+        const lonDiff = observation.location.longitude - parseFloat(longitude);
+        const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
+        return { ...observation.toObject(), distance };
+      })
+      .sort((a, b) => {
+        return order === "closest"
+          ? a.distance - b.distance
+          : b.distance - a.distance;
+      });
 
     console.log("Sorted observations:", sortedObservations.length);
     res.json(sortedObservations);
@@ -233,7 +258,6 @@ router.get("/sort-by-distance", async (req, res) => {
     res.status(500).send("Error sorting observations by distance");
   }
 });
-
 
 // handle 404 (ensure this route is last!)
 router.get("*", function (req, res) {
