@@ -30,8 +30,7 @@ function sortPlants(sortBy) {
  * @param photoItems The data to update the photo grid with.
  */
 function updatePhotoGrid(photoItems) {
-  const photoGrid = document.querySelector("#photo-grid");
-  photoGrid.classList.add(
+  grid.classList.add(
     "grid",
     "mx-auto",
     "w-auto",
@@ -44,19 +43,16 @@ function updatePhotoGrid(photoItems) {
     `grid-rows-${length}`,
     `lg:grid-rows-${Math.max(Math.ceil(length / 3), 4)}`,
     `2xl:grid-rows-${Math.max(Math.ceil(length / 4), 4)}`,
+    "hidden",
   );
-  photoGrid.innerHTML = ""; // Clear existing content
+  grid.innerHTML = ""; // Clear existing content
 
   if (photoItems.length === 0) {
-    photoGrid.innerHTML = "<p class='text-center'>No results found.</p>";
-    return;
+    grid.innerHTML = "<p class='text-center'>No results found.</p>";
   }
 
-  photoItems.forEach((photoItem) => photoGrid.appendChild(photoItem));
-
-  // sort the photo grid with initial sort
-  sortInput.value = "dateSeen-desc";
-  sortPlants(sortInput.value);
+  photoItems.forEach((photoItem) => grid.appendChild(photoItem));
+  grid.classList.remove("hidden");
 }
 
 function createPostElements(observations, syncN = false) {
@@ -361,6 +357,7 @@ window.onload = function () {
   if (navigator.onLine) {
     syncObservations().then((observations) => {
       updatePhotoGrid(createPostElements(observations));
+      sortPlants(sortInput.value);
     });
   } else {
     Promise.all([
@@ -371,6 +368,8 @@ window.onload = function () {
         let postElems = createPostElements(observations);
         let NPostElems = createPostElements(nSyncObservations, true);
         updatePhotoGrid(postElems.concat(NPostElems));
+        // TODO: sorting offline!
+        // sortPlants(sortInput.value);
       })
       .catch((error) => {
         console.error("Error fetching data from IndexedDB:", error);

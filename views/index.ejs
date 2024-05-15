@@ -261,7 +261,8 @@
                     grid-rows-<%= data.length %> lg:grid-rows-<%= Math.max(Math.ceil(data.length / 3), 4) %>
                     2xl:grid-rows-<%= Math.max(Math.ceil(data.length / 4), 4) %>">
             <% if (data) { data.forEach(observation => { %>
-                <div class="h-auto w-screen drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64">
+                <div class="h-auto w-screen drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64 bg-gray-300 rounded-lg animate-pulse"></div>
+                <div class="h-auto w-screen drop-shadow-xl lg:w-56 lg:rounded 2xl:w-64 hidden">
                     <a href="/observations/<%= observation._id %>">
                         <img src="<%= observation.image %>" alt="Image of a plant"
                              class="aspect-square h-auto w-screen object-cover lg:h-56 lg:w-56 lg:rounded-t 2xl:h-64
