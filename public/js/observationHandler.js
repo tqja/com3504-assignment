@@ -3,8 +3,6 @@ const id = params.get('id');
 const syncN = params.has('syncN');
 let observation;
 
-let username;
-
 let socket = io();
 const chatButton = document.getElementById("chat-send");
 let chatInput = document.getElementById("chat-input");
@@ -17,6 +15,7 @@ const nickname = document.getElementById("nickname");
 const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
+const username = openUsernameIDB().then((db) => getUsername(db));
 const messagesElem = document.getElementById("messages");
 const locationText = document.getElementById("location");
 

@@ -21,7 +21,7 @@ function sortPlants(sortBy) {
   fetch(`/sort?field=${sortField}&order=${sortOrder}`)
     .then((response) => response.json())
     .then((data) => {
-      updatePhotoGrid(data);
+      updatePhotoGrid(createPostElements(data));
     });
 }
 
@@ -125,7 +125,7 @@ sortInput.addEventListener("change", function () {
         const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
         const response = await fetch(url);
         const sortedData = await response.json();
-        updatePhotoGrid(sortedData);
+        updatePhotoGrid(createPostElements(sortedData));
         // enable input after update
         sortInput.disabled = false;
       },
@@ -174,7 +174,7 @@ function applyFilters() {
   fetch(`/filter?${queryString}`)
     .then((response) => response.json())
     .then((data) => {
-      updatePhotoGrid(data);
+      updatePhotoGrid(createPostElements(data));
     });
 }
 
@@ -236,7 +236,6 @@ async function syncObservations() {
         updateData.chat_history = mergedChatHistory;
       }
 
-      console.log(updateData);
       if (Object.keys(updateData).length > 1) {
         fetch("/edit", {
           method: "POST",

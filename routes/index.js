@@ -57,8 +57,6 @@ router.post("/add", upload.single("image"), async (req, res) => {
     } else if (userData.imageUrl) {
       filePath = await saveFromURL(userData.imageUrl);
     }
-    const cache = await caches.open('my-cache');
-    await cache.add(filePath);
 
     let observation = await controller.create(userData, filePath);
 
@@ -241,9 +239,5 @@ router.get("/sort-by-distance", async (req, res) => {
 router.get("*", function (req, res) {
   res.redirect("/");
 });
-
-
-
-
 
 module.exports = router;
