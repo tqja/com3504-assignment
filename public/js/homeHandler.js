@@ -136,10 +136,11 @@ function applyFilters() {
   ).value;
   const fruiting = document.querySelector('input[name="fruit"]:checked').value;
   const native = document.querySelector('input[name="native"]:checked').value;
-
+  const status = document.querySelector('input[name="status"]:checked').value;
   let queryParams = [];
 
   if (color !== "Any") queryParams.push(`color=${color}`);
+  if (status !== "no-preference") queryParams.push(`status=${status}`);
   if (flowering !== "no-preference") queryParams.push(`flowering=${flowering}`);
   if (soil !== "no-preference") queryParams.push(`soil=${soil}`);
   if (sunlight !== "no-preference") queryParams.push(`sunlight=${sunlight}`);
@@ -176,7 +177,9 @@ document.querySelectorAll('input[name="fruit"]').forEach((input) => {
 document.querySelectorAll('input[name="native"]').forEach((input) => {
   input.addEventListener("change", applyFilters);
 });
-
+document.querySelectorAll('input[name="status"]').forEach((input) => {
+  input.addEventListener("change", applyFilters);
+});
 // sort the photo grid with initial sort
 sortInput.value = "dateSeen-desc";
 sortPlants(sortInput.value);

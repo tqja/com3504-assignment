@@ -143,9 +143,15 @@ router.get("/sparqlQuery", (req, res) => {
 });
 router.get("/filter", async (req, res) => {
   try {
-    const { color, flowering, soil, sunlight, leafy, fragrant, fruiting, native } = req.query;
+    const {status, color, flowering, soil, sunlight, leafy, fragrant, fruiting, native } = req.query;
     let query = {};
-
+    if (status && status !== 'no-preference') {
+      if (status === 'no') {
+        query.status = 'In_progress';
+      } else if (status === 'yes') {
+        query.status = 'Completed';
+      }
+    }
     if (color && color !== 'Any') {
       query.colour = color;
     }
