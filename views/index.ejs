@@ -27,13 +27,18 @@
     <div class="flex bg-gray-100">
         <div id="sidebar" class="top-0 left-0 hidden w-full bg-gray-100 p-4 shadow-none lg:block lg:w-80 lg:shadow-2xl">
             <div class="block">
-                <label for="sort-by" class="mb-3 inline-block w-full border-b-2 border-gray-300 pb-3 text-xl">
+                <label for="sortInput" class="flex mb-3 w-full border-b-2 border-gray-300 pb-3 text-xl">
                     Sort by
+                    <svg id="sortSpinner" class="animate-spin ml-2 mt-2 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="#34D399" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="#34D399" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                 </label>
-                <select id="sort-by" onchange="sortPlants(this.value)"
-                        class="mb-6 w-full rounded bg-gray-200 px-4 py-2">
+                <select id="sortInput" class="mb-6 w-full rounded bg-gray-200 px-4 py-2">
                     <option value="dateSeen-desc">Date Seen (Newest First)</option>
                     <option value="dateSeen-asc">Date Seen (Oldest First)</option>
+                    <option value="closest-to">Distance (Closest)</option>
+                    <option value="furthest-from">Distance (Furthest) </option>
                 </select>
             </div>
 

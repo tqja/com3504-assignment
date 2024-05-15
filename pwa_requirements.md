@@ -14,8 +14,8 @@
 	- ~~Images transformed to base64~~ Images stored locally on server ✅
 	- ~~Stored in MongoDB~~
 	- Images can be uploaded from local files or from a URL ✅
-- If offline, store changes locally (to upload once online)
-	- Should be able to hold several new plants locally
+- If offline, store changes locally (to upload once online) 
+	- Should be able to hold several new plants locally ✅
 	- Must be able to add chat messages to both newly and previously added plants
 
 ### Data contained in a sighting:
@@ -34,7 +34,7 @@
 - Identification (**can be modified after creation**)
     - Name of plant
         - Can be set by original user ✅
-        - Original user can enable suggestions from other users
+        - Original user can enable suggestions from other users ✅
         - Original user can approve a suggested name
     - Status of identification (completed/in-progress) ✅
     - Information from DBPedia knowledge graph ✅
@@ -48,9 +48,9 @@
 - Accessible to all users (no need for login or privacy rules) ✅
 - Sortable by
 	- Date/time sighted (newest/oldest) ✅
-	- Has/has not been identified
+	- Has/has not been identified ✅
 	- Distance away (from user?)
-- Filterable by plant characteristics
+- Filterable by plant characteristics ✅
 - Selecting a plant shows the full details and live chat ✅
 
 
@@ -58,15 +58,15 @@
 
 - Progressive
 - Support online/offline interaction
-- Using socket.io
-- Non-blocking
-- Multimodal (access via multiple devices)
-- New messages must appear in real time
-- User can add new messages which appear in real time for other users
+- Using socket.io ✅
+- Non-blocking ✅
+- Multimodal (access via multiple devices) ✅
+- New messages must appear in real time ✅
+- User can add new messages which appear in real time for other users ✅
 - Users should be notified of new messages on sightings they added
 - Able to add chat messages to newly and previously added plants when offline
 	- Offline chats will sync with server when online
-- Chats are per-plant, so can store chat data within the plant object in MongoDB
+- Chats are per-plant, so can store chat data within the plant object in MongoDB ✅
 
 
 ## Online/offline interactions
@@ -96,27 +96,27 @@
 
 ### 40% - Web app and chat application
 - Working offline and online
-- Implementing a web worker
-- Implementing an indexedDB
+- Implementing a web worker ✅
+- Implementing an indexedDB ✅
 
 ### 15% - Server
-- Correct organisation of server and routes
-- Non-blocking organisation (promises and callbacks/multiple servers/etc.)
+- Correct organisation of server and routes ✅
+- Non-blocking organisation (promises and callbacks/multiple servers/etc.) ✅
 
 ### 15% - Server data storage
-- Correct use of MongoDB including organisation into models, controllers, etc.
+- Correct use of MongoDB including organisation into models, controllers, etc. ✅
 
 ### 15% - Asynchronous and bidirectional client/server communication
-- Correct use of HTTP requests and socket.io
+- Correct use of HTTP requests and socket.io ✅
 
 ### 15% - Connection to the knowledge graph
-- Correct use of SPARQL query to fetch the information from DBPedia endpoint
-- Correctly parsing JSON response form DBPedia and displaying it on the UI
+- Correct use of SPARQL query to fetch the information from DBPedia endpoint ✅
+- Correctly parsing JSON response form DBPedia and displaying it on the UI ✅
 
 ### Code assessment:
 - Functionality: Does code meet requirements?
 - Documentation: In-line comments for unclear code/higher level documentation
-- Git history and source
+- Git history and source ✅
 - Code execution: Should execute on normal machine without issue
 - Code quality:
 	- Consistent formatting (class/var naming, indentation)

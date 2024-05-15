@@ -3,7 +3,13 @@ const form = document.getElementById("form");
 // submission elements
 const submitDiv = document.getElementById("submitDiv");
 const imageInput = document.getElementById("image");
+const urlLabel = document.getElementById("urlLabel");
 const urlInput = document.getElementById("imageUrl");
+const mapDiv = document.getElementById("map");
+const latField = document.getElementById("latitude");
+const lngField = document.getElementById("longitude");
+latLabel = document.getElementById("latLabel");
+lngLabel = document.getElementById("lngLabel");
 
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
@@ -156,3 +162,13 @@ form.addEventListener("submit", async (event) => {
     }
   }
 });
+// hide elements that require offline, show lat/lng for manual input
+if (typeof navigator !== "undefined" && !navigator.onLine) {
+  urlLabel.classList.add("hidden");
+  urlInput.classList.add("hidden");
+  mapDiv.classList.add("hidden");
+  latField.type = "text";
+  lngField.type = "text";
+  latLabel.classList.remove("hidden");
+  lngLabel.classList.remove("hidden");
+}
