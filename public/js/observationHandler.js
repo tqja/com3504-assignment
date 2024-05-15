@@ -293,14 +293,6 @@ const initChat = () => {
     writeOnHistory("<b>" + chat_username + "</b>" + ": " + chat_text);
   });
 
-  // called when someone joins the room
-  socket.on("joined", (room, userId) => {
-    // notifies that someone has joined the room
-    if (username !== userId) {
-      writeOnHistory("<b>" + userId + "</b>" + " joined the chat");
-    }
-  });
-
   // called when a message is received
   socket.on("chat", (room, userId, chatText) => {
     writeOnHistory("<b>" + userId + ":</b> " + chatText);
