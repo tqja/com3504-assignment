@@ -160,6 +160,90 @@ document.querySelectorAll('input[name="native"]').forEach(input => {
   input.addEventListener('change', applyFilters);
 });
 
+async function syncObservations() {
+  const localObservations = await openObservationsIDB().then(db => getAllObservations(db));
+  const newObservations = await openNSyncObservationsIDB().then(db => getAllNSyncObservations(db));
+  const remoteObservations = await fetch('/allObservations').then(observations => observations.json());
+  const username = await getUsernameFromIDB();
+
+  localObservations.forEach(localObservation => {
+    let updateData = {id: localObservation._id};
+    const remoteObservation = remoteObservations.find(remote => remote._id === localObservation._id);
+    if (remoteObservation) {
+      if (localObservation.name !== remoteObservation.name) {
+        if (localObservation.username === username) {
+          updateData.name = localObservation.name;
+        } else {
+          localObservation.name = remoteObservation.name;
+        }
+      }
+
+      if (localObservation.status !== remoteObservation.status) {
+        if (localObservation.username === username) {
+          updateData.status = localObservation.status;
+        } else {
+          localObservation.status = remoteObservation.status;
+        }
+      }
+
+      const mergedChatHistory = mergeChatHistories(localObservation.chat_history, remoteObservation.chat_history);
+      if (mergedChatHistory) {
+        localObservation.chat_history = mergedChatHistory;
+        updateData.chat_history = mergedChatHistory;
+      }
+
+      console.log(updateData);
+      if (Object.keys(updateData).length > 1) {
+        fetch("/edit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateData),
+        }).then((response) => {
+          if ( !response.ok ) {
+            throw new Error("Network response not ok");
+          }
+          return response;
+        }).then(() => {
+          openObservationsIDB().then(db => updateObservation(db, localObservation));
+        }).catch((err) => {
+          console.error(err);
+        })
+      }
+    }
+  })
+
+  const localObservationIDs = new Set(localObservations.map(observation => observation._id));
+  const newRemoteObservations = remoteObservations.filter(remoteObservation => !localObservationIDs.has(remoteObservation._id));
+  newRemoteObservations.forEach(observation => {
+    openObservationsIDB().then((db) => {
+      addObservation(db, observation);
+    })
+  })
+
+  return await openObservationsIDB().then(db => getAllObservations(db));
+}
+
+function mergeChatHistories(localHistory, remoteHistory) {
+  const merged = [...localHistory, ...remoteHistory];
+  const uniqueTimestamps = new Set();
+  const uniqueMessages = merged.filter(msg => {
+    if (!uniqueTimestamps.has(msg.timestamp)) {
+      uniqueTimestamps.add(msg.timestamp);
+      return true;
+    }
+    return false;
+  });
+
+  uniqueMessages.sort((a, b) => a.timestamp - b.timestamp);
+  if (uniqueMessages.length > localHistory.length) {
+    return uniqueMessages;
+  } else {
+    return false;
+  }
+}
+
 window.onload = function () {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', {scope: '/'})
@@ -191,25 +275,15 @@ window.onload = function () {
   }
 
   if (navigator.onLine) {
-    fetch('http://localhost:3000/allObservations')
-        .then((res) => {
-          return res.json();
-        }).then((observations) => {
-          openObservationsIDB().then((db) => {
-            deleteAllObservations(db).then(() => {
-              addAllObservations(db, observations).then(() => {
-                updatePhotoGrid(createPostElements(observations));
-                console.log("All new observations added to IDB")
-              })
-            })
-          })
+    syncObservations().then((observations) => {
+      updatePhotoGrid(createPostElements(observations));
     })
   } else {
     Promise.all([
       openObservationsIDB().then(db => getAllObservations(db)),
       openNSyncObservationsIDB().then(ndb => getAllNSyncObservations(ndb))
     ])
-        .then(([observations, nSyncObservations, uSyncObservations]) => {
+        .then(([observations, nSyncObservations]) => {
           let postElems = createPostElements(observations);
           let NPostElems = createPostElements(nSyncObservations, true);
           updatePhotoGrid(postElems.concat(NPostElems));

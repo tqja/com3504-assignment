@@ -1,9 +1,9 @@
-import { getUsernameFromIDB } from "./idbHelper.js";
-
 const params = new URLSearchParams(window.location.search);
 const id = params.get('id');
 const syncN = params.has('syncN');
 let observation;
+
+let username;
 
 let socket = io();
 const chatButton = document.getElementById("chat-send");
@@ -18,7 +18,6 @@ const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
 const messagesElem = document.getElementById("messages");
-const username = await getUsernameFromIDB(); // from indexedDB
 const locationText = document.getElementById("location");
 
 /**
@@ -339,7 +338,7 @@ if (syncN) {
 promise.then((retrievedObservation) => {
   observation = retrievedObservation;
   createObservationElem();
-
+  console.log(username);
   if (username) {
     connectToChatroom();
     initChat();

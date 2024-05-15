@@ -2,7 +2,7 @@
  * Retrieve the value of the username item in the indexedDB.
  * @returns {Promise<unknown>} The error code on failure, or the username on success
  */
-export const getUsernameFromIDB = () => {
+const getUsernameFromIDB = () => {
   return new Promise((resolve, reject) => {
     const req = window.indexedDB.open("clientData", 1);
 
@@ -41,7 +41,7 @@ export const getUsernameFromIDB = () => {
  * @param username The username to store
  * @returns {Promise<unknown>} The error code on failure, or undefined value on success
  */
-export const storeUsernameInIDB = (username) => {
+const storeUsernameInIDB = (username) => {
   return new Promise((resolve, reject) => {
     const req = window.indexedDB.open("clientData", 1);
 

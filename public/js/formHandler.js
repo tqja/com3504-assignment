@@ -132,7 +132,10 @@ form.addEventListener("submit", async (event) => {
           throw new Error("Network response not ok");
         }
         return response;
-      }).then(observation => {
+      }).then(async observation => {
+        const cache = await caches.open('my-cache');
+        await cache.add(observation.image);
+
         // Save data into the indexedDB
         openObservationsIDB().then((db) => {
           addObservation(db, observation);

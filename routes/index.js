@@ -35,7 +35,6 @@ router.get("/", (req, res) => {
 
 router.get('/allObservations', function (req, res, next) {
   controller.getAll().then(observations => {
-    console.log(observations);
     return res.status(200).send(observations);
   }).catch(err => {
     console.log(err);
@@ -58,6 +57,8 @@ router.post("/add", upload.single("image"), async (req, res) => {
     } else if (userData.imageUrl) {
       filePath = await saveFromURL(userData.imageUrl);
     }
+    const cache = await caches.open('my-cache');
+    await cache.add(filePath);
 
     let observation = await controller.create(userData, filePath);
 
@@ -99,6 +100,9 @@ router.post("/edit", async (req, res) => {
     }
     if (data.status) {
       updateData.status = data.status;
+    }
+    if (data.chatHistory) {
+      updateData.chatHistory = data.chatHistory;
     }
 
     let observation = await controller.edit(data.id, updateData);

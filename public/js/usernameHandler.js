@@ -1,5 +1,3 @@
-import { getUsernameFromIDB, storeUsernameInIDB } from "./idbHelper.js";
-
 /**
  * Attempt to retrieve an existing username from indexedDB. If not present,
  * generate a new username and save in indexedDB.
