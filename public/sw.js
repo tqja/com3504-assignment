@@ -87,6 +87,42 @@ self.addEventListener("message", (event) => {
     );
 })
 
+function a(observation) {
+    // Extract the file info from the JSON object
+    const fileInfo = observation.image;
+
+    // Create a new File object using the extracted info
+    const imageFile = new File(
+        [fileInfo],
+        fileInfo.name,
+        { type: fileInfo.type, lastModified: fileInfo.lastModified }
+    );
+
+    // Set the image field to an empty string
+    observation.image = "";
+
+    // Convert the JSON object to a JSON string
+    const jsonData = JSON.stringify(observation);
+
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    formData.append('data', jsonData);
+
+    // Send the form data via a POST request
+    fetch('your_route_url_here', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Success:', result);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
 //Sync event to sync the observations
 self.addEventListener('sync', event => {
     if (event.tag === 'sync-observation') {

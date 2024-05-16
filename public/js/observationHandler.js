@@ -373,6 +373,7 @@ if (syncN) {
 
 promise.then((retrievedObservation) => {
   observation = retrievedObservation;
+  console.log(observation)
   createObservationElem();
 
   initChat();

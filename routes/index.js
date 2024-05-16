@@ -61,6 +61,7 @@ router.get("/create", (req, res) => {
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     let userData = req.body;
+    console.log(userData);
     let filePath;
     // Check if uploading from file or URL
     if (req.file) {
@@ -115,7 +116,7 @@ router.post("/edit", async (req, res) => {
     }
 
     let observation = await controller.edit(data.id, updateData);
-    console.log(observation);
+
     return res.status(200).send(observation);
   } catch {
     return res.status(500).send("Error saving observation");
