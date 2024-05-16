@@ -14,22 +14,69 @@ const toggleSidebar = () => {
 
 /**
  * Fetches a sorted data object and updates the photo grid.
- * @param sortBy - The metric to sort by.
+ * @param observations - The observations to sort
  */
-function sortPlants(sortBy) {
-  const [sortField, sortOrder] = sortBy.split("-");
-  fetch(`/sort?field=${sortField}&order=${sortOrder}`)
-    .then((response) => response.json())
-    .then((data) => {
-      updatePhotoGrid(createPostElements(data));
-    });
+function sortPlants(observations) {
+  return observations.then((obs) => {
+    console.log(obs);
+    const sortBy = sortInput.value;
+    const [sortField, sortOrder] = sortBy.split("-");
+    if (sortField === "dateSeen") {
+      if (sortOrder === "asc") {
+        return obs.sort((a, b) => {
+          const d1 = new Date(a.dateSeen);
+          const d2 = new Date(b.dateSeen);
+          return d1 - d2;
+        });
+      } else {
+        return obs.sort((a, b) => {
+          const d1 = new Date(a.dateSeen);
+          const d2 = new Date(b.dateSeen);
+          return d2 - d1;
+        });
+      }
+    } else {
+      sortInput.disabled = true;
+      sortSpinner.classList.remove("hidden");
+      console.log("distance");
+
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            // hide the spinner after location acquired
+            sortSpinner.classList.add("hidden");
+            sortInput.disabled = false;
+            const { latitude, longitude } = position.coords;
+            const sortedObs = obs.sort((a, b) => {
+              const aLatDiff = a.location.latitude - latitude;
+              const aLngDiff = a.location.longitude - longitude;
+              const bLatDiff = b.location.latitude - latitude;
+              const bLngDiff = b.location.longitude - longitude;
+              const aDist = Math.sqrt(aLatDiff ** 2 + aLngDiff ** 2);
+              const bDist = Math.sqrt(bLatDiff ** 2 + bLngDiff ** 2);
+              return sortField === "closest" ? aDist - bDist : bDist - aDist;
+            });
+            resolve(sortedObs);
+          },
+          (err) => {
+            // hide the spinner if fetching location fails
+            sortSpinner.classList.add("hidden");
+            // enable input after failure
+            sortInput.disabled = false;
+            console.error("Error retrieving location:", err);
+            alert("Unable to retrieve location");
+            reject(err);
+          },
+        );
+      });
+    }
+  });
 }
 
 /**
  * Updates the photo grid with data from a data object.
- * @param photoItems The data to update the photo grid with.
  */
-function updatePhotoGrid(photoItems) {
+function updatePhotoGrid() {
   grid.classList.add(
     "grid",
     "mx-auto",
@@ -46,15 +93,18 @@ function updatePhotoGrid(photoItems) {
     "hidden",
   );
   grid.innerHTML = ""; // Clear existing content
+  sortPlants(applyFilters()).then((obs) => {
+    console.log(obs);
+    const postElems = createPostElements(obs);
 
-  if (photoItems.length === 0) {
-    grid.innerHTML = `<p class='text-center text-2xl text-gray-600 font-semibold'>No results found.</p>`;
-  }
-
-  photoItems.forEach((photoItem) => grid.appendChild(photoItem));
-  if (sidebarBtn.textContent.trim() !== "Close") {
-    grid.classList.remove("hidden");
-  }
+    if (postElems.length === 0) {
+      grid.innerHTML = `<p class='text-center text-2xl text-gray-600 font-semibold'>No results found.</p>`;
+    }
+    postElems.forEach((photoItem) => grid.appendChild(photoItem));
+    if (sidebarBtn.textContent.trim() !== "Close") {
+      grid.classList.remove("hidden");
+    }
+  });
 }
 
 function createPostElements(observations, syncN = false) {
@@ -130,45 +180,15 @@ window.addEventListener("resize", () => {
 });
 
 sortInput.addEventListener("change", function () {
-  if (this.value.startsWith("closest") || this.value.startsWith("furthest")) {
-    // disable the input until finished loading new photo grid
-    sortInput.disabled = true;
-
-    // show the loading spinner until the location is acquired
-    sortSpinner.classList.remove("hidden");
-    const order = this.value.split("-")[0]; // "closest" or "furthest"
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        // hide the spinner after location acquired
-        sortSpinner.classList.add("hidden");
-        const { latitude, longitude } = position.coords;
-        const url = `/sort-by-distance?latitude=${latitude}&longitude=${longitude}&order=${order}`;
-        const response = await fetch(url);
-        const sortedData = await response.json();
-        updatePhotoGrid(createPostElements(sortedData));
-        // enable input after update
-        sortInput.disabled = false;
-      },
-      (err) => {
-        // hide the spinner if fetching location fails
-        sortSpinner.classList.add("hidden");
-        // enable input after failure
-        sortInput.disabled = false;
-        console.error("Error retrieving location:", err);
-        alert("Unable to retrieve location");
-      },
-    );
-  } else {
-    sortPlants(this.value);
-  }
+  updatePhotoGrid();
 });
 
 function applyFilters() {
-  const color = document.getElementById("colour").value;
+  const colour = document.getElementById("colour").value;
   const flowering = document.querySelector(
     'input[name="flowers"]:checked',
   ).value;
-  const soil = document.getElementById("soil").value;
+  const soilType = document.getElementById("soil").value;
   const sunlight = document.getElementById("sunlight").value;
   const leafy = document.querySelector('input[name="leaves"]:checked').value;
   const fragrant = document.querySelector(
@@ -177,48 +197,52 @@ function applyFilters() {
   const fruiting = document.querySelector('input[name="fruit"]:checked').value;
   const native = document.querySelector('input[name="native"]:checked').value;
   const status = document.querySelector('input[name="status"]:checked').value;
-  let queryParams = [];
 
-  if (color !== "Any") queryParams.push(`color=${color}`);
-  if (status !== "no-preference") queryParams.push(`status=${status}`);
-  if (flowering !== "no-preference") queryParams.push(`flowering=${flowering}`);
-  if (soil !== "no-preference") queryParams.push(`soil=${soil}`);
-  if (sunlight !== "no-preference") queryParams.push(`sunlight=${sunlight}`);
-  if (leafy !== "no-preference") queryParams.push(`leafy=${leafy}`);
-  if (fragrant !== "no-preference") queryParams.push(`fragrant=${fragrant}`);
-  if (fruiting !== "no-preference") queryParams.push(`fruiting=${fruiting}`);
-  if (native !== "no-preference") queryParams.push(`native=${native}`);
+  const filters = {
+    colour: colour,
+    flowering: flowering,
+    soilType: soilType,
+    sunlight: sunlight,
+    leafy: leafy,
+    fragrant: fragrant,
+    fruiting: fruiting,
+    native: native,
+    status: status,
+  };
 
-  const queryString = queryParams.join("&");
-
-  fetch(`/filter?${queryString}`)
-    .then((response) => response.json())
-    .then((data) => {
-      updatePhotoGrid(createPostElements(data));
-    });
+  return Promise.all([
+    openObservationsIDB().then((db) =>
+      getFilteredObservations(db, filters, "observations"),
+    ),
+    openNSyncObservationsIDB().then((ndb) =>
+      getFilteredObservations(ndb, filters, "new-sync-observations"),
+    ),
+  ]).then(([obs, syncObs]) => {
+    return obs.concat(syncObs);
+  });
 }
 
 // Add event listeners to the filter inputs
-document.getElementById("colour").addEventListener("change", applyFilters);
+document.getElementById("colour").addEventListener("change", updatePhotoGrid);
 document.querySelectorAll('input[name="flowers"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
-document.getElementById("soil").addEventListener("change", applyFilters);
-document.getElementById("sunlight").addEventListener("change", applyFilters);
+document.getElementById("soil").addEventListener("change", updatePhotoGrid);
+document.getElementById("sunlight").addEventListener("change", updatePhotoGrid);
 document.querySelectorAll('input[name="leaves"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
 document.querySelectorAll('input[name="fragrance"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
 document.querySelectorAll('input[name="fruit"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
 document.querySelectorAll('input[name="native"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
 document.querySelectorAll('input[name="status"]').forEach((input) => {
-  input.addEventListener("change", applyFilters);
+  input.addEventListener("change", updatePhotoGrid);
 });
 
 async function syncObservations() {
@@ -252,10 +276,13 @@ async function syncObservations() {
         }
       }
 
-      if (localObservation.chat_history.length !== remoteObservation.chat_history.length) {
+      if (
+        localObservation.chat_history.length !==
+        remoteObservation.chat_history.length
+      ) {
         const mergedChatHistory = mergeChatHistories(
-            localObservation.chat_history,
-            remoteObservation.chat_history,
+          localObservation.chat_history,
+          remoteObservation.chat_history,
         );
         localObservation.chat_history = mergedChatHistory;
         updateData.chat_history = mergedChatHistory;
@@ -305,14 +332,20 @@ async function syncObservations() {
 
 function mergeChatHistories(localHistory, remoteHistory) {
   // Create maps for quick lookup of local and remote chat IDs
-  const localChatMap = new Map(localHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
-  const remoteChatMap = new Map(remoteHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
+  const localChatMap = new Map(
+    localHistory.filter((chat) => chat.id).map((chat) => [chat.id, chat]),
+  );
+  const remoteChatMap = new Map(
+    remoteHistory.filter((chat) => chat.id).map((chat) => [chat.id, chat]),
+  );
 
   // Identify new remote chats to add to local
-  const newRemoteChats = remoteHistory.filter(chat => !localChatMap.has(chat.id));
+  const newRemoteChats = remoteHistory.filter(
+    (chat) => !localChatMap.has(chat.id),
+  );
 
   // Identify new local chats (without IDs) to add to remote
-  const newLocalChats = localHistory.filter(chat => !chat.id);
+  const newLocalChats = localHistory.filter((chat) => !chat.id);
 
   // Merge new remote chats into local history
   localHistory.push(...newRemoteChats);
@@ -375,23 +408,9 @@ window.onload = function () {
 
   if (navigator.onLine) {
     syncObservations().then((observations) => {
-      updatePhotoGrid(createPostElements(observations));
-      sortPlants(sortInput.value);
+      updatePhotoGrid();
     });
   } else {
-    Promise.all([
-      openObservationsIDB().then((db) => getAllObservations(db)),
-      openNSyncObservationsIDB().then((ndb) => getAllNSyncObservations(ndb)),
-    ])
-      .then(([observations, nSyncObservations]) => {
-        let postElems = createPostElements(observations);
-        let NPostElems = createPostElements(nSyncObservations, true);
-        updatePhotoGrid(postElems.concat(NPostElems));
-        // TODO: sorting offline!
-        // sortPlants(sortInput.value);
-      })
-      .catch((error) => {
-        console.error("Error fetching data from IndexedDB:", error);
-      });
+    updatePhotoGrid();
   }
 };
