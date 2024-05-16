@@ -160,59 +160,7 @@ router.get("/sparqlQuery", (req, res) => {
       res.status(500).json({ error: "Failed to fetch data" });
     });
 });
-router.get("/filter", async (req, res) => {
-  try {
-    const {
-      status,
-      color,
-      flowering,
-      soil,
-      sunlight,
-      leafy,
-      fragrant,
-      fruiting,
-      native,
-    } = req.query;
-    let query = {};
-    if (status && status !== "no-preference") {
-      if (status === "no") {
-        query.status = "In_progress";
-      } else if (status === "yes") {
-        query.status = "Completed";
-      }
-    }
-    if (color && color !== "Any") {
-      query.colour = color;
-    }
-    if (flowering && flowering !== "no-preference") {
-      query.flowering = flowering === "yes";
-    }
-    if (soil && soil !== "no-preference") {
-      query.soilType = soil;
-    }
-    if (sunlight && sunlight !== "no-preference") {
-      query.sunlight = sunlight;
-    }
-    if (leafy && leafy !== "no-preference") {
-      query.leafy = leafy === "yes";
-    }
-    if (fragrant && fragrant !== "no-preference") {
-      query.fragrant = fragrant === "yes";
-    }
-    if (fruiting && fruiting !== "no-preference") {
-      query.fruiting = fruiting === "yes";
-    }
-    if (native && native !== "no-preference") {
-      query.native = native === "yes";
-    }
 
-    const observations = await model.find(query);
-    res.json(observations);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server error");
-  }
-});
 
 /**
  * Fetch the image from the URL and save it to the uploads filepath.

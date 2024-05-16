@@ -4,6 +4,15 @@ const sidebarBtn = document.getElementById("sidebarBtn");
 const sortSpinner = document.getElementById("sortSpinner");
 const sortInput = document.getElementById("sortInput");
 
+let username = "undefined";
+getUsernameFromIDB()
+    .then((u) => {
+      username = u;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
   sidebarBtn.textContent =
@@ -187,6 +196,8 @@ sortInput.addEventListener("change", function () {
 });
 
 function applyFilters() {
+  const myObservation = document.getElementById("my-observations").value;
+  console.log(myObservation);
   const colour = document.getElementById("colour").value;
   const flowering = document.querySelector(
     'input[name="flowers"]:checked',
@@ -202,6 +213,7 @@ function applyFilters() {
   const status = document.querySelector('input[name="status"]:checked').value;
 
   const filters = {
+    myObservation: myObservation,
     colour: colour,
     flowering: flowering,
     soilType: soilType,
@@ -215,10 +227,10 @@ function applyFilters() {
 
   return Promise.all([
     openObservationsIDB().then((db) =>
-      getFilteredObservations(db, filters, "observations"),
+      getFilteredObservations(db, username, filters, "observations"),
     ),
     openNSyncObservationsIDB().then((ndb) =>
-      getFilteredObservations(ndb, filters, "new-sync-observations"),
+      getFilteredObservations(ndb, username, filters, "new-sync-observations"),
     ),
   ]).then(([obs, syncObs]) => {
     return obs.concat(syncObs);
@@ -227,6 +239,8 @@ function applyFilters() {
 
 // Add event listeners to the filter inputs
 document.getElementById("colour").addEventListener("change", updatePhotoGrid);
+document.getElementById("my-observations").addEventListener("change", updatePhotoGrid);
+
 document.querySelectorAll('input[name="flowers"]').forEach((input) => {
   input.addEventListener("change", updatePhotoGrid);
 });
@@ -248,6 +262,7 @@ document.querySelectorAll('input[name="status"]').forEach((input) => {
   input.addEventListener("change", updatePhotoGrid);
 });
 
+
 async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
     getAllObservations(db),
@@ -255,7 +270,6 @@ async function syncObservations() {
   const remoteObservations = await fetch("/allObservations").then(
     (observations) => observations.json(),
   );
-  const username = await getUsernameFromIDB();
 
   localObservations.forEach((localObservation) => {
     let updateData = { id: localObservation._id };
