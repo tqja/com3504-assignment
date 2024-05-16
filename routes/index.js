@@ -72,7 +72,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
 
     let observation = await controller.create(userData, filePath);
 
-    return res.status(200).send(observation);
+    return res.status(200).json(observation);
   } catch (error) {
     console.error("Error saving observation:", error);
     return res.status(500).send("Error saving observation");

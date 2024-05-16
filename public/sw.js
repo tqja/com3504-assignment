@@ -78,6 +78,15 @@ self.addEventListener('fetch', event => {
     })());
 });
 
+self.addEventListener("message", (event) => {
+    event.waitUntil(
+        (async () => {
+            const cache = await caches.open("cache_v1");
+            await cache.add(event.data);
+        })()
+    );
+})
+
 //Sync event to sync the todos
 // self.addEventListener('sync', event => {
 //     if (event.tag === 'sync-todo') {

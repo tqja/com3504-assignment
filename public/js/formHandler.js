@@ -137,16 +137,17 @@ form.addEventListener("submit", async (event) => {
         if ( !response.ok ) {
           throw new Error("Network response not ok");
         }
-        return response;
+        return response.json();
       }).then(async observation => {
-        const cache = await caches.open('my-cache');
-        await cache.add(observation.image);
-
+        observation = JSON.parse(observation);
+        navigator.serviceWorker.ready.then((sw) => {
+          sw.active.postMessage(observation.image);
+        })
         // Save data into the indexedDB
         openObservationsIDB().then((db) => {
           addObservation(db, observation);
         })
-        window.location.href = 'http://localhost:3000/';
+        //window.location.href = 'http://localhost:3000/';
       }).catch((error) => {
         console.log(error);
       })
