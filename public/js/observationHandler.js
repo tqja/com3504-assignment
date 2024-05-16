@@ -4,6 +4,7 @@ const syncN = params.has("syncN");
 let observation;
 
 let socket = io();
+console.log(socket);
 const chatButton = document.getElementById("chat-send");
 let chatInput = document.getElementById("chat-input");
 
@@ -294,7 +295,7 @@ const initChat = () => {
 
   // called when a message is received
   if (navigator.onLine) {
-    console.log("KHFKHJFKJAEFLKJLAJF")
+    console.log("KHFKHJFKJAEFLKJLAJF");
     socket.emit("create or join", id, username);
   }
   chatButton.addEventListener("click", sendChatText);
@@ -305,27 +306,33 @@ const initChat = () => {
  */
 const sendChatText = async () => {
   if (chatInput.value) {
-    const chat =
-        {observationID: id,
-          chat_username: username,
-          chat_text: chatInput.value,
-          time: Date.now()
-        };
-    writeOnHistory("<b>" + username + ":</b> " + chat.chat_text);
+    const chat = {
+      observationID: id,
+      chat_username: username,
+      chat_text: chatInput.value,
+      time: Date.now(),
+    };
 
     if (navigator.onLine) {
-      socket.emit("chat", chat.observationID, chat.chat_username, chat.chat_text);
+      console.log("emitting chat", socket.connected);
+      socket.emit(
+        "chat",
+        chat.observationID,
+        chat.chat_username,
+        chat.chat_text,
+      );
       const updatedObservation = await fetch("/add-chat", {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(chat),
-        headers: {'Content-Type': 'application/json'}
+        headers: { "Content-Type": "application/json" },
       }).then((res) => {
         return res.json();
-      })
+      });
       openObservationsIDB().then((db) => {
         updateObservation(db, updatedObservation);
       });
     } else {
+      writeOnHistory("<b>" + username + ":</b> " + chat.chat_text);
       delete chat.observationID;
       observation.chat_history.push(chat);
       if (syncN) {
@@ -339,12 +346,13 @@ const sendChatText = async () => {
       }
     }
   }
-}
+};
 
 chatInput.addEventListener("keyup", (e) => {
   if (e.key !== "Enter") {
     return;
   }
+  console.log("keyup");
   sendChatText();
   e.preventDefault();
 });
@@ -397,4 +405,20 @@ promise.then((retrievedObservation) => {
       console.error(err);
     });
   }
-})
+});
+
+socket.on("connect", () => {
+  console.log("Connected to server");
+});
+
+socket.on("chat", (room, username, chat) => {
+  writeOnHistory("<b>" + username + "</b>" + ": " + chat);
+});
+
+socket.on("disconnect", () => {
+  console.log("Disconnected from server");
+});
+
+socket.on("error", (error) => {
+  console.error("Socket error:", error);
+});
