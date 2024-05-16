@@ -7,7 +7,7 @@ const sortInput = document.getElementById("sortInput");
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
   sidebarBtn.textContent =
-    sidebarBtn.textContent === "Sort/Filter" ? "Close" : "Sort/Filter";
+    sidebarBtn.textContent.trim() === "Sort/Filter" ? "Close" : "Sort/Filter";
   sidebar.classList.toggle("hidden");
   grid.classList.toggle("hidden");
 };
@@ -48,11 +48,13 @@ function updatePhotoGrid(photoItems) {
   grid.innerHTML = ""; // Clear existing content
 
   if (photoItems.length === 0) {
-    grid.innerHTML = "<p class='text-center'>No results found.</p>";
+    grid.innerHTML = `<p class='text-center text-2xl text-gray-600 font-semibold'>No results found.</p>`;
   }
 
   photoItems.forEach((photoItem) => grid.appendChild(photoItem));
-  grid.classList.remove("hidden");
+  if (sidebarBtn.textContent.trim() !== "Close") {
+    grid.classList.remove("hidden");
+  }
 }
 
 function createPostElements(observations, syncN = false) {
