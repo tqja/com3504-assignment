@@ -314,7 +314,7 @@ const sendChatText = async () => {
     writeOnHistory("<b>" + username + ":</b> " + chat.chat_text);
 
     if (navigator.onLine) {
-      socket.emit("chat", chat);
+      socket.emit("chat", chat.observationID, chat.chat_username, chat.chat_text);
       const updatedObservation = await fetch("/add-chat", {
         method: 'POST',
         body: JSON.stringify(chat),

@@ -14,10 +14,8 @@ exports.init = (io) => {
       /**
        * send chat messages
        */
-      socket.on("chat", (chat) => {
-        console.log("chat", chat.observationID);
-        io.sockets.to(chat.observationID)
-            .emit("chat", chat.observationID, chat.username, chat.chat_text);
+      socket.on('chat', (id, username, input) => {
+        io.sockets.to(id).emit('chat', id, username, input);
       });
 
       /**

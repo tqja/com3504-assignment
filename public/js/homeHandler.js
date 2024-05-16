@@ -18,7 +18,6 @@ const toggleSidebar = () => {
  */
 function sortPlants(observations) {
   return observations.then((obs) => {
-    console.log(obs);
     const sortBy = sortInput.value;
     const [sortField, sortOrder] = sortBy.split("-");
     if (sortField === "dateSeen") {
@@ -94,7 +93,6 @@ function updatePhotoGrid() {
   );
   grid.innerHTML = ""; // Clear existing content
   sortPlants(applyFilters()).then((obs) => {
-    console.log(obs);
     const postElems = createPostElements(obs);
 
     if (postElems.length === 0) {
@@ -107,7 +105,7 @@ function updatePhotoGrid() {
   });
 }
 
-function createPostElements(observations, syncN = false) {
+function createPostElements(observations) {
   return observations.map((observation) => {
     const photoItem = document.createElement("div");
     photoItem.classList.add(
@@ -118,6 +116,11 @@ function createPostElements(observations, syncN = false) {
       "lg:rounded",
       "2xl:w-64",
     );
+
+    let syncN = false;
+    if (typeof observation._id === "number") {
+      syncN = true;
+    }
 
     let url = `/observations?id=${observation._id}`;
     if (syncN) {
