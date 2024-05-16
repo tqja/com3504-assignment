@@ -127,6 +127,16 @@ router.get("/map", (req, res) => {
   res.render("map", { title: "Map" });
 });
 
+router.post("/add-chat", async (req, res) => {
+  const chatDetails = req.body;
+  const updatedObservation = await controller.observation_update_chat_history(chatDetails);
+  if (updatedObservation) {
+    return res.status(200).send(updatedObservation);
+  } else {
+    return res.status(500).send("Error adding chat");
+  }
+});
+
 router.get("/sort", async (req, res) => {
   try {
     const sortField = req.query.field || "dateSeen";

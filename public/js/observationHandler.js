@@ -284,8 +284,7 @@ statusBtn.addEventListener("click", () => {
 
 const initChat = () => {
   // print chat history stored in MongoDB
-  let messagesStr = messagesElem.textContent;
-  let messages = JSON.parse(messagesStr);
+  let messages = JSON.parse(messagesElem.textContent);
 
   messages.forEach((message) => {
     let chat_username = message.chat_username;
@@ -294,26 +293,61 @@ const initChat = () => {
   });
 
   // called when a message is received
-  socket.on("chat", (room, userId, chatText) => {
-    writeOnHistory("<b>" + userId + ":</b> " + chatText);
-  });
-};
-
-/**
- * Connects to a chat room.
- */
-const connectToRoom = () => {
-  socket.emit("create or join", id, username);
+  if (navigator.onLine) {
+    console.log("KHFKHJFKJAEFLKJLAJF")
+    socket.emit("create or join", id, username);
+  }
+  chatButton.addEventListener("click", sendChatText);
 };
 
 /**
  * Gets the text to send from the interface and sends the message via socket
  */
-const sendChatText = () => {
+const sendChatText = async () => {
   if (chatInput.value) {
-    socket.emit("chat", id, username, chatInput.value);
+    const chat =
+        {observationID: id,
+          chat_username: username,
+          chat_text: chatInput.value,
+          time: Date.now()
+        };
+    writeOnHistory("<b>" + username + ":</b> " + chat.chat_text);
+
+    if (navigator.onLine) {
+      socket.emit("chat", chat);
+      const updatedObservation = await fetch("/add-chat", {
+        method: 'POST',
+        body: JSON.stringify(chat),
+        headers: {'Content-Type': 'application/json'}
+      }).then((res) => {
+        return res.json();
+      })
+      openObservationsIDB().then((db) => {
+        updateObservation(db, updatedObservation);
+      });
+    } else {
+      delete chat.observationID;
+      observation.chat_history.push(chat);
+      if (syncN) {
+        openNSyncObservationsIDB().then((db) => {
+          updateNSyncObservation(db, observation);
+        });
+      } else {
+        openObservationsIDB().then((db) => {
+          updateObservation(db, observation);
+        });
+      }
+    }
   }
-};
+}
+
+chatInput.addEventListener("keyup", (e) => {
+  if (e.key !== "Enter") {
+    return;
+  }
+  sendChatText();
+  e.preventDefault();
+});
 
 /**
  * Appends the given text to the history div.
@@ -328,23 +362,6 @@ const writeOnHistory = (text) => {
   chatInput.value = "";
 };
 
-/**
- * Connects to the chat room as the username defined in the browser's storage.
- */
-const connectToChatroom = () => {
-  // connect to chat room and enable sending chat messages
-  connectToRoom();
-  chatButton.addEventListener("click", sendChatText);
-};
-
-chatInput.addEventListener("keyup", (e) => {
-  if (e.key !== "Enter") {
-    return;
-  }
-  sendChatText();
-  e.preventDefault();
-});
-
 let promise;
 if (syncN) {
   promise = openNSyncObservationsIDB().then((db) => {
@@ -357,10 +374,8 @@ if (syncN) {
 promise.then((retrievedObservation) => {
   observation = retrievedObservation;
   createObservationElem();
-  if (username) {
-    connectToChatroom();
-    initChat();
-  }
+
+  initChat();
 
   if (
     username === nickname.textContent &&
@@ -382,4 +397,4 @@ promise.then((retrievedObservation) => {
       console.error(err);
     });
   }
-});
+})

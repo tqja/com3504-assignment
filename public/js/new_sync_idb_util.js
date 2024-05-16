@@ -83,13 +83,3 @@ const updateNSyncObservation = (IDB, observation) => {
         });
     })
 }
-
-const deleteNSyncObservation = (IDB, observationID) => {
-    const transaction = IDB.transaction(["new-sync-observations"], "readwrite")
-    const observationStore = transaction.objectStore("new-sync-observations")
-    const request = observationStore.delete(observationID)
-
-    request.addEventListener("success", () => {
-        console.log("Deleted " + observationID)
-    })
-}

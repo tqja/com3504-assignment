@@ -303,42 +303,8 @@ async function syncObservations() {
   return await openObservationsIDB().then((db) => getAllObservations(db));
 }
 
-function mergeChatHistories(localHistory, remoteHistory) {
-  // Create maps for quick lookup of local and remote chat IDs
-  const localChatMap = new Map(localHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
-  const remoteChatMap = new Map(remoteHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
-
-  // Identify new remote chats to add to local
-  const newRemoteChats = remoteHistory.filter(chat => !localChatMap.has(chat.id));
-
-  // Identify new local chats (without IDs) to add to remote
-  const newLocalChats = localHistory.filter(chat => !chat.id);
-
-  // Merge new remote chats into local history
-  localHistory.push(...newRemoteChats);
-
-  // Update remote history with new local chats
-  remoteHistory.push(...newLocalChats);
-
-  // Collect all unique messages, including those without IDs
-  const allChats = [...localHistory, ...remoteHistory];
-  const uniqueMessages = [];
-  const uniqueIds = new Set();
-
-  for (const chat of allChats) {
-    if (!chat.id || !uniqueIds.has(chat.id)) {
-      if (chat.id) {
-        uniqueIds.add(chat.id);
-      }
-      uniqueMessages.push(chat);
-    }
-  }
-
-  // TODO: SORT IN OBSERVATION HANDLER ON RETRIEVAL
-  // Sort the merged and unique messages by timestamp
-  //uniqueMessages.sort((a, b) => a.timestamp - b.timestamp);
-
-  return uniqueMessages;
+async function mergeChatHistories(localHistory, remoteHistory) {
+  return [...localHistory, ...remoteHistory];
 }
 
 window.onload = function () {

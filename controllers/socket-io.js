@@ -1,4 +1,5 @@
 const observation = require("../controllers/observations");
+
 exports.init = (io) => {
   io.sockets.on("connection", (socket) => {
     try {
@@ -6,23 +7,17 @@ exports.init = (io) => {
        * create or joins a room
        */
       socket.on("create or join", (room, userId) => {
+        console.log("Create", room);
         socket.join(room);
       });
 
       /**
        * send chat messages
        */
-      socket.on("chat", (room, userId, chatText) => {
-        io.sockets.to(room).emit("chat", room, userId, chatText);
-
-        // Update chat history in MongoDB
-        let chatDetails = {
-          observation_id: room,
-          chat_username: userId,
-          chat_text: chatText,
-        };
-
-        observation.observation_update_chat_history(chatDetails);
+      socket.on("chat", (chat) => {
+        console.log("chat", chat.observationID);
+        io.sockets.to(chat.observationID)
+            .emit("chat", chat.observationID, chat.username, chat.chat_text);
       });
 
       /**
