@@ -139,11 +139,6 @@ router.get("/sort", async (req, res) => {
   }
 });
 
-router.post("/new-user", async (req, res) => {
-  const newUsername = generateUsername();
-  res.json({ username: newUsername });
-});
-
 /** Makes a SPARQL query to DBPedia. Retrieves data if successful, or an empty array otherwise. */
 router.get("/sparqlQuery", (req, res) => {
   dbpediaController(req, res)
