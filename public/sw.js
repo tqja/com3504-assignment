@@ -87,12 +87,16 @@ self.addEventListener("message", (event) => {
     );
 })
 
-//Sync event to sync the todos
-// self.addEventListener('sync', event => {
-//     if (event.tag === 'sync-todo') {
-//         console.log('Service worker: syncing new todos');
-//         openSyncTodosIDB((syncPostDB) => {
-//             getAllSyncTodos(syncPostDB)
-//         })
-//     }
-// });
+//Sync event to sync the observations
+self.addEventListener('sync', event => {
+    if (event.tag === 'sync-observation') {
+        console.log('Service worker: syncing new offline observations');
+        openNSyncObservationsIDB().then((db) => {
+            getAllNSyncObservations(db, (observations) => {
+                observations.forEach((observation) => {
+
+                })
+            })
+        })
+    }
+});
