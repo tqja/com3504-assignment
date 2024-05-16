@@ -4,7 +4,6 @@ const router = express.Router();
 const controller = require("../controllers/observations");
 const model = require("../models/observations");
 const multer = require("multer");
-const { generateUsername } = require("../utils/generateUsername");
 const { createWriteStream } = require("fs");
 const { basename, join } = require("path");
 const { pipeline } = require("stream/promises");
@@ -129,7 +128,8 @@ router.get("/map", (req, res) => {
 
 router.post("/add-chat", async (req, res) => {
   const chatDetails = req.body;
-  const updatedObservation = await controller.observation_update_chat_history(chatDetails);
+  const updatedObservation =
+    await controller.observation_update_chat_history(chatDetails);
   if (updatedObservation) {
     return res.status(200).send(updatedObservation);
   } else {
