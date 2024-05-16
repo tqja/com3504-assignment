@@ -88,83 +88,90 @@ const toggleImgDivs = () => {
 const date = new Date();
 document.getElementById("dateSeen").value = date.toISOString().slice(0, 16);
 
-const newObservation = function(data) {
-  const flowering = !!data.get('flowering');
-  const leafy = !!data.get('leafy');
-  const fragrant = !!data.get('fragrant');
-  const fruiting = !!data.get('fruiting');
-  const native = !!data.get('native');
-  return{
-    nickname: data.get('nickname'),
-    name: data.get('name'),
+const newObservation = function (data) {
+  const flowering = !!data.get("flowering");
+  const leafy = !!data.get("leafy");
+  const fragrant = !!data.get("fragrant");
+  const fruiting = !!data.get("fruiting");
+  const native = !!data.get("native");
+  return {
+    nickname: data.get("nickname"),
+    name: data.get("name"),
     status: "In_progress",
-    image: data.get('image'),
-    dateSeen: data.get('dateSeen'),
-    description: data.get('description'),
+    image: data.get("image"),
+    dateSeen: data.get("dateSeen"),
+    description: data.get("description"),
     location: {
-      latitude: data.get('latitude'),
-      longitude: data.get('longitude'),
+      latitude: data.get("latitude"),
+      longitude: data.get("longitude"),
     },
-    height: data.get('height'),
-    spread: data.get('spread'),
-    sunlight: data.get('sunlight'),
-    soilType: data.get('soilType'),
-    colour: data.get('colour'),
+    height: data.get("height"),
+    spread: data.get("spread"),
+    sunlight: data.get("sunlight"),
+    soilType: data.get("soilType"),
+    colour: data.get("colour"),
     flowering: flowering,
     leafy: leafy,
     fragrant: fragrant,
     fruiting: fruiting,
     native: native,
-    chat_history: []
-  }
-}
+    chat_history: [],
+  };
+};
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (
-      (!imageInput.files[0] && !urlInput.value) ||
-      !submitDiv.classList.contains("hidden")
+    (!imageInput.files[0] && !urlInput.value) ||
+    !submitDiv.classList.contains("hidden")
   ) {
     alert("Please upload or link a URL to a photo");
   } else {
     if (navigator.onLine) {
       let formData = new FormData(form);
-      fetch('http://localhost:3000/add', {
-        method: 'POST',
-        body: formData
-      }).then(response => {
-        if ( !response.ok ) {
-          throw new Error("Network response not ok");
-        }
-        return response.json();
-      }).then(async observation => {
-        observation = JSON.parse(observation);
-        navigator.serviceWorker.ready.then((sw) => {
-          sw.active.postMessage(observation.image);
-        })
-        // Save data into the indexedDB
-        openObservationsIDB().then((db) => {
-          addObservation(db, observation);
-        })
-        window.location.href = 'http://localhost:3000/';
-      }).catch((error) => {
-        console.log(error);
+      fetch("http://localhost:3000/add", {
+        method: "POST",
+        body: formData,
       })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response not ok");
+          }
+          return response.json();
+        })
+        .then(async (observation) => {
+          observation = JSON.parse(observation);
+          navigator.serviceWorker.ready.then((sw) => {
+            sw.active.postMessage(observation.image);
+          });
+          // Save data into the indexedDB
+          openObservationsIDB().then((db) => {
+            addObservation(db, observation);
+          });
+          window.location.href = "http://localhost:3000/";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
-      console.log("Offline mode")
+      console.log("Offline mode");
       let formData = new FormData(form);
-      openNSyncObservationsIDB().then((sDB) => {
-        addNSyncObservation(sDB, newObservation(formData));
-        window.location.href = 'http://localhost:3000/';
-      }).catch((error) => {
-        console.log(error);
-      })
+      openNSyncObservationsIDB()
+        .then((sDB) => {
+          addNSyncObservation(sDB, newObservation(formData));
+          window.location.href = "http://localhost:3000/";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 });
 // hide elements that require offline, show lat/lng for manual input
+console.log(typeof navigator, navigator.onLine);
 if (typeof navigator !== "undefined" && !navigator.onLine) {
+  console.log("hello");
   urlLabel.classList.add("hidden");
   urlInput.classList.add("hidden");
   mapDiv.classList.add("hidden");

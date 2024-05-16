@@ -190,7 +190,7 @@ router.get("/filter", async (req, res) => {
       query.colour = color;
     }
     if (flowering && flowering !== "no-preference") {
-      query.flowering = flowering === "yes" ? true : false;
+      query.flowering = flowering === "yes";
     }
     if (soil && soil !== "no-preference") {
       query.soilType = soil;
@@ -199,16 +199,16 @@ router.get("/filter", async (req, res) => {
       query.sunlight = sunlight;
     }
     if (leafy && leafy !== "no-preference") {
-      query.leafy = leafy === "yes" ? true : false;
+      query.leafy = leafy === "yes";
     }
     if (fragrant && fragrant !== "no-preference") {
-      query.fragrant = fragrant === "yes" ? true : false;
+      query.fragrant = fragrant === "yes";
     }
     if (fruiting && fruiting !== "no-preference") {
-      query.fruiting = fruiting === "yes" ? true : false;
+      query.fruiting = fruiting === "yes";
     }
     if (native && native !== "no-preference") {
-      query.native = native === "yes" ? true : false;
+      query.native = native === "yes";
     }
 
     const observations = await model.find(query);
