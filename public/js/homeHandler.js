@@ -225,9 +225,6 @@ async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
     getAllObservations(db),
   );
-  const newObservations = await openNSyncObservationsIDB().then((db) =>
-    getAllNSyncObservations(db),
-  );
   const remoteObservations = await fetch("/allObservations").then(
     (observations) => observations.json(),
   );
@@ -255,16 +252,17 @@ async function syncObservations() {
         }
       }
 
-      const mergedChatHistory = mergeChatHistories(
-        localObservation.chat_history,
-        remoteObservation.chat_history,
-      );
-      if (mergedChatHistory) {
+      if (localObservation.chat_history.length !== remoteObservation.chat_history.length) {
+        const mergedChatHistory = mergeChatHistories(
+            localObservation.chat_history,
+            remoteObservation.chat_history,
+        );
         localObservation.chat_history = mergedChatHistory;
         updateData.chat_history = mergedChatHistory;
       }
 
       if (Object.keys(updateData).length > 1) {
+        console.log(updateData);
         fetch("/edit", {
           method: "POST",
           headers: {
@@ -306,22 +304,41 @@ async function syncObservations() {
 }
 
 function mergeChatHistories(localHistory, remoteHistory) {
-  const merged = [...localHistory, ...remoteHistory];
-  const uniqueTimestamps = new Set();
-  const uniqueMessages = merged.filter((msg) => {
-    if (!uniqueTimestamps.has(msg.timestamp)) {
-      uniqueTimestamps.add(msg.timestamp);
-      return true;
-    }
-    return false;
-  });
+  // Create maps for quick lookup of local and remote chat IDs
+  const localChatMap = new Map(localHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
+  const remoteChatMap = new Map(remoteHistory.filter(chat => chat.id).map(chat => [chat.id, chat]));
 
-  uniqueMessages.sort((a, b) => a.timestamp - b.timestamp);
-  if (uniqueMessages.length > localHistory.length) {
-    return uniqueMessages;
-  } else {
-    return false;
+  // Identify new remote chats to add to local
+  const newRemoteChats = remoteHistory.filter(chat => !localChatMap.has(chat.id));
+
+  // Identify new local chats (without IDs) to add to remote
+  const newLocalChats = localHistory.filter(chat => !chat.id);
+
+  // Merge new remote chats into local history
+  localHistory.push(...newRemoteChats);
+
+  // Update remote history with new local chats
+  remoteHistory.push(...newLocalChats);
+
+  // Collect all unique messages, including those without IDs
+  const allChats = [...localHistory, ...remoteHistory];
+  const uniqueMessages = [];
+  const uniqueIds = new Set();
+
+  for (const chat of allChats) {
+    if (!chat.id || !uniqueIds.has(chat.id)) {
+      if (chat.id) {
+        uniqueIds.add(chat.id);
+      }
+      uniqueMessages.push(chat);
+    }
   }
+
+  // TODO: SORT IN OBSERVATION HANDLER ON RETRIEVAL
+  // Sort the merged and unique messages by timestamp
+  //uniqueMessages.sort((a, b) => a.timestamp - b.timestamp);
+
+  return uniqueMessages;
 }
 
 window.onload = function () {

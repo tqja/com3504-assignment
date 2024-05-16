@@ -147,7 +147,7 @@ form.addEventListener("submit", async (event) => {
         openObservationsIDB().then((db) => {
           addObservation(db, observation);
         })
-        //window.location.href = 'http://localhost:3000/';
+        window.location.href = 'http://localhost:3000/';
       }).catch((error) => {
         console.log(error);
       })
