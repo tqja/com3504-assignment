@@ -41,6 +41,7 @@ const getNSyncObservation = (IDB, observationID) => {
         const request = observationStore.get(observationID);
 
         request.addEventListener("success", (event) => {
+            console.log(event.target.result);
             resolve(event.target.result);
         });
 

@@ -347,9 +347,9 @@ chatInput.addEventListener("keyup", (e) => {
 
 let promise;
 if (syncN) {
-  promise = openNSyncObservationsIDB().then((db) =>
-    getNSyncObservation(db, id),
-  );
+  promise = openNSyncObservationsIDB().then((db) => {
+    return getNSyncObservation(db, parseInt(id));
+  });
 } else {
   promise = openObservationsIDB().then((db) => getObservation(db, id));
 }
