@@ -25,7 +25,8 @@ const fetchFromDbpedia = async (name) => {
           ?plant rdf:type ?type .
           FILTER 
             (?type IN (dbo:Eukaryote, dbo:Plant, dbo:FloweringPlant, dbo:Gnetophytes, dbo:Conifer, dbo:GreenAlga,
-            dbo:ClubMoss, dbo:Moss, dbo:Cycad, dbo:Fern, dbo:CultivatedVariety, dbo:Ginkgo)
+            dbo:ClubMoss, dbo:Moss, dbo:Cycad, dbo:Fern, dbo:CultivatedVariety, dbo:Ginkgo, dbo:Person,
+            yago:Organism100004475)
           )
           
           ?plant rdfs:label ?commonName ;
