@@ -48,7 +48,7 @@ let ObservationSchema = new Schema({
     immutable: true,
     validate: {
       validator: (fileName) =>
-        /(^.+\.(jpg|jpeg|png|gif|bmp|tif|tiff)$)/.test(fileName),
+        /(^.+\.(jpg|jpeg|png|gif|bmp|tif|tiff)$)/.test(fileName.toLowerCase()),
       message: "Invalid file type",
     },
   },
