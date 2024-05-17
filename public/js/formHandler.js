@@ -160,7 +160,12 @@ form.addEventListener("submit", async (event) => {
       openNSyncObservationsIDB()
         .then((sDB) => {
           addNSyncObservation(sDB, newObservation(formData));
-          window.location.href = "http://localhost:3000/";
+          navigator.serviceWorker.ready.then((sw) => {
+            sw.sync.register("sync-observations")
+          }).then(() => {
+            console.log("Sync registered");
+            window.location.href = "http://localhost:3000/";
+          })
         })
         .catch((error) => {
           console.log(error);
@@ -169,9 +174,7 @@ form.addEventListener("submit", async (event) => {
   }
 });
 // hide elements that require offline, show lat/lng for manual input
-console.log(typeof navigator, navigator.onLine);
 if (typeof navigator !== "undefined" && !navigator.onLine) {
-  console.log("hello");
   urlLabel.classList.add("hidden");
   urlInput.classList.add("hidden");
   mapDiv.classList.add("hidden");

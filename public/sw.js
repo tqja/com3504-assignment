@@ -87,7 +87,7 @@ self.addEventListener("message", (event) => {
     );
 })
 
-function a(observation) {
+function syncNewObservation(observation) {
     // Extract the file info from the JSON object
     const fileInfo = observation.image;
 
@@ -100,39 +100,56 @@ function a(observation) {
 
     // Set the image field to an empty string
     observation.image = "";
+    delete observation._id;
 
     // Convert the JSON object to a JSON string
-    const jsonData = JSON.stringify(observation);
+    //const jsonData = JSON.stringify(observation);
 
     // Prepare FormData
     const formData = new FormData();
+    formData.append('data', observation);
     formData.append('image', imageFile);
-    formData.append('data', jsonData);
 
     // Send the form data via a POST request
-    fetch('your_route_url_here', {
-        method: 'POST',
-        body: formData
+    fetch("http://localhost:3000/add", {
+        method: "POST",
+        body: formData,
     })
-        .then(response => response.json())
-        .then(result => {
-            console.log('Success:', result);
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response not ok");
+            }
+            return response.json();
         })
-        .catch(error => {
-            console.error('Error:', error);
+        .then(async (savedObservation) => {
+            savedObservation = JSON.parse(savedObservation);
+            console.log(savedObservation);
+            const cache = await caches.open("cache_v1");
+            await cache.add(savedObservation.image);
+            // Save data into the indexedDB
+            openObservationsIDB().then((db) => {
+                addObservation(db, savedObservation);
+            });
+            openNSyncObservationsIDB().then((db) => {
+                deleteNSyncObservation(db, observation._id);
+            })
+        })
+        .catch((error) => {
+            console.log(error);
         });
 }
 
 //Sync event to sync the observations
 self.addEventListener('sync', event => {
-    if (event.tag === 'sync-observation') {
-        console.log('Service worker: syncing new offline observations');
-        openNSyncObservationsIDB().then((db) => {
-            getAllNSyncObservations(db, (observations) => {
-                observations.forEach((observation) => {
-
+    if (event.tag === 'sync-observations') {
+        event.waitUntil(
+            openNSyncObservationsIDB().then((db) => {
+                getAllNSyncObservations(db).then((observations) => {
+                    observations.forEach((observation) => {
+                        syncNewObservation(observation);
+                    })
                 })
             })
-        })
+        )
     }
 });

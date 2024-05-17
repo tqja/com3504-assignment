@@ -60,8 +60,6 @@ router.get("/create", (req, res) => {
 // TODO: Add proper error handling to routes
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
-    let userData = req.body;
-    console.log(userData);
     let filePath;
     // Check if uploading from file or URL
     if (req.file) {

@@ -55,7 +55,7 @@ const getNSyncObservation = (IDB, observationID) => {
   });
 };
 
-const getAllNSyncObservations = (IDB) => {
+function getAllNSyncObservations (IDB) {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["new-sync-observations"]);
     const observationStore = transaction.objectStore("new-sync-observations");
@@ -87,4 +87,14 @@ const updateNSyncObservation = (IDB, observation) => {
             reject(event.target.error);
         });
     })
+}
+
+const deleteNSyncObservation = (IDB, observationID) => {
+  const transaction = IDB.transaction(["new-sync-observations"], "readwrite")
+  const observationStore = transaction.objectStore("new-sync-observations")
+  const request = observationStore.delete(observationID)
+
+  request.addEventListener("success", () => {
+    console.log("Deleted " + observationID)
+  })
 }
