@@ -130,6 +130,15 @@ form.addEventListener("submit", async (event) => {
     alert("Please upload or link a URL to a photo");
   } else if (date.getTime() > Date.now()) {
     alert("Date cannot be in the future!");
+  } else if (
+    -180 > lngField.value ||
+    180 < lngField.value ||
+    -90 > latField.value ||
+    90 < latField.value
+  ) {
+    alert(
+      "Latitude/Longitude out of bounds! Longitude must be (-180 - 180), Latitude must be (-90 - 90)",
+    );
   } else {
     if (navigator.onLine) {
       let formData = new FormData(form);
