@@ -13,6 +13,7 @@ const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
 const nameInput = document.getElementById("nameInput");
 const nickname = document.getElementById("nickname");
+const status = document.getElementById("status");
 const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
@@ -406,6 +407,10 @@ promise.then((retrievedObservation) => {
     });
   }
 });
+
+if (status.innerText === "Completed") {
+  chatInput.disabled = true;
+}
 
 socket.on("connect", () => {
   console.log("Connected to server");

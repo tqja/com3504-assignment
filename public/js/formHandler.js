@@ -6,6 +6,7 @@ const imageInput = document.getElementById("image");
 const urlLabel = document.getElementById("urlLabel");
 const urlInput = document.getElementById("imageUrl");
 const mapDiv = document.getElementById("map");
+const dateSeen = document.getElementById("dateSeen");
 const latField = document.getElementById("latitude");
 const lngField = document.getElementById("longitude");
 latLabel = document.getElementById("latLabel");
@@ -121,12 +122,14 @@ const newObservation = function (data) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-
+  const date = new Date(dateSeen.value);
   if (
     (!imageInput.files[0] && !urlInput.value) ||
     !submitDiv.classList.contains("hidden")
   ) {
     alert("Please upload or link a URL to a photo");
+  } else if (date.getTime() > Date.now()) {
+    alert("Date cannot be in the future!");
   } else {
     if (navigator.onLine) {
       let formData = new FormData(form);
