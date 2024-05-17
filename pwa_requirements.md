@@ -57,7 +57,7 @@
 ## Live chat
 
 - Progressive
-- Support online/offline interaction
+- Support online/offline interaction ✅
 - Using socket.io ✅
 - Non-blocking ✅
 - Multimodal (access via multiple devices) ✅
@@ -77,7 +77,7 @@
 	- New plants ✅
 	- Changes to identifications of existing plants ✅
 - Reload chat messages related to user's added plants ✅
-- Notify user of new chat messages on plants that they added
+- Notify user of new chat messages on plants that they added 
 
 
 ## Data storage/retrieval
