@@ -3,9 +3,16 @@ Welcome to the floraExplorer plant sightings web application. You can post your 
 floraExplorer is a webapp implemented for the Univerity of Sheffield COM3504 assignment by group BSc15.
 ## Getting Started
 Ensure you have Node.js and MongoDB installed on your local device and that MongoDB is running
+
+Use the following command to start the MongoDB server on Windows.
 ```
 mongod.exe
 ```
+Alternatively, use this command on Linux.
+```
+sudo systemctl start mongod
+```
+
 Extract the code repository and ensure you `npm install` the dependencies.
 
 Start the node server through `.\bin\www`
@@ -67,7 +74,7 @@ the home page where the post can now be viewed.
 ### Viewing an Observation
 Clicking on a post will redirect to the details of the plant observation. All details about the post are viewable,
 including the poster's username and the status of the observation (in progress/completed). If the user who accesses the
-post is the user who created it, then there appear options to change the name of the observation and mark the 
+post is the user who created it, then there appear options to change the name of the observation and mark the
 observation as complete. Once marked as complete, the name cannot be modified and the live chat cannot be posted to.
 
 ### DBPedia
@@ -80,7 +87,7 @@ The query is based on the current name of the observation, and the query is retr
 observation. The query should work for most plants, if the name matches either the rdfs:label or dbo:binomial. However,
 the query filters by several rdf:types in order to only return plant-related entries. Some entries in DBPedia have
 unpredictable types, such as Cactus having a type of dbo:Person, which causes some actual plants to not be found by the
-query. We decided it is more important for the query to filter by plants than to search for all types but be capable of 
+query. We decided it is more important for the query to filter by plants than to search for all types but be capable of
 returning non-plants. The list of types being filtered are as follows:
 
 - dbo:Plant
@@ -100,3 +107,6 @@ returning non-plants. The list of types being filtered are as follows:
 
 If the DBPedia query fails on an entry that should be a plant, it is likely that the type is not encompassed in this
 list.
+
+### Live Chat
+The live chat can be used to suggest names for plants to the original poster. The original poster can then enter the name they feel fits the plant the best and change the name of the observation. The chat is only available when the observation is not marked as complete.
