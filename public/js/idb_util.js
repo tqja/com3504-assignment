@@ -55,7 +55,7 @@ const getAllObservations = (IDB) => {
   });
 };
 
-const getFilteredObservations = (IDB, filters, storeName) => {
+const getFilteredObservations = (IDB, username, filters, storeName) => {
   return new Promise((resolve) => {
     const observationStore = IDB.transaction([storeName]).objectStore(
       storeName,
@@ -68,8 +68,8 @@ const getFilteredObservations = (IDB, filters, storeName) => {
       if (cursor) {
         const o = cursor.value;
 
-        if (
-          // skip comparisons if attribute is "no-preference"
+        // skip comparisons if attribute is "no-preference"
+        if ((filters.myObservation === "no" || o.nickname === username) &&
           (filters.colour === "no-preference" || o.colour === filters.colour) &&
           (filters.soilType === "no-preference" ||
             o.soilType === filters.soilType) &&
@@ -89,9 +89,12 @@ const getFilteredObservations = (IDB, filters, storeName) => {
           (filters.status === "no-preference" || o.status === filters.status)
         ) {
           filteredObservations.push(o);
+          console.log(username)
+          console.log(o.nickname)
         }
         cursor.continue();
       } else {
+
         resolve(filteredObservations);
       }
     };

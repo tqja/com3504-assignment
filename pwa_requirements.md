@@ -14,9 +14,9 @@
 	- ~~Images transformed to base64~~ Images stored locally on server ✅
 	- ~~Stored in MongoDB~~
 	- Images can be uploaded from local files or from a URL ✅
-- If offline, store changes locally (to upload once online) 
+- If offline, store changes locally (to upload once online) ✅
 	- Should be able to hold several new plants locally ✅
-	- Must be able to add chat messages to both newly and previously added plants
+	- Must be able to add chat messages to both newly and previously added plants ✅
 
 ### Data contained in a sighting:
 - Date and time seen ✅
@@ -31,11 +31,11 @@
     - Has fruits or seeds? (yes/no) ✅
     - Level of sun exposure (full sun/partial shade/full shade) ✅
     - Colour of flowers ✅
-- Identification (**can be modified after creation**)
-    - Name of plant
+- Identification (**can be modified after creation**) ✅
+    - Name of plant ✅
         - Can be set by original user ✅
         - Original user can enable suggestions from other users ✅
-        - Original user can approve a suggested name
+        - Original user can approve a suggested name ✅
     - Status of identification (completed/in-progress) ✅
     - Information from DBPedia knowledge graph ✅
         - Common and scientific name ✅
@@ -46,10 +46,10 @@
 ## Viewing plant sightings
 
 - Accessible to all users (no need for login or privacy rules) ✅
-- Sortable by
+- Sortable by ✅
 	- Date/time sighted (newest/oldest) ✅
 	- Has/has not been identified ✅
-	- Distance away (from user?)
+	- Distance away (from user?) ✅
 - Filterable by plant characteristics ✅
 - Selecting a plant shows the full details and live chat ✅
 
@@ -57,27 +57,27 @@
 ## Live chat
 
 - Progressive
-- Support online/offline interaction
+- Support online/offline interaction ✅
 - Using socket.io ✅
 - Non-blocking ✅
 - Multimodal (access via multiple devices) ✅
 - New messages must appear in real time ✅
 - User can add new messages which appear in real time for other users ✅
 - Users should be notified of new messages on sightings they added
-- Able to add chat messages to newly and previously added plants when offline
-	- Offline chats will sync with server when online
+- Able to add chat messages to newly and previously added plants when offline ✅
+	- Offline chats will sync with server when online ✅
 - Chats are per-plant, so can store chat data within the plant object in MongoDB ✅
 
 
 ## Online/offline interactions
 
 ### Transition from offline -> online
-- Immediately upload local changes to the server
-- Retrieve updates from server since last sync
-	- New plants
-	- Changes to identifications of existing plants
-- Reload chat messages related to user's added plants
-- Notify user of new chat messages on plants that they added
+- Immediately upload local changes to the server ✅
+- Retrieve updates from server since last sync ✅
+	- New plants ✅
+	- Changes to identifications of existing plants ✅
+- Reload chat messages related to user's added plants ✅
+- Notify user of new chat messages on plants that they added 
 
 
 ## Data storage/retrieval
