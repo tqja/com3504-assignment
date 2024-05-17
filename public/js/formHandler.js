@@ -9,8 +9,8 @@ const mapDiv = document.getElementById("map");
 const dateSeen = document.getElementById("dateSeen");
 const latField = document.getElementById("latitude");
 const lngField = document.getElementById("longitude");
-latLabel = document.getElementById("latLabel");
-lngLabel = document.getElementById("lngLabel");
+const latLabel = document.getElementById("latLabel");
+const lngLabel = document.getElementById("lngLabel");
 
 // preview elements
 const previewDiv = document.getElementById("previewDiv");
@@ -164,10 +164,9 @@ form.addEventListener("submit", async (event) => {
           window.location.href = "http://localhost:3000/";
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
     } else {
-      console.log("Offline mode");
       let formData = new FormData(form);
       openNSyncObservationsIDB()
         .then((sDB) => {

@@ -1,3 +1,7 @@
+/**
+ * Open and return the indexedDB as a promise.
+ * @returns {Promise<unknown>} - Promise containing the db.
+ */
 function openObservationsIDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("observations", 1);
@@ -21,8 +25,12 @@ function openObservationsIDB() {
   });
 }
 
-// TODO: create indices to enable sorting and searching by different fields
-
+/**
+ * Get an observation by ID from the indexedDB.
+ * @param IDB - The db to fetch the observation from.
+ * @param observationID - The id of the observation to fetch.
+ * @returns {Promise<unknown>} - Promise containing the post.
+ */
 const getObservation = (IDB, observationID) => {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["observations"]);
@@ -39,6 +47,11 @@ const getObservation = (IDB, observationID) => {
   });
 };
 
+/**
+ * Get all observations from the indexedDB.
+ * @param IDB - The db to fetch posts from.
+ * @returns {Promise<unknown>} - The fetched observations in a Promise.
+ */
 const getAllObservations = (IDB) => {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["observations"]);
@@ -55,6 +68,14 @@ const getAllObservations = (IDB) => {
   });
 };
 
+/**
+ * Get observations from the database and filter
+ * @param IDB - The indexedDB
+ * @param username - The username
+ * @param filters - The filters
+ * @param storeName - The name of the IDB store
+ * @returns {Promise<unknown>} - The filtered observations
+ */
 const getFilteredObservations = (IDB, username, filters, storeName) => {
   return new Promise((resolve) => {
     const observationStore = IDB.transaction([storeName]).objectStore(
@@ -99,6 +120,12 @@ const getFilteredObservations = (IDB, username, filters, storeName) => {
   });
 };
 
+/**
+ * Update an observation in the indexedDB
+ * @param IDB - The db
+ * @param observation The observation to update with
+ * @returns {Promise<unknown>}
+ */
 const updateObservation = (IDB, observation) => {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["observations"], "readwrite");
@@ -115,7 +142,12 @@ const updateObservation = (IDB, observation) => {
   });
 };
 
-// TODO: must be replaced with a 'sync' method which adds only the necessary updates to the IDB
+/**
+ * Add an observation to the indexedDB.
+ * @param IDB - The db
+ * @param observation - The observation to add
+ * @returns {Promise<unknown>}
+ */
 const addObservation = (IDB, observation) => {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["observations"], "readwrite");

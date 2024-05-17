@@ -4,6 +4,7 @@ const sidebarBtn = document.getElementById("sidebarBtn");
 const sortSpinner = document.getElementById("sortSpinner");
 const sortInput = document.getElementById("sortInput");
 
+// retrieve username; "undefined" as a fallback
 let username = "undefined";
 getUsernameFromIDB()
   .then((u) => {
@@ -56,6 +57,7 @@ function sortPlants(observations) {
             sortInput.disabled = false;
             const { latitude, longitude } = position.coords;
             const sortedObs = obs.sort((a, b) => {
+              // calculate the Euclidean distances and sort by closest/furthest
               const aLatDiff = a.location.latitude - latitude;
               const aLngDiff = a.location.longitude - longitude;
               const bLatDiff = b.location.latitude - latitude;
@@ -71,7 +73,6 @@ function sortPlants(observations) {
             sortSpinner.classList.add("hidden");
             // enable input after failure
             sortInput.disabled = false;
-            console.error("Error retrieving location:", err);
             alert("Unable to retrieve location");
             reject(err);
           },
@@ -114,6 +115,11 @@ function updatePhotoGrid() {
   });
 }
 
+/**
+ * Creates the array of post elements from the array of observations.
+ * @param observations - The array of observations
+ * @returns {*} - The photo items.
+ */
 function createPostElements(observations) {
   return observations.map((observation) => {
     const photoItem = document.createElement("div");
@@ -195,9 +201,12 @@ sortInput.addEventListener("change", function () {
   updatePhotoGrid();
 });
 
+/**
+ * Applies the current filters to the current and new posts in indexedDB.
+ * @returns {Promise<Awaited<unknown>[]>} - Promise containing the filtered posts.
+ */
 function applyFilters() {
   const myObservation = document.getElementById("my-observations").value;
-  console.log(myObservation);
   const colour = document.getElementById("colour").value;
   const flowering = document.querySelector(
     'input[name="flowers"]:checked',
@@ -264,6 +273,10 @@ document.querySelectorAll('input[name="status"]').forEach((input) => {
   input.addEventListener("change", updatePhotoGrid);
 });
 
+/**
+ * Sync posts from IDB to the server.
+ * @returns {Promise<unknown>} - Observations in indexedDB
+ */
 async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
     getAllObservations(db),
@@ -348,6 +361,12 @@ async function syncObservations() {
   return await openObservationsIDB().then((db) => getAllObservations(db));
 }
 
+/**
+ * Merge the local and remote chat histories together.
+ * @param localHistory - The local chat history.
+ * @param remoteHistory - The remote chat history.
+ * @returns {*[]} - The merged chat history.
+ */
 function mergeChatHistories(localHistory, remoteHistory) {
   return [...localHistory, ...remoteHistory];
 }
