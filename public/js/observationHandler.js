@@ -198,7 +198,11 @@ const createObservationElem = () => {
 
   document.getElementById("dateSeen").textContent = new Date(
     observation.dateSeen,
-  ).toDateString();
+  ).toLocaleString(undefined, {
+    dateStyle: "short",
+    timeStyle: "short",
+    hourCycle: "h12",
+  });
 
   latitude.textContent = observation.location.latitude;
   longitude.textContent = observation.location.longitude;
