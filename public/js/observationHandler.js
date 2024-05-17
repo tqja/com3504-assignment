@@ -86,36 +86,53 @@ const handleNameUpdate = async () => {
       if (plantName.textContent.length > 40) {
         alert("Plant name cannot exceed 40 characters!");
       } else {
-        // post new name to edit route
-        fetch("/edit", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            plantName: nameInput.value,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response not ok");
-            }
-            return response;
+        if (navigator.onLine) {
+          // post new name to edit route
+          fetch("/edit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+              plantName: nameInput.value,
+            }),
           })
-          .then(() => {
-            observation.name = nameInput.value;
-            openObservationsIDB().then((db) => {
-              updateObservation(db, observation).then(() => {
-                getDetailsFromDbpedia(nameInput.value);
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response not ok");
+                }
+                return response;
+              })
+              .then(() => {
+                observation.name = nameInput.value;
+                openObservationsIDB().then((db) => {
+                  updateObservation(db, observation).then(() => {
+                    getDetailsFromDbpedia(nameInput.value);
+                    plantName.textContent = nameInput.value;
+                  });
+                });
+              })
+              .catch(() => {
+                alert("Failed to update name");
+                plantName.textContent = originalName;
+              });
+        } else {
+          observation.name = nameInput.value;
+          if (syncN) {
+            openNSyncObservationsIDB().then((db) => {
+              updateNSyncObservation(db, observation).then(() => {
                 plantName.textContent = nameInput.value;
               });
             });
-          })
-          .catch(() => {
-            alert("Failed to update name");
-            plantName.textContent = originalName;
-          });
+          } else {
+            openObservationsIDB().then((db) => {
+              updateObservation(db, observation).then(() => {
+                plantName.textContent = nameInput.value;
+              });
+            });
+          }
+        }
         // hide the name input and change button text
         nameInput.classList.add("hidden");
         nameBtn.textContent = "Change name";

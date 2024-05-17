@@ -265,17 +265,19 @@ document.querySelectorAll('input[name="status"]').forEach((input) => {
 
 async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
-    getAllObservations(db),
+    getAllObservations(db)
   );
   const remoteObservations = await fetch("/allObservations").then(
     (observations) => observations.json(),
   );
 
   localObservations.forEach((localObservation) => {
+    console.log(localObservation);
     let updateData = { id: localObservation._id };
     const remoteObservation = remoteObservations.find(
       (remote) => remote._id === localObservation._id,
     );
+
     if (remoteObservation) {
       if (localObservation.name !== remoteObservation.name) {
         if (localObservation.username === username) {
@@ -292,7 +294,6 @@ async function syncObservations() {
           localObservation.status = remoteObservation.status;
         }
       }
-
       if (
         localObservation.chat_history.length !==
         remoteObservation.chat_history.length
@@ -306,7 +307,6 @@ async function syncObservations() {
       }
 
       if (Object.keys(updateData).length > 1) {
-        console.log(updateData);
         fetch("/edit", {
           method: "POST",
           headers: {
@@ -347,7 +347,7 @@ async function syncObservations() {
   return await openObservationsIDB().then((db) => getAllObservations(db));
 }
 
-async function mergeChatHistories(localHistory, remoteHistory) {
+function mergeChatHistories(localHistory, remoteHistory) {
   return [...localHistory, ...remoteHistory];
 }
 
