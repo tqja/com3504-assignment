@@ -28,6 +28,13 @@ const addNSyncObservation = (IDB, observation) => {
     const request = observationStore.add(observation);
 
     request.addEventListener("success", () => {
+      navigator.serviceWorker.ready.then((sw) => {
+        sw.sync.register("sync-observations")
+      }).then(() => {
+        console.log("Sync registered");
+      }).catch((err) => {
+        console.log("Sync registration failed: " + JSON.stringify(err))
+      })
       resolve();
     });
 

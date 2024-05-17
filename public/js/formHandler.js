@@ -170,18 +170,13 @@ form.addEventListener("submit", async (event) => {
       console.log("Offline mode");
       let formData = new FormData(form);
       openNSyncObservationsIDB()
-        .then((sDB) => {
-          addNSyncObservation(sDB, newObservation(formData));
-          navigator.serviceWorker.ready.then((sw) => {
-            sw.sync.register("sync-observations")
-          }).then(() => {
-            console.log("Sync registered");
+          .then((sDB) => {
+            addNSyncObservation(sDB, newObservation(formData));
             window.location.href = "http://localhost:3000/";
           })
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .catch((error) => {
+            console.error(error);
+          });
     }
   }
 });

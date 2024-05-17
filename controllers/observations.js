@@ -41,6 +41,40 @@ const create = function (userData, filePath) {
     });
 };
 
+const createSync = function (userData, filePath) {
+  let observation = new observationModel({
+    nickname: userData.nickname,
+    name: userData.name,
+    image: filePath.replace(/^public\//, ''),
+    dateSeen: userData.dateSeen,
+    description: userData.description,
+    location: {
+      latitude: userData.latitude,
+      longitude: userData.longitude,
+    },
+    height: userData.height,
+    spread: userData.spread,
+    sunlight: userData.sunlight,
+    soilType: userData.soilType,
+    colour: userData.colour,
+    flowering: userData.flowering,
+    leafy: userData.leafy,
+    fragrant: userData.fragrant,
+    fruiting: userData.fruiting,
+    native: userData.native,
+    chat_history: userData.chatHistory
+  });
+  return observation
+      .save()
+      .then((savedObservation) => {
+        return JSON.stringify(savedObservation);
+      })
+      .catch((err) => {
+        console.error(err);
+        return null;
+      });
+};
+
 const edit = (observationId, updateData) => {
   return observationModel.findByIdAndUpdate(observationId, updateData, {new: true})
       .then((observation) => {
@@ -80,4 +114,4 @@ observation_update_chat_history = async (chatDetails) => {
   });
 }
 
-module.exports = { create, edit, observation_update_chat_history, getAll};
+module.exports = { create, createSync, edit, observation_update_chat_history, getAll};
