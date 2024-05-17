@@ -12,6 +12,7 @@ floraExplorer is a webapp implemented for the Univerity of Sheffield COM3504 ass
 
 - Each user is assigned a randomly generated username to be used throughout their experience within the app where they will find out their username once they have posted a sighting or when they commented on a post.
 
+- Users can also view detailed info about the plants using DBpedia such as their scientific name.
 ## Getting Started:
 __1)__ Please ensure you have node js and mongo db installed on your local device and that mongo DB is actively running.
 

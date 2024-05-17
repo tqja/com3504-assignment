@@ -89,8 +89,6 @@ const getFilteredObservations = (IDB, username, filters, storeName) => {
           (filters.status === "no-preference" || o.status === filters.status)
         ) {
           filteredObservations.push(o);
-          console.log(username)
-          console.log(o.nickname)
         }
         cursor.continue();
       } else {
