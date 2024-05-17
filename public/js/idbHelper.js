@@ -57,10 +57,12 @@ const storeUsernameInIDB = (username) => {
       const req = store.put(username, "username");
 
       req.onsuccess = () => {
+        // resolve when the username is stored
         resolve();
       };
 
       req.onerror = (e) => {
+        // reject when error storing username
         reject(e.target.errorCode);
       };
     };
