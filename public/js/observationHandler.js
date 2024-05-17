@@ -9,11 +9,11 @@ const chatButton = document.getElementById("chat-send");
 let chatInput = document.getElementById("chat-input");
 
 const dbpediaDiv = document.getElementById("dbpedia");
+const dbpPlaceholder = document.getElementById("dbpPlaceholder");
 const plantName = document.getElementById("plantName");
 const nameBtn = document.getElementById("nameBtn");
 const nameInput = document.getElementById("nameInput");
 const nickname = document.getElementById("nickname");
-const status = document.getElementById("status");
 const statusBtn = document.getElementById("statusBtn");
 const latitude = document.getElementById("lat");
 const longitude = document.getElementById("lng");
@@ -46,17 +46,20 @@ const getDetailsFromDbpedia = async (plantName) => {
         const description = document.getElementById("dbpDescription");
         const uri = document.getElementById("dbpURI");
 
-        common.textContent += plant.commonName.value;
-        scientific.textContent += plant.scientificName.value;
+        common.textContent = "Common Name: " + plant.commonName.value;
+        scientific.textContent =
+          "Scientific name: " + plant.scientificName.value;
         description.textContent = plant.description.value;
         uri.href = plant.plant.value;
         uri.textContent = plant.plant.value;
 
         // reveal the div
         dbpediaDiv.hidden = false;
+        dbpPlaceholder.hidden = true;
       } else {
         // hide div if query failed (name not found)
         dbpediaDiv.hidden = true;
+        dbpPlaceholder.hidden = false;
       }
     })
     .catch((err) => {
@@ -180,6 +183,7 @@ const createObservationElem = () => {
     statusSpan.innerHTML += `
     <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
     <span id="status">Completed</span>`;
+    chatInput.disabled = true;
   }
 
   let src;
@@ -231,6 +235,7 @@ const updateStatusElements = () => {
   statusDot.classList.add("bg-green-400");
   const status = document.getElementById("status");
   status.textContent = "Completed";
+  chatInput.disabled = true;
   statusBtn.remove();
   nameBtn.remove();
   nameInput.remove();
@@ -407,10 +412,6 @@ promise.then((retrievedObservation) => {
     });
   }
 });
-
-if (status.innerText === "Completed") {
-  chatInput.disabled = true;
-}
 
 socket.on("connect", () => {
   console.log("Connected to server");
