@@ -49,8 +49,8 @@ const createSync = function (userData, filePath) {
     dateSeen: userData.dateSeen,
     description: userData.description,
     location: {
-      latitude: userData.latitude,
-      longitude: userData.longitude,
+      latitude: userData.location.latitude,
+      longitude: userData.location.longitude,
     },
     height: userData.height,
     spread: userData.spread,
@@ -62,10 +62,10 @@ const createSync = function (userData, filePath) {
     fragrant: userData.fragrant,
     fruiting: userData.fruiting,
     native: userData.native,
-    chat_history: userData.chatHistory
+    chat_history: userData.chat_history // Ensure this matches the field name in userData
   });
-  return observation
-      .save()
+
+  return observation.save()
       .then((savedObservation) => {
         return JSON.stringify(savedObservation);
       })

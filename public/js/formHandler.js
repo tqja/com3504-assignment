@@ -124,20 +124,20 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const date = new Date(dateSeen.value);
   if (
-    (!imageInput.files[0] && !urlInput.value) ||
-    !submitDiv.classList.contains("hidden")
+      (!imageInput.files[0] && !urlInput.value) ||
+      !submitDiv.classList.contains("hidden")
   ) {
     alert("Please upload or link a URL to a photo");
   } else if (date.getTime() > Date.now()) {
     alert("Date cannot be in the future!");
   } else if (
-    -180 > lngField.value ||
-    180 < lngField.value ||
-    -90 > latField.value ||
-    90 < latField.value
+      -180 > lngField.value ||
+      180 < lngField.value ||
+      -90 > latField.value ||
+      90 < latField.value
   ) {
     alert(
-      "Latitude/Longitude out of bounds! Longitude must be (-180 - 180), Latitude must be (-90 - 90)",
+        "Latitude/Longitude out of bounds! Longitude must be (-180 - 180), Latitude must be (-90 - 90)"
     );
   } else {
     if (navigator.onLine) {
@@ -146,26 +146,26 @@ form.addEventListener("submit", async (event) => {
         method: "POST",
         body: formData,
       })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response not ok");
-          }
-          return response.json();
-        })
-        .then(async (observation) => {
-          observation = JSON.parse(observation);
-          navigator.serviceWorker.ready.then((sw) => {
-            sw.active.postMessage(observation.image);
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response not ok");
+            }
+            return response.json();
+          })
+          .then(async (observation) => {
+            observation = JSON.parse(observation);
+            navigator.serviceWorker.ready.then((sw) => {
+              sw.active.postMessage(observation.image);
+            });
+            // Save data into the IndexedDB
+            openObservationsIDB().then((db) => {
+              addObservation(db, observation);
+            });
+            window.location.href = "http://localhost:3000/";
+          })
+          .catch((error) => {
+            console.log(error);
           });
-          // Save data into the indexedDB
-          openObservationsIDB().then((db) => {
-            addObservation(db, observation);
-          });
-          window.location.href = "http://localhost:3000/";
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     } else {
       console.log("Offline mode");
       let formData = new FormData(form);
@@ -180,6 +180,7 @@ form.addEventListener("submit", async (event) => {
     }
   }
 });
+
 // hide elements that require offline, show lat/lng for manual input
 if (typeof navigator !== "undefined" && !navigator.onLine) {
   urlLabel.classList.add("hidden");

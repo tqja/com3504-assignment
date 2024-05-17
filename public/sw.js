@@ -96,7 +96,7 @@ self.addEventListener('sync', event => {
                     return Promise.all(observations.map((observation) => syncNewObservation(observation)));
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.error("Error during sync: ", error);
                 })
         );
     }
@@ -114,6 +114,7 @@ function syncNewObservation(observation) {
     );
 
     observation.image = "";
+    const syncID = parseInt(observation._id);
     delete observation._id;
 
     const jsonData = JSON.stringify(observation);
@@ -122,28 +123,37 @@ function syncNewObservation(observation) {
     formData.append('data', jsonData);
     formData.append('image', imageFile);
 
+    // Log the formData content for debugging
+    for (let pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+    }
+
     return fetch("http://localhost:3000/addSync", {
         method: "POST",
         body: formData, // Send FormData instead of jsonData
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error("Network response not ok");
+                throw new Error("Network response not ok: " + response.statusText);
             }
             return response.json();
         })
         .then(async (savedObservation) => {
+            savedObservation = JSON.parse(savedObservation);
             const cache = await caches.open("cache_v1");
             await cache.add(savedObservation.image);
-
+            console.log(observation._id, parseInt(observation._id));
             return Promise.all([
                 openObservationsIDB().then((db) => addObservation(db, savedObservation)),
-                openNSyncObservationsIDB().then((db) => deleteNSyncObservation(db, observation._id))
+                openNSyncObservationsIDB().then((db) => deleteNSyncObservation(db, syncID))
             ]);
         })
         .catch((error) => {
-            console.log(error);
+            console.log("Failed to fetch: ", error);
+            throw error; // Re-throw the error to handle it in the sync event
         });
 }
+
+
 
 

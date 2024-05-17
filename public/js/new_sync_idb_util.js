@@ -30,12 +30,15 @@ const addNSyncObservation = (IDB, observation) => {
     request.addEventListener("success", () => {
       navigator.serviceWorker.ready.then((sw) => {
         sw.sync.register("sync-observations")
-      }).then(() => {
-        console.log("Sync registered");
-      }).catch((err) => {
-        console.log("Sync registration failed: " + JSON.stringify(err))
-      })
-      resolve();
+            .then(() => {
+              console.log("Sync registered");
+              resolve();
+            })
+            .catch((err) => {
+              console.log("Sync registration failed: " + JSON.stringify(err));
+              reject(err);
+            });
+      });
     });
 
     request.addEventListener("error", (event) => {
@@ -43,6 +46,7 @@ const addNSyncObservation = (IDB, observation) => {
     });
   });
 };
+
 
 const getNSyncObservation = (IDB, observationID) => {
   return new Promise((resolve, reject) => {

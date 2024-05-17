@@ -80,11 +80,15 @@ router.post("/add", upload.single("image"), async (req, res) => {
 
 router.post("/addSync", upload.single("image"), async (req, res) => {
   try {
-    let userData = req.body;
+    let userData = JSON.parse(req.body.data); // Ensure this is parsed correctly
     let filePath = req.file.path;
     let observation = await controller.createSync(userData, filePath);
-    console.log(observation);
-    return res.status(200).json(observation);
+    if (observation) {
+      console.log(observation);
+      return res.status(200).json(observation);
+    } else {
+      throw new Error("Observation could not be saved.");
+    }
   } catch (error) {
     console.error("Error saving observation:", error);
     return res.status(500).send("Error saving observation");
