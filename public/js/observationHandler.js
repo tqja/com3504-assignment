@@ -140,7 +140,11 @@ const handleNameUpdate = async () => {
     }
   });
 };
-
+/**
+ *  Normalise longitude range to -180 to 180 degrees.
+ * @param lng
+ * @returns {number}
+ */
 const normaliseLng = (lng) => {
   return ((((lng + 180) % (180 * 2)) + 180 * 2) % (180 * 2)) - 180;
 };
@@ -186,7 +190,9 @@ const setLocationText = async () => {
     locationText.innerHTML = `Latitude ${lat.toFixed(4)}, Longitude ${lng.toFixed(4)}`;
   }
 };
-
+/**
+ *  creates and displays observation elements
+ */
 const createObservationElem = () => {
   plantName.textContent = observation.name;
   nickname.textContent = observation.nickname;
@@ -397,7 +403,7 @@ const writeOnHistory = (text) => {
   history.appendChild(paragraph);
   chatInput.value = "";
 };
-
+// load observation
 let promise;
 if (syncN) {
   promise = openNSyncObservationsIDB().then((db) => {
