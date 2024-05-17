@@ -184,6 +184,7 @@ const createObservationElem = () => {
     <span class='inline-block h-3 w-3 mr-2 mt-1 rounded-full bg-green-400'></span>
     <span id="status">Completed</span>`;
     chatInput.disabled = true;
+    chatButton.hidden = true;
   }
 
   let src;
@@ -240,6 +241,7 @@ const updateStatusElements = () => {
   const status = document.getElementById("status");
   status.textContent = "Completed";
   chatInput.disabled = true;
+  chatButton.hidden = true;
   statusBtn.remove();
   nameBtn.remove();
   nameInput.remove();
