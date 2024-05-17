@@ -307,7 +307,6 @@ const initChat = () => {
 
   // called when a message is received
   if (navigator.onLine) {
-    console.log("KHFKHJFKJAEFLKJLAJF");
     socket.emit("create or join", id, username);
   }
   chatButton.addEventListener("click", sendChatText);
