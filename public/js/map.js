@@ -3,8 +3,8 @@ const map = L.map("map").setView([51.505, -0.09], 8);
 map.setMinZoom(0.5);
 
 if (!navigator.onLine) {
-  console.log()
-  map.style.display = 'none';
+  console.log();
+  map.style.display = "none";
 }
 
 // add tile layer from OpenStreetMap

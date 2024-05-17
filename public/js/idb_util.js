@@ -69,7 +69,8 @@ const getFilteredObservations = (IDB, username, filters, storeName) => {
         const o = cursor.value;
 
         // skip comparisons if attribute is "no-preference"
-        if ((filters.myObservation === "no" || o.nickname === username) &&
+        if (
+          (filters.myObservation === "no" || o.nickname === username) &&
           (filters.colour === "no-preference" || o.colour === filters.colour) &&
           (filters.soilType === "no-preference" ||
             o.soilType === filters.soilType) &&
@@ -92,7 +93,6 @@ const getFilteredObservations = (IDB, username, filters, storeName) => {
         }
         cursor.continue();
       } else {
-
         resolve(filteredObservations);
       }
     };
@@ -126,8 +126,8 @@ const addObservation = (IDB, observation) => {
       resolve();
     });
 
-        addRequest.addEventListener("error", (event) => {
-            reject(event.target.error);
-        });
+    addRequest.addEventListener("error", (event) => {
+      reject(event.target.error);
     });
-}
+  });
+};

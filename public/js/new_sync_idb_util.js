@@ -29,15 +29,16 @@ const addNSyncObservation = (IDB, observation) => {
 
     request.addEventListener("success", () => {
       navigator.serviceWorker.ready.then((sw) => {
-        sw.sync.register("sync-observations")
-            .then(() => {
-              console.log("Sync registered");
-              resolve();
-            })
-            .catch((err) => {
-              console.log("Sync registration failed: " + JSON.stringify(err));
-              reject(err);
-            });
+        sw.sync
+          .register("sync-observations")
+          .then(() => {
+            console.log("Sync registered");
+            resolve();
+          })
+          .catch((err) => {
+            console.log("Sync registration failed: " + JSON.stringify(err));
+            reject(err);
+          });
       });
     });
 
@@ -46,7 +47,6 @@ const addNSyncObservation = (IDB, observation) => {
     });
   });
 };
-
 
 const getNSyncObservation = (IDB, observationID) => {
   return new Promise((resolve, reject) => {
@@ -66,7 +66,7 @@ const getNSyncObservation = (IDB, observationID) => {
   });
 };
 
-function getAllNSyncObservations (IDB) {
+function getAllNSyncObservations(IDB) {
   return new Promise((resolve, reject) => {
     const transaction = IDB.transaction(["new-sync-observations"]);
     const observationStore = transaction.objectStore("new-sync-observations");
@@ -80,7 +80,7 @@ function getAllNSyncObservations (IDB) {
       reject(event.target.error);
     });
   });
-};
+}
 
 const getFilteredNSyncObservations = (IDB) => {};
 
@@ -94,18 +94,18 @@ const updateNSyncObservation = (IDB, observation) => {
       resolve(request.result);
     });
 
-        request.addEventListener("error", (event) => {
-            reject(event.target.error);
-        });
-    })
-}
+    request.addEventListener("error", (event) => {
+      reject(event.target.error);
+    });
+  });
+};
 
 const deleteNSyncObservation = (IDB, observationID) => {
-  const transaction = IDB.transaction(["new-sync-observations"], "readwrite")
-  const observationStore = transaction.objectStore("new-sync-observations")
-  const request = observationStore.delete(observationID)
+  const transaction = IDB.transaction(["new-sync-observations"], "readwrite");
+  const observationStore = transaction.objectStore("new-sync-observations");
+  const request = observationStore.delete(observationID);
 
   request.addEventListener("success", () => {
-    console.log("Deleted " + observationID)
-  })
-}
+    console.log("Deleted " + observationID);
+  });
+};

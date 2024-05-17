@@ -6,12 +6,12 @@ const sortInput = document.getElementById("sortInput");
 
 let username = "undefined";
 getUsernameFromIDB()
-    .then((u) => {
-      username = u;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  .then((u) => {
+    username = u;
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 /** Toggles the hidden class for the sidebar and grid. */
 const toggleSidebar = () => {
@@ -239,7 +239,9 @@ function applyFilters() {
 
 // Add event listeners to the filter inputs
 document.getElementById("colour").addEventListener("change", updatePhotoGrid);
-document.getElementById("my-observations").addEventListener("change", updatePhotoGrid);
+document
+  .getElementById("my-observations")
+  .addEventListener("change", updatePhotoGrid);
 
 document.querySelectorAll('input[name="flowers"]').forEach((input) => {
   input.addEventListener("change", updatePhotoGrid);
@@ -262,10 +264,9 @@ document.querySelectorAll('input[name="status"]').forEach((input) => {
   input.addEventListener("change", updatePhotoGrid);
 });
 
-
 async function syncObservations() {
   const localObservations = await openObservationsIDB().then((db) =>
-    getAllObservations(db)
+    getAllObservations(db),
   );
   const remoteObservations = await fetch("/allObservations").then(
     (observations) => observations.json(),

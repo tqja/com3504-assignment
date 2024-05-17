@@ -11,7 +11,7 @@ const create = function (userData, filePath) {
   let observation = new observationModel({
     nickname: userData.nickname,
     name: userData.name,
-    image: filePath.replace(/^public\//, ''),
+    image: filePath.replace(/^public\//, ""),
     dateSeen: userData.dateSeen,
     description: userData.description,
     location: {
@@ -28,7 +28,7 @@ const create = function (userData, filePath) {
     fragrant: fragrant,
     fruiting: fruiting,
     native: native,
-    chat_history: []
+    chat_history: [],
   });
   return observation
     .save()
@@ -45,7 +45,7 @@ const createSync = function (userData, filePath) {
   let observation = new observationModel({
     nickname: userData.nickname,
     name: userData.name,
-    image: filePath.replace(/^public\//, ''),
+    image: filePath.replace(/^public\//, ""),
     dateSeen: userData.dateSeen,
     description: userData.description,
     location: {
@@ -62,27 +62,30 @@ const createSync = function (userData, filePath) {
     fragrant: userData.fragrant,
     fruiting: userData.fruiting,
     native: userData.native,
-    chat_history: userData.chat_history // Ensure this matches the field name in userData
+    chat_history: userData.chat_history, // Ensure this matches the field name in userData
   });
 
-  return observation.save()
-      .then((savedObservation) => {
-        return JSON.stringify(savedObservation);
-      })
-      .catch((err) => {
-        console.error(err);
-        return null;
-      });
+  return observation
+    .save()
+    .then((savedObservation) => {
+      return JSON.stringify(savedObservation);
+    })
+    .catch((err) => {
+      console.error(err);
+      return null;
+    });
 };
 
 const edit = (observationId, updateData) => {
-  return observationModel.findByIdAndUpdate(observationId, updateData, {new: true})
-      .then((observation) => {
-        return JSON.stringify(observation);
-      }).catch((err) => {
-        console.error(err);
-        return null;
-      });
+  return observationModel
+    .findByIdAndUpdate(observationId, updateData, { new: true })
+    .then((observation) => {
+      return JSON.stringify(observation);
+    })
+    .catch((err) => {
+      console.error(err);
+      return null;
+    });
 };
 
 const getAll = () => {
@@ -102,16 +105,27 @@ observation_update_chat_history = async (chatDetails) => {
   const username = chatDetails.chat_username;
   const text = chatDetails.chat_text;
   const time = chatDetails.time;
-  const message = { chat_username: username, chat_text: text, time: time  };
+  const message = { chat_username: username, chat_text: text, time: time };
 
-  return observationModel.findByIdAndUpdate(observationID,
-        { $push: {chat_history: message } } , {new: true}
-    ).then((observation) => {
+  return observationModel
+    .findByIdAndUpdate(
+      observationID,
+      { $push: { chat_history: message } },
+      { new: true },
+    )
+    .then((observation) => {
       return JSON.stringify(observation);
-  }) .catch((err) => {
+    })
+    .catch((err) => {
       console.error(err);
       return null;
-  });
-}
+    });
+};
 
-module.exports = { create, createSync, edit, observation_update_chat_history, getAll};
+module.exports = {
+  create,
+  createSync,
+  edit,
+  observation_update_chat_history,
+  getAll,
+};

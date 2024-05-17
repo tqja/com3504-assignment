@@ -98,25 +98,25 @@ const handleNameUpdate = async () => {
               plantName: nameInput.value,
             }),
           })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Network response not ok");
-                }
-                return response;
-              })
-              .then(() => {
-                observation.name = nameInput.value;
-                openObservationsIDB().then((db) => {
-                  updateObservation(db, observation).then(() => {
-                    getDetailsFromDbpedia(nameInput.value);
-                    plantName.textContent = nameInput.value;
-                  });
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response not ok");
+              }
+              return response;
+            })
+            .then(() => {
+              observation.name = nameInput.value;
+              openObservationsIDB().then((db) => {
+                updateObservation(db, observation).then(() => {
+                  getDetailsFromDbpedia(nameInput.value);
+                  plantName.textContent = nameInput.value;
                 });
-              })
-              .catch(() => {
-                alert("Failed to update name");
-                plantName.textContent = originalName;
               });
+            })
+            .catch(() => {
+              alert("Failed to update name");
+              plantName.textContent = originalName;
+            });
         } else {
           observation.name = nameInput.value;
           if (syncN) {
@@ -409,7 +409,7 @@ if (syncN) {
 
 promise.then((retrievedObservation) => {
   observation = retrievedObservation;
-  console.log(observation)
+  console.log(observation);
   createObservationElem();
 
   initChat();
