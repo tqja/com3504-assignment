@@ -1,6 +1,11 @@
 const observationModel = require("../models/observations");
-const https = require("https");
 
+/**
+ * Create an observation
+ * @param userData
+ * @param filePath
+ * @returns {*}
+ */
 const create = function (userData, filePath) {
   const flowering = !!userData.flowering;
   const leafy = !!userData.leafy;
@@ -76,6 +81,12 @@ const createSync = function (userData, filePath) {
     });
 };
 
+/**
+ * Edit an observation
+ * @param observationId
+ * @param updateData
+ * @returns {Promise<string>}
+ */
 const edit = (observationId, updateData) => {
   return observationModel
     .findByIdAndUpdate(observationId, updateData, { new: true })
@@ -88,6 +99,10 @@ const edit = (observationId, updateData) => {
     });
 };
 
+/**
+ * Get all observations
+ * @returns {Promise<string>}
+ */
 const getAll = () => {
   return observationModel
     .find()

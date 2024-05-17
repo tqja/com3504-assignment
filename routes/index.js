@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const controller = require("../controllers/observations");
-const model = require("../models/observations");
 const multer = require("multer");
 const { createWriteStream } = require("fs");
 const { basename, join } = require("path");
@@ -12,7 +11,6 @@ const { dbpediaController } = require("../controllers/dbpedia");
 const fs = require("fs");
 const path = require("path");
 
-// TODO: may need to change how filenames are generated
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/images/uploads/");
@@ -41,14 +39,14 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/allObservations", function (req, res, next) {
+router.get("/allObservations", function (req, res) {
   controller
     .getAll()
     .then((observations) => {
       return res.status(200).send(observations);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       res.status(500).send(err);
     });
 });
@@ -84,10 +82,10 @@ router.post("/addSync", upload.single("image"), async (req, res) => {
     let filePath = req.file.path;
     let observation = await controller.createSync(userData, filePath);
     if (observation) {
-      console.log(observation);
+      console.error(observation);
       return res.status(200).json(observation);
     } else {
-      throw new Error("Observation could not be saved.");
+      console.error("Observation could not be saved.");
     }
   } catch (error) {
     console.error("Error saving observation:", error);
@@ -139,10 +137,6 @@ router.post("/edit", async (req, res) => {
   }
 });
 
-router.get("/map", (req, res) => {
-  res.render("map", { title: "Map" });
-});
-
 router.post("/add-chat", async (req, res) => {
   const chatDetails = req.body;
   const updatedObservation =
@@ -151,18 +145,6 @@ router.post("/add-chat", async (req, res) => {
     return res.status(200).send(updatedObservation);
   } else {
     return res.status(500).send("Error adding chat");
-  }
-});
-
-router.get("/sort", async (req, res) => {
-  try {
-    const sortField = req.query.field || "dateSeen";
-    const sortOrder = req.query.order === "asc" ? 1 : -1;
-    const observations = await model.find().sort({ [sortField]: sortOrder });
-    res.json(observations);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server error");
   }
 });
 
@@ -176,59 +158,6 @@ router.get("/sparqlQuery", (req, res) => {
       console.error(err);
       res.status(500).json({ error: "Failed to fetch data" });
     });
-});
-router.get("/filter", async (req, res) => {
-  try {
-    const {
-      status,
-      color,
-      flowering,
-      soil,
-      sunlight,
-      leafy,
-      fragrant,
-      fruiting,
-      native,
-    } = req.query;
-    let query = {};
-    if (status && status !== "no-preference") {
-      if (status === "no") {
-        query.status = "In_progress";
-      } else if (status === "yes") {
-        query.status = "Completed";
-      }
-    }
-    if (color && color !== "Any") {
-      query.colour = color;
-    }
-    if (flowering && flowering !== "no-preference") {
-      query.flowering = flowering === "yes";
-    }
-    if (soil && soil !== "no-preference") {
-      query.soilType = soil;
-    }
-    if (sunlight && sunlight !== "no-preference") {
-      query.sunlight = sunlight;
-    }
-    if (leafy && leafy !== "no-preference") {
-      query.leafy = leafy === "yes";
-    }
-    if (fragrant && fragrant !== "no-preference") {
-      query.fragrant = fragrant === "yes";
-    }
-    if (fruiting && fruiting !== "no-preference") {
-      query.fruiting = fruiting === "yes";
-    }
-    if (native && native !== "no-preference") {
-      query.native = native === "yes";
-    }
-
-    const observations = await model.find(query);
-    res.json(observations);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server error");
-  }
 });
 
 /**
@@ -252,34 +181,6 @@ async function saveFromURL(imageUrl) {
     throw err;
   }
 }
-router.get("/sort-by-distance", async (req, res) => {
-  const { latitude, longitude, order = "closest" } = req.query; // Default to closest if not specified
-  console.log("Received coordinates:", latitude, longitude);
-
-  try {
-    const observations = await model.find();
-    console.log("Fetched observations:", observations.length);
-
-    const sortedObservations = observations
-      .map((observation) => {
-        const latDiff = observation.location.latitude - parseFloat(latitude);
-        const lonDiff = observation.location.longitude - parseFloat(longitude);
-        const distance = Math.sqrt(latDiff * latDiff + lonDiff * lonDiff);
-        return { ...observation.toObject(), distance };
-      })
-      .sort((a, b) => {
-        return order === "closest"
-          ? a.distance - b.distance
-          : b.distance - a.distance;
-      });
-
-    console.log("Sorted observations:", sortedObservations.length);
-    res.json(sortedObservations);
-  } catch (error) {
-    console.error("Error sorting observations by distance: ", error);
-    res.status(500).send("Error sorting observations by distance");
-  }
-});
 
 // handle 404 (ensure this route is last!)
 router.get("*", function (req, res) {

@@ -1,6 +1,11 @@
 importScripts("/js/idb_util.js");
 importScripts("/js/new_sync_idb_util.js");
 
+/**
+ * Get all the file paths from the directory.
+ * @param directoryPath - The directory to get the file paths from
+ * @returns {Promise<[]>} - The file paths.
+ */
 async function getAllFilePaths(directoryPath) {
   try {
     const response = await fetch("/dir", {
@@ -12,7 +17,7 @@ async function getAllFilePaths(directoryPath) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch directory listing");
+      console.error("Failed to fetch directory listing");
     }
 
     const files = await response.json();
